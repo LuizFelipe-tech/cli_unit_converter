@@ -18,10 +18,17 @@ def select_units() -> tuple[str, str]:
   conversion_unit: str = input("Digite a unidade de conversão: ")
   return entry_unit, conversion_unit
 
+
+def units_conversor(units) -> None:
+  """Convert to the desired units"""
+  match units:
+    case ("Fahrenheit", "Celsius")
+
 def main() -> None:
   """" Main Function """
   exibir_menu()
-  select_units()
+  selected_units: tuple[str, str] = select_units()
+  units_conversor(selected_units)
 
 if __name__ == "__main__":
     main()
