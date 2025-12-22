@@ -1,0 +1,108 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "template-python-high-standard"
+version = "0.1.0"
+description = "Enterprise-Grade Python Template focused on Scalability and Security."
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Luiz Felipe", email = "luizfelipemelos@gamil.com" }]
+dependencies = []
+
+# --- Setuptools Configuration (Package Discovery) ---
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+  "tests*",
+]
+
+# --- Ruff Configuration (Linter & Formatter) ---
+[tool.ruff]
+fix = false
+unsafe-fixes = false
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+  "F",
+  "E",
+  "W",
+  "C90",
+  "I",
+  "N",
+  "UP",
+  "YTT",
+  "B",
+  "A",
+  "C4",
+  "PT",
+  "RET",
+  "SIM",
+  "TCH",
+  "ARG", # Flake8-unused-arguments (Avisa sobre argumentos não usados)
+  "PTH", # Flake8-use-pathlib (Força o uso de Pathlib ao invés de os.path)
+  "ERA", # Eradicate (Detecta código comentado morto)
+  "PL", # Pylint (Lógica robusta e refatoração)
+  "TRY", # Tryceratops (Boas práticas em tratamento de exceção)
+  "RUF", # Regras exclusivas do Ruff
+  "S", # Bandit (Segurança - ESSENCIAL)
+]
+ignore = ["D203", "D212", "COM812", "ISC001", "PLR0913"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pylint]
+max-args = 8
+max-branches = 12
+max-returns = 6
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S105", "PLR2004"]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+# --- Mypy Configuration (Static Type Checker) ---
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_unimported = true  # Bloqueia tipos vindos de libs sem tipagem (bem estrito)
+no_implicit_optional = true     # Nada de 'Optional' implícito
+check_untyped_defs = true
+show_error_codes = true
+
+# --- Pyright (Verificação de Tipos Redundante & Rápida) ---
+# Usar ambos (Mypy + Pyright) é "overkill", mas excelente para aprendizado.
+[tool.pyright]
+typeCheckingMode = "strict"
+pythonVersion = "3.10"
+reportMissingImports = "error"
+reportMissingTypeStubs = "error"
+include = ["src"]
+exclude = ["**/__pycache__", "tests"]
