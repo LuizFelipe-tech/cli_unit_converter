@@ -44,11 +44,14 @@ exclude = [
 fix = false
 unsafe-fixes = false
 line-length = 100
-ident-width = 4
+indent-width = 4
+preview = true
 
 [tool.ruff.format]
 quote-style = "single"
-ident-style = "space"
+indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
 
 
 [tool.ruff.lint]
@@ -75,6 +78,9 @@ select = [
   "TRY", # Tryceratops (Boas práticas em Exception handling - GSG 2.4)
   "RUF", # Regras específicas e poderosas do Ruff
   "S", # Bandit (Segurança e vulnerabilidades)
+  "G", # Flake8-logging-format (GSG 3.10.1)
+  "ICN", # Import conventions (GSG 2.2.4)
+  "ISC", # Implicit string concatenation (GSG 3.10)
 ]
 ignore = [
   "D203", # Conflito com docstring Google (prefere D211)
