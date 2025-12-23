@@ -44,33 +44,43 @@ exclude = [
 fix = false
 unsafe-fixes = false
 line-length = 100
+ident-width = 4
+
+[tool.ruff.format]
+quote-style = "single"
+ident-style = "space"
+
 
 [tool.ruff.lint]
 select = [
-  "F",
-  "E",
-  "W",
-  "C90",
-  "I",
-  "N",
-  "UP",
-  "YTT",
-  "B",
-  "A",
-  "C4",
-  "PT",
-  "RET",
-  "SIM",
-  "TCH",
-  "ARG", # Flake8-unused-arguments (Avisa sobre argumentos não usados)
-  "PTH", # Flake8-use-pathlib (Força o uso de Pathlib ao invés de os.path)
-  "ERA", # Eradicate (Detecta código comentado morto)
-  "PL", # Pylint (Lógica robusta e refatoração)
-  "TRY", # Tryceratops (Boas práticas em tratamento de exceção)
-  "RUF", # Regras exclusivas do Ruff
-  "S", # Bandit (Segurança - ESSENCIAL)
+  "F", # Pyflakes (erros lógicos básicos)
+  "E", # Pycodestyle Errors (estilo, identação, linhas em branco)
+  "W", # Pycodestyle Warnings
+  "C90", # McCabe (complexidade ciclomática)
+  "I", # Isort (ordenação de imports - GSG 3.13)
+  "N", # PEP8 Naming (GSG 3.16 - Nomenclatura)
+  "D", # Pydocstyle (Docstrings estilo Google)
+  "UP", # Pyupgrade (GSG 2.20 - Modern Python)
+  "YTT", # Flake8-2020 (compatibilidade de versão)
+  "B", # Flake8-Bugbear (pega bugs sutis que outros linters perdem)
+  "A", # Flake8-Builtins (evita sobrescrever id, dir, list, etc.)
+  "C4", # Flake8-Comprehensions (melhora list/dict comprehensions)
+  "T10", # Flake8-Debugger (proíbe pdb/ipdb em produção)
+  "SIM", # Flake8-Simplify (sugere simplificações de código)
+  "TID", # Flake8-Tidy-Imports (GSG 2.2.4 - Regras de importação)
+  "ARG", # Flake8-Unused-Arguments
+  "PTH", # Flake8-Use-Pathlib (Moderno, melhor que os.path)
+  "ERA", # Eradicate (Proíbe código comentado/morto)
+  "PL", # Pylint (Regras complexas de refatoração e convenção)
+  "TRY", # Tryceratops (Boas práticas em Exception handling - GSG 2.4)
+  "RUF", # Regras específicas e poderosas do Ruff
+  "S", # Bandit (Segurança e vulnerabilidades)
 ]
-ignore = ["D203", "D212", "COM812", "ISC001", "PLR0913"]
+ignore = [
+  "D203", # Conflito com docstring Google (prefere D211)
+  "D213", # Conflito com docstring Google (prefere D212 - resumo na primeira linha)
+  "TRY003", # Permite mensagens longas em exceções (GSG permite)
+]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
@@ -84,25 +94,47 @@ max-returns = 6
 "tests/*" = ["S101", "S105", "PLR2004"]
 
 [tool.ruff.lint.isort]
+force-single-line = false
+force-sort-within-sections = true
+known-first-party = ["src"]
 required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"  # "Do not use relative names in imports."
+
+# Configuração de Nomes (GSG 3.16)
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = ["classmethod", "pydantic.validator"]
 # --- Mypy Configuration (Static Type Checker) ---
 [tool.mypy]
+[tool.mypy]
 python_version = "3.10"
-strict = true
-warn_return_any = true
+strict = true                      # Ativa todas as flags estritas de uma vez
+warn_return_any = true             # Avisa se retornar Any onde não devia
 warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_any_unimported = true  # Bloqueia tipos vindos de libs sem tipagem (bem estrito)
-no_implicit_optional = true     # Nada de 'Optional' implícito
-check_untyped_defs = true
+disallow_any_unimported = true     # Bloqueia tipos de libs sem tipagem
 show_error_codes = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 
-# --- Pyright (Verificação de Tipos Redundante & Rápida) ---
-# Usar ambos (Mypy + Pyright) é "overkill", mas excelente para aprendizado.
+# Harmonia com Ruff: Permite imports dinâmicos se necessário, mas avisa
+implicit_reexport = false
+
+# Ignora erros de libs específicas que não têm tipagem (adicione conforme calhar)
+# [[tool.mypy.overrides]]
+# module = "biblioteca_sem_tipo.*"
+# ignore_missing_imports = true
+
+
+# --- 3. PYRIGHT (Velocidade + Redundância de Segurança) ---
 [tool.pyright]
-typeCheckingMode = "strict"
+typeCheckingMode = "strict"        # Modo mais rigoroso possível
 pythonVersion = "3.10"
-reportMissingImports = "warn"
-reportMissingTypeStubs = "warn"
 include = ["src"]
 exclude = ["**/__pycache__", "tests"]
+reportMissingImports = "error"     # GSG exige imports claros
+reportMissingTypeStubs = "warning" # Avisa se falta .pyi
+reportUnknownMemberType = "warning" # Ajuda a caçar 'Any' implícitos
+reportUnnecessaryIsInstance = "warning" # Limpa código redundante
