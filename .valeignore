@@ -1,0 +1,9 @@
+.idea/
+.ruff_cache/
+.mypy_cache/
+venv/
+.venv/
+dist/
+build/
+*.txt
+.output.txt
