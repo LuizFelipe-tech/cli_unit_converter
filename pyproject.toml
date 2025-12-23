@@ -16,27 +16,27 @@ dependencies = []
 where = ["src"]
 namespaces = false
 exclude = [
-  ".bzr",
-  ".direnv",
-  ".eggs",
-  ".git",
-  ".hg",
-  ".mypy_cache",
-  ".nox",
-  ".pants.d",
-  ".pytype",
-  ".ruff_cache",
-  ".svn",
-  ".tox",
-  ".venv",
-  "__pypackages__",
-  "_build",
-  "buck-out",
-  "build",
-  "dist",
-  "node_modules",
-  "venv",
-  "tests*",
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "tests*",
 ]
 
 # --- Ruff configuration for linting and formatting. ---
@@ -56,36 +56,36 @@ docstring-code-line-length = "dynamic"
 
 [tool.ruff.lint]
 select = [
-  "F", # Pyflakes (Basic logical errors.)
-  "E", # Pycodestyle Errors (Style, indentation, and blank lines.)
-  "W", # Pycodestyle Warnings
-  "C90", # McCabe (Cyclomatic complexity.)
-  "I", # Isort (Import sorting.)
-  "N", # PEP 8 Naming (Naming conventions.)
-  "D", # Pydocstyle (Google-style docstrings.)
-  "UP", # Pyupgrade (Modern Python.)
-  "YTT", # Flake8-2020 (Version compatibility.)
-  "B", # Flake8-Bugbear (Finds subtle bugs.)
-  "A", # Flake8-Builtins (Avoids overwriting built-in names like id, dir, and list.)
-  "C4", # Flake8-Comprehensions (Improves list and dictionary comprehensions.)
-  "T10", # Flake8-Debugger (Prohibits pdb and ipdb in production.)
-  "SIM", # Flake8-Simplify (Suggests code simplifications.)
-  "TID", # Flake8-Tidy-Imports (Import rules.)
-  "ARG", # Flake8-Unused-Arguments
-  "PTH", # Flake8-Use-Pathlib (Modern path handling with pathlib.)
-  "ERA", # Eradicate (Prohibits commented-out or dead code.)
-  "PL", # Pylint (Complex refactoring and convention rules.)
-  "TRY", # Tryceratops (Best practices for exception handling.)
-  "RUF", # Ruff-specific rules.
-  "S", # Bandit (Security and vulnerabilities.)
-  "G", # Flake8-logging-format
-  "ICN", # Import conventions
-  "ISC", # Implicit string concatenation
+    "F", # Pyflakes (Basic logical errors.)
+    "E", # Pycodestyle Errors (Style, indentation, and blank lines.)
+    "W", # Pycodestyle Warnings
+    "C90", # McCabe (Cyclomatic complexity.)
+    "I", # Isort (Import sorting.)
+    "N", # PEP 8 Naming (Naming conventions.)
+    "D", # Pydocstyle (Google-style docstrings.)
+    "UP", # Pyupgrade (Modern Python.)
+    "YTT", # Flake8-2020 (Version compatibility.)
+    "B", # Flake8-Bugbear (Finds subtle bugs.)
+    "A", # Flake8-Builtins (Avoids overwriting built-in names like id, dir, and list.)
+    "C4", # Flake8-Comprehensions (Improves list and dictionary comprehensions.)
+    "T10", # Flake8-Debugger (Prohibits pdb and ipdb in production.)
+    "SIM", # Flake8-Simplify (Suggests code simplifications.)
+    "TID", # Flake8-Tidy-Imports (Import rules.)
+    "ARG", # Flake8-Unused-Arguments
+    "PTH", # Flake8-Use-Pathlib (Modern path handling with pathlib.)
+    "ERA", # Eradicate (Prohibits commented-out or dead code.)
+    "PL", # Pylint (Complex refactoring and convention rules.)
+    "TRY", # Tryceratops (Best practices for exception handling.)
+    "RUF", # Ruff-specific rules.
+    "S", # Bandit (Security and vulnerabilities.)
+    "G", # Flake8-logging-format
+    "ICN", # Import conventions
+    "ISC", # Implicit string concatenation
 ]
 ignore = [
-  "D203", # Conflict with Google docstring (prefer D211).
-  "D213", # Conflict with Google docstring (prefer D212 - summary on the first line).
-  "TRY003", # Allow long messages in exceptions.
+    "D203", # Conflict with Google docstring (prefer D211).
+    "D213", # Conflict with Google docstring (prefer D212 - summary on the first line).
+    "TRY003", # Allow long messages in exceptions.
 ]
 
 [tool.ruff.lint.mccabe]

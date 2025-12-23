@@ -86,6 +86,10 @@ def convert_temperature(units: tuple[int, int], value_unit: int) -> float:
             kelvin_t = value_unit + 273.15
             print(f'{kelvin_t:.2f} degrees kelvin')
             return kelvin_t
+        case (3, 2):
+            celsius_t = (value_unit - 273.15) * (9 / 5) + 32
+            print(f'{celsius_t:.2f} degrees celsius')
+            return celsius_t
         case _:
             return 0.0
 
