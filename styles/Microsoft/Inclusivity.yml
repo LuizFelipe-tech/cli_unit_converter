@@ -1,0 +1,12 @@
+extends: substitution
+message: "Use '%s' instead of '%s'."
+link: https://learn.microsoft.com/en-us/style-guide/bias-free-communication
+level: error
+ignorecase: true
+action:
+  name: replace
+swap:
+  blacklist: blocklist
+  whitelist: allowlist
+  master: primary or main
+  slave: secondary or replica

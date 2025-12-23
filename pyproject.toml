@@ -11,7 +11,7 @@ license = { text = "MIT" }
 authors = [{ name = "Luiz Felipe", email = "luizfelipemelos@gamil.com" }]
 dependencies = []
 
-# --- Setuptools Configuration (Package Discovery) ---
+# --- Setuptools configuration for package discovery. ---
 [tool.setuptools.packages.find]
 where = ["src"]
 namespaces = false
@@ -39,7 +39,7 @@ exclude = [
   "tests*",
 ]
 
-# --- Ruff Configuration (Linter & Formatter) ---
+# --- Ruff configuration for linting and formatting. ---
 [tool.ruff]
 fix = false
 unsafe-fixes = false
@@ -56,36 +56,36 @@ docstring-code-line-length = "dynamic"
 
 [tool.ruff.lint]
 select = [
-  "F", # Pyflakes (erros lógicos básicos)
-  "E", # Pycodestyle Errors (estilo, identação, linhas em branco)
+  "F", # Pyflakes (Basic logical errors.)
+  "E", # Pycodestyle Errors (Style, indentation, and blank lines.)
   "W", # Pycodestyle Warnings
-  "C90", # McCabe (complexidade ciclomática)
-  "I", # Isort (ordenação de imports - GSG 3.13)
-  "N", # PEP8 Naming (GSG 3.16 - Nomenclatura)
-  "D", # Pydocstyle (Docstrings estilo Google)
-  "UP", # Pyupgrade (GSG 2.20 - Modern Python)
-  "YTT", # Flake8-2020 (compatibilidade de versão)
-  "B", # Flake8-Bugbear (pega bugs sutis que outros linters perdem)
-  "A", # Flake8-Builtins (evita sobrescrever id, dir, list, etc.)
-  "C4", # Flake8-Comprehensions (melhora list/dict comprehensions)
-  "T10", # Flake8-Debugger (proíbe pdb/ipdb em produção)
-  "SIM", # Flake8-Simplify (sugere simplificações de código)
-  "TID", # Flake8-Tidy-Imports (GSG 2.2.4 - Regras de importação)
+  "C90", # McCabe (Cyclomatic complexity.)
+  "I", # Isort (Import sorting.)
+  "N", # PEP 8 Naming (Naming conventions.)
+  "D", # Pydocstyle (Google-style docstrings.)
+  "UP", # Pyupgrade (Modern Python.)
+  "YTT", # Flake8-2020 (Version compatibility.)
+  "B", # Flake8-Bugbear (Finds subtle bugs.)
+  "A", # Flake8-Builtins (Avoids overwriting built-in names like id, dir, and list.)
+  "C4", # Flake8-Comprehensions (Improves list and dictionary comprehensions.)
+  "T10", # Flake8-Debugger (Prohibits pdb and ipdb in production.)
+  "SIM", # Flake8-Simplify (Suggests code simplifications.)
+  "TID", # Flake8-Tidy-Imports (Import rules.)
   "ARG", # Flake8-Unused-Arguments
-  "PTH", # Flake8-Use-Pathlib (Moderno, melhor que os.path)
-  "ERA", # Eradicate (Proíbe código comentado/morto)
-  "PL", # Pylint (Regras complexas de refatoração e convenção)
-  "TRY", # Tryceratops (Boas práticas em Exception handling - GSG 2.4)
-  "RUF", # Regras específicas e poderosas do Ruff
-  "S", # Bandit (Segurança e vulnerabilidades)
-  "G", # Flake8-logging-format (GSG 3.10.1)
-  "ICN", # Import conventions (GSG 2.2.4)
-  "ISC", # Implicit string concatenation (GSG 3.10)
+  "PTH", # Flake8-Use-Pathlib (Modern path handling with pathlib.)
+  "ERA", # Eradicate (Prohibits commented-out or dead code.)
+  "PL", # Pylint (Complex refactoring and convention rules.)
+  "TRY", # Tryceratops (Best practices for exception handling.)
+  "RUF", # Ruff-specific rules.
+  "S", # Bandit (Security and vulnerabilities.)
+  "G", # Flake8-logging-format
+  "ICN", # Import conventions
+  "ISC", # Implicit string concatenation
 ]
 ignore = [
-  "D203", # Conflito com docstring Google (prefere D211)
-  "D213", # Conflito com docstring Google (prefere D212 - resumo na primeira linha)
-  "TRY003", # Permite mensagens longas em exceções (GSG permite)
+  "D203", # Conflict with Google docstring (prefer D211).
+  "D213", # Conflict with Google docstring (prefer D212 - summary on the first line).
+  "TRY003", # Allow long messages in exceptions.
 ]
 
 [tool.ruff.lint.mccabe]
@@ -109,42 +109,42 @@ required-imports = ["from __future__ import annotations"]
 convention = "google"
 
 [tool.ruff.lint.flake8-tidy-imports]
-ban-relative-imports = "all"  # "Do not use relative names in imports."
+ban-relative-imports = "all"  # Do not use relative names in imports.
 
-# Configuração de Nomes (GSG 3.16)
+# Naming configuration.
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = ["classmethod", "pydantic.validator"]
-# --- Mypy Configuration (Static Type Checker) ---
+# --- Mypy configuration for static type checking. ---
 [tool.mypy]
 python_version = "3.10"
-strict = true                      # Ativa todas as flags estritas de uma vez
-warn_return_any = true             # Avisa se retornar Any onde não devia
+strict = true                      # Enable all strict flags.
+warn_return_any = true             # Warn if returning Any.
 warn_unused_configs = true
-disallow_any_unimported = true     # Bloqueia tipos de libs sem tipagem
+disallow_any_unimported = true     # Block types from libraries without typing.
 show_error_codes = true
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 
-# Harmonia com Ruff: Permite imports dinâmicos se necessário, mas avisa
+# Harmony with Ruff: Allow dynamic imports if necessary, but issue a warning.
 implicit_reexport = false
 
-# Ignora erros de libs específicas que não têm tipagem (adicione conforme calhar)
+# Ignore errors from specific libraries that do not have typing.
 # [[tool.mypy.overrides]]
-# module = "biblioteca_sem_tipo.*"
+# module = "library_without_type.*"
 # ignore_missing_imports = true
 
 
-# --- 3. PYRIGHT (Velocidade + Redundância de Segurança) ---
+# --- Pyright configuration for speed and safety. ---
 [tool.pyright]
-typeCheckingMode = "strict"        # Modo mais rigoroso possível
+typeCheckingMode = "strict"        # Most rigorous mode.
 pythonVersion = "3.10"
 include = ["src"]
 exclude = ["**/__pycache__", "tests"]
-reportMissingImports = "error"     # GSG exige imports claros
+reportMissingImports = "error"     # Require clear imports.
 reportMissingTypeStubs = "error"
 reportUnknownMemberType = "warning"
 reportUnknownVariableType = "warning"
 reportUnknownArgumentType = "warning"
 reportUnknownParameterType = "warning"
 reportUnusedCallResult = "warning"
-reportUnnecessaryIsInstance = "warning" # Limpa código redundante
+reportUnnecessaryIsInstance = "warning" # Clean redundant code.
 reportImplicitStringConcatenation = "warning"

@@ -53,7 +53,7 @@ def get_temperature_units() -> tuple[int, int]:
 
 
 def convert_temperature(units: tuple[int, int], value_unit: int) -> float:
-    """Prompts the user to select the source and target units for temperature.
+    """Performs temperature conversion based on the selected units and value.
 
     Returns:
           float: The converted temperature value.
@@ -62,26 +62,27 @@ def convert_temperature(units: tuple[int, int], value_unit: int) -> float:
     kelvin_t: float = 0.0
     match units:
         case (1, 2):
-            # Fahrenheit to Celsius option
+            # Fahrenheit to Celsius option.
             celsius_t: float = (5 / 9) * (value_unit - 32)
             print(f'{celsius_t:.2f} degrees celsius')
             return celsius_t
         case (2, 1):
-            # Celsius to Fahrenheit option
+            # Celsius to Fahrenheit option.
             fahrenheit_t = value_unit * (9 / 5) + 32
             print(f'{fahrenheit_t:.2f} degrees fahrenheit')
             return fahrenheit_t
         case (1, 3):
-            # Fahrenheit to Kelvin
+            # Fahrenheit to Kelvin.
             kelvin_t = (value_unit - 32) * (5 / 9) + 273.15
             print(f'{kelvin_t:.2f} degrees kelvin')
             return kelvin_t
         case (3, 1):
-            # Kelvin to Fahrenheit
+            # Kelvin to Fahrenheit.
             fahrenheit_t = (value_unit - 273.15) * (9 / 5) + 32
             print(f'{fahrenheit_t:.2f} degrees fahrenheit')
             return fahrenheit_t
         case (2, 3):
+            # Celsius to Kelvin.
             kelvin_t = value_unit + 273.15
             print(f'{kelvin_t:.2f} degrees kelvin')
             return kelvin_t
