@@ -6,6 +6,8 @@ different systems of measurement, such as length, weight, and temperature.
 
 from __future__ import annotations
 
+import exceptions
+
 DOUBLE_ARROW = '\u2194'
 
 
@@ -26,16 +28,22 @@ def select_menu() -> None:
 
     Prompts the user to enter an option number and executes the corresponding logic.
     """
-    selected_conversor: int = int(input('Enter the number for the selected option: '))
-    match selected_conversor:
-        case 1:
-            length_module()
-        case 2:
-            weight_module()
-        case 3:
-            temperature_module()
-        case _:
-            print('Nothing selected')
+    while True:
+        try:
+            selected_conversor: int = int(input('Enter the number for the selected option: '))
+            match selected_conversor:
+                case 1:
+                    length_module()
+                case 2:
+                    weight_module()
+                case 3:
+                    temperature_module()
+        except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]
+            print('[ERRO] Opção não existe')
+        except ValueError:
+            print('[ERRO] Digite um número')
+        except:
+            print('[ERRO] Uma exceção ocorreu')
 
 
 # TODO: adicionar cores e TRY method
