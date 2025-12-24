@@ -56,36 +56,22 @@ docstring-code-line-length = "dynamic"
 
 [tool.ruff.lint]
 select = [
-    "F", # Pyflakes (Basic logical errors.)
-    "E", # Pycodestyle Errors (Style, indentation, and blank lines.)
-    "W", # Pycodestyle Warnings
-    "C90", # McCabe (Cyclomatic complexity.)
-    "I", # Isort (Import sorting.)
-    "N", # PEP 8 Naming (Naming conventions.)
-    "D", # Pydocstyle (Google-style docstrings.)
-    "UP", # Pyupgrade (Modern Python.)
-    "YTT", # Flake8-2020 (Version compatibility.)
-    "B", # Flake8-Bugbear (Finds subtle bugs.)
-    "A", # Flake8-Builtins (Avoids overwriting built-in names like id, dir, and list.)
-    "C4", # Flake8-Comprehensions (Improves list and dictionary comprehensions.)
-    "T10", # Flake8-Debugger (Prohibits pdb and ipdb in production.)
-    "SIM", # Flake8-Simplify (Suggests code simplifications.)
-    "TID", # Flake8-Tidy-Imports (Import rules.)
-    "ARG", # Flake8-Unused-Arguments
-    "PTH", # Flake8-Use-Pathlib (Modern path handling with pathlib.)
-    "ERA", # Eradicate (Prohibits commented-out or dead code.)
-    "PL", # Pylint (Complex refactoring and convention rules.)
-    "TRY", # Tryceratops (Best practices for exception handling.)
-    "RUF", # Ruff-specific rules.
-    "S", # Bandit (Security and vulnerabilities.)
-    "G", # Flake8-logging-format
-    "ICN", # Import conventions
-    "ISC", # Implicit string concatenation
+    "ALL"
 ]
 ignore = [
     "D203", # Conflict with Google docstring (prefer D211).
     "D213", # Conflict with Google docstring (prefer D212 - summary on the first line).
-    "TRY003", # Allow long messages in exceptions.
+    "D406",
+    "D407",
+    "ANN101",
+    "ANN102",
+    "ANN204",
+    "TRY003",
+    "EM101",
+    "EM102",
+    "T201",
+    "TD003",
+    "CPY"
 ]
 
 [tool.ruff.lint.mccabe]
@@ -115,17 +101,23 @@ ban-relative-imports = "all"  # Do not use relative names in imports.
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = ["classmethod", "pydantic.validator"]
 # --- Mypy configuration for static type checking. ---
+# --- Mypy configuration for static type checking. ---
 [tool.mypy]
 python_version = "3.10"
-strict = true                      # Enable all strict flags.
-warn_return_any = true             # Warn if returning Any.
+# Google Style 3.19: Prioritize safety and clarity.
+strict = true                      # Enable all strict flags (disallow_untyped_defs, etc).
+warn_return_any = true             # Google Style 3.19.1: Avoid Any where possible.
 warn_unused_configs = true
-disallow_any_unimported = true     # Block types from libraries without typing.
+disallow_any_unimported = true     # Block types from libraries without typing stubs.
 show_error_codes = true
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 
-# Harmony with Ruff: Allow dynamic imports if necessary, but issue a warning.
+# Google Style 3.19.12: Explicit imports are preferred.
+# This prevents re-exporting modules implicitly unless __all__ is used.
 implicit_reexport = false
+
+# Exclude tests from strict type checking to avoid conflicts with mocking/fixtures.
+exclude = ["tests"]
 
 # Ignore errors from specific libraries that do not have typing.
 # [[tool.mypy.overrides]]
@@ -135,16 +127,30 @@ implicit_reexport = false
 
 # --- Pyright configuration for speed and safety. ---
 [tool.pyright]
-typeCheckingMode = "strict"        # Most rigorous mode.
+typeCheckingMode = "strict"        # Align with Mypy strictness.
 pythonVersion = "3.10"
 include = ["src"]
-exclude = ["**/__pycache__", "tests"]
-reportMissingImports = "error"     # Require clear imports.
+exclude = ["**/__pycache__", "tests", "**/.*"] # Ignore cache and dotfiles.
+
+# --- Alignment with Google Style Guide ---
+
+# Google Style 2.2.4: Do not use relative names in imports.
+reportMissingImports = "error"
+
+# Google Style 3.19.15: "Prefer to specify type parameters for generic types".
+# This flags usages like `l: list = []` (missing [type]).
+reportMissingTypeArgument = "error"
+
+# Google Style 3.2: "Make use of Python’s implicit line joining inside parentheses".
+# We DISABLE this warning because Google Style explicitly allows implicit concatenation
+# for long strings/URLs split across lines.
+reportImplicitStringConcatenation = false
+
+# --- Enterprise Safety Checks ---
 reportMissingTypeStubs = "error"
 reportUnknownMemberType = "warning"
 reportUnknownVariableType = "warning"
 reportUnknownArgumentType = "warning"
 reportUnknownParameterType = "warning"
 reportUnusedCallResult = "warning"
-reportUnnecessaryIsInstance = "warning" # Clean redundant code.
-reportImplicitStringConcatenation = "warning"
+reportUnnecessaryIsInstance = "warning"
