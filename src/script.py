@@ -1,7 +1,8 @@
 """CLI Unit Converter.
 
-This script provides a command-line interface to convert units between
-different systems of measurement, such as length, weight, and temperature.
+Converts units of measurement using a command-line interface.
+
+Supports conversion between different systems for length, weight, and temperature.
 """
 
 from __future__ import annotations
@@ -234,32 +235,56 @@ def request_units_number() -> tuple[int, int]:
     Inputs the user to type a valid unit number.
     """
     while True:
-        entry_unit = input('Enter the origin unit number: ')
-        if entry_unit in {'1', '2', '3'}:
-            try:
-                entry_unit = int(entry_unit)
-            except ValueError:
-                print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
-
-            if entry_unit not in {1, 2, 3}:
-                raise exceptions.NotAllowedValueError  # noqa: TRY301
-        except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]
-            print(f'{RED_TEXT}[ERRO] OPÇÃO NÃO EXISTE{RESET}')
-
-        else:
+        is_valid_number, valid_entry_number = get_valid_entry_number()
+        if is_valid_number:
             break
+        continue
     while True:
-        try:
-            conversion_unit: int = int(input('Enter the conversion unit number: '))
-            if conversion_unit not in {1, 2, 3}:
-                raise exceptions.NotAllowedValueError  # noqa: TRY301
-        except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]
-            print(f'{RED_TEXT}[ERRO] OPÇÃO NÃO EXISTE{RESET}')
-        except ValueError:
-            print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
-        else:
+        is_valid_number, valid_converted_number = get_valid_converted_number()
+        if is_valid_number:
             break
-    return entry_unit, conversion_unit
+        continue
+    return valid_entry_number, valid_converted_number
+
+
+def get_valid_entry_number() -> tuple[bool, int]:
+    """Gets a valid origin number.
+
+    Receives and validate user input
+    """
+    is_valid_number: bool = True
+    entry_unit: int = 0
+    try:
+        entry_unit = int(input('Enter the origin unit number: '))
+        if entry_unit in {1, 2, 3}:
+            raise exceptions.NotAllowedValueError  # noqa: TRY301
+    except ValueError:
+        print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
+        is_valid_number = False
+    except exceptions.NotAllowedValueError:
+        print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO VÁLIDO{RESET}')
+        is_valid_number = False
+    return is_valid_number, entry_unit
+
+
+def get_valid_converted_number() -> tuple[bool, int]:
+    """Gets a valid converted number.
+
+    Receives and validate user input
+    """
+    is_converted_number: bool = True
+    converted_unit: int = 1
+    try:
+        converted_unit = int(input('Enter the origin unit number: '))
+        if converted_unit in {1, 2, 3}:
+            raise exceptions.NotAllowedValueError  # noqa: TRY301
+    except ValueError:
+        print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
+        is_converted_number = False
+    except exceptions.NotAllowedValueError:
+        print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO VÁLIDO{RESET}')
+        is_converted_number = False
+    return is_converted_number, converted_unit
 
 
 def main() -> None:
