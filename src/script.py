@@ -9,13 +9,13 @@ from __future__ import annotations
 
 import exceptions
 
-DOUBLE_ARROW = '\u2194'
+DOUBLE_ARROW = "\u2194"
 
 
-RED_TEXT = '\x1b[31m'
+RED_TEXT = "\x1b[31m"
 
 
-RESET = '\x1b[0m'
+RESET = "\x1b[0m"
 
 
 def show_menu() -> None:
@@ -28,6 +28,10 @@ def show_menu() -> None:
     print(f'2. Peso (Quilogramas {DOUBLE_ARROW} Libras {DOUBLE_ARROW} Onças)')
     print(f'3. Temperatura (Celsius {DOUBLE_ARROW} Fahrenheit {DOUBLE_ARROW} Kelvin)')
     print('4. Sair')
+    print(f"1. Comprimento (Metros {DOUBLE_ARROW} Quilômetros {DOUBLE_ARROW} Milhas)")
+    print(f"2. Peso (Quilogramas {DOUBLE_ARROW} Libras {DOUBLE_ARROW} Onças)")
+    print(f"3. Temperatura (Celsius {DOUBLE_ARROW} Fahrenheit {DOUBLE_ARROW} Kelvin)")
+    print("4. Sair")
 
 
 def select_menu() -> None:
@@ -37,7 +41,7 @@ def select_menu() -> None:
     """
     while True:
         try:
-            selected_conversor: int = int(input('Enter the number for the selected option: '))
+            selected_conversor: int = int(input("Enter the number for the selected option: "))
             match selected_conversor:
                 case 1:
                     length_module()
@@ -48,9 +52,9 @@ def select_menu() -> None:
                 case _:
                     raise exceptions.NotAllowedValueError  # noqa: TRY301
         except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]
-            print(f'{RED_TEXT}[ERRO] OPÇÃO NÃO EXISTE{RESET}')
+            print(f"{RED_TEXT}[ERRO] OPÇÃO NÃO EXISTE{RESET}")
         except ValueError:
-            print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
+            print(f"{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}")
 
 
 def show_temperature_units() -> None:
@@ -61,11 +65,11 @@ def show_temperature_units() -> None:
             - The first integer represents the source unit ID.
             - The second integer represents the target unit ID.
     """
-    print('--- Temperature Conversor selected ---')
-    print('Available units below')
-    print('1. Fahrenheit')
-    print('2. Celsius')
-    print('3. Kelvin')
+    print("--- Temperature Conversor selected ---")
+    print("Available units below")
+    print("1. Fahrenheit")
+    print("2. Celsius")
+    print("3. Kelvin")
 
 
 def show_weight_units() -> None:
@@ -76,11 +80,11 @@ def show_weight_units() -> None:
             - The first integer represents the source unit ID.
             - The second integer represents the target unit ID.
     """
-    print('--- Weight Conversor selected ---')
-    print('Available units below')
-    print('1. Kilograms')
-    print('2. Pounds')
-    print('3. Ounces')
+    print("--- Weight Conversor selected ---")
+    print("Available units below")
+    print("1. Kilograms")
+    print("2. Pounds")
+    print("3. Ounces")
 
 
 # TODO: adicionar cores e TRY method
@@ -92,11 +96,11 @@ def show_length_units() -> None:
             - The first integer represents the source unit ID.
             - The second integer represents the target unit ID.
     """
-    print('--- Length Conversor selected ---')
-    print('Available units below')
-    print('1. Meters')
-    print('2. Kilometers')
-    print('3. Miles')
+    print("--- Length Conversor selected ---")
+    print("Available units below")
+    print("1. Meters")
+    print("2. Kilometers")
+    print("3. Miles")
 
 
 def convert_temperature(units: tuple[int, int], value_unit: int) -> float:
@@ -110,26 +114,26 @@ def convert_temperature(units: tuple[int, int], value_unit: int) -> float:
         case (1, 2):
             # Fahrenheit to Celsius option.
             converted_t = (5 / 9) * (value_unit - 32)
-            print(f'{converted_t:.2f} degrees celsius')
+            print(f"{converted_t:.2f} degrees celsius")
         case (2, 1):
             # Celsius to Fahrenheit option.
             converted_t = value_unit * (9 / 5) + 32
-            print(f'{converted_t:.2f} degrees fahrenheit')
+            print(f"{converted_t:.2f} degrees fahrenheit")
         case (1, 3):
             # Fahrenheit to Kelvin.
             converted_t = (value_unit - 32) * (5 / 9) + 273.15
-            print(f'{converted_t:.2f} degrees kelvin')
+            print(f"{converted_t:.2f} degrees kelvin")
         case (3, 1):
             # Kelvin to Fahrenheit.
             converted_t = (value_unit - 273.15) * (9 / 5) + 32
-            print(f'{converted_t:.2f} degrees fahrenheit')
+            print(f"{converted_t:.2f} degrees fahrenheit")
         case (2, 3):
             # Celsius to Kelvin.
             converted_t = value_unit + 273.15
-            print(f'{converted_t:.2f} degrees kelvin')
+            print(f"{converted_t:.2f} degrees kelvin")
         case (3, 2):
             converted_t = (value_unit - 273.15) * (9 / 5) + 32
-            print(f'{converted_t:.2f} degrees celsius')
+            print(f"{converted_t:.2f} degrees celsius")
         case _:
             return 0.0
     return converted_t
@@ -145,22 +149,22 @@ def convert_weight(units: tuple[int, int], value_unit: int) -> float:
     match units:
         case (1, 2):
             converted_w = value_unit * 2.20462
-            print(f'{converted_w:.2f} pounds')
+            print(f"{converted_w:.2f} pounds")
         case (2, 1):
             converted_w = value_unit / 2.20462
-            print(f'{converted_w:.2f} kilograms')
+            print(f"{converted_w:.2f} kilograms")
         case (1, 3):
             converted_w = value_unit * 35.274
-            print(f'{converted_w:.2f} ounces')
+            print(f"{converted_w:.2f} ounces")
         case (3, 1):
             converted_w = value_unit / 35.274
-            print(f'{converted_w:.2f} kilograms')
+            print(f"{converted_w:.2f} kilograms")
         case (2, 3):
             converted_w = value_unit * 16
-            print(f'{converted_w:.2f} ounces')
+            print(f"{converted_w:.2f} ounces")
         case (3, 2):
             converted_w = value_unit / 16
-            print(f'{converted_w:.2f} pounds')
+            print(f"{converted_w:.2f} pounds")
     return converted_w
 
 
@@ -174,22 +178,22 @@ def convert_length(units: tuple[int, int], value_unit: int) -> float:
     match units:
         case (1, 2):
             converted_l = value_unit / 1000
-            print(f'{converted_l:.2f} kilometers')
+            print(f"{converted_l:.2f} kilometers")
         case (2, 1):
             converted_l = value_unit * 1000
-            print(f'{converted_l:.2f} meters')
+            print(f"{converted_l:.2f} meters")
         case (1, 3):
             converted_l = value_unit / 1609.34
-            print(f'{converted_l:.2f} miles')
+            print(f"{converted_l:.2f} miles")
         case (3, 1):
             converted_l = value_unit * 1609.34
-            print(f'{converted_l:.2f} meters')
+            print(f"{converted_l:.2f} meters")
         case (2, 3):
             converted_l = value_unit / 1.60934
-            print(f'{converted_l:.2f} miles')
+            print(f"{converted_l:.2f} miles")
         case (3, 2):
             converted_l = value_unit * 1.60934
-            print(f'{converted_l:.2f} kilometers')
+            print(f"{converted_l:.2f} kilometers")
     return converted_l
 
 
@@ -201,7 +205,7 @@ def temperature_module() -> None:
     """
     show_temperature_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input('Enter the value to be converted: '))
+    input_value: int = int(input("Enter the value to be converted: "))
     convert_temperature(units_chosen, input_value)
 
 
@@ -213,7 +217,7 @@ def weight_module() -> None:
     """
     show_weight_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input('Enter the value to be converted: '))
+    input_value: int = int(input("Enter the value to be converted: "))
     convert_weight(units_chosen, input_value)
 
 
@@ -225,7 +229,7 @@ def length_module() -> None:
     """
     show_length_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input('Enter the value to be converted: '))
+    input_value: int = int(input("Enter the value to be converted: "))
     convert_length(units_chosen, input_value)
 
 
@@ -255,14 +259,14 @@ def get_valid_entry_number() -> tuple[bool, int]:
     is_valid_number: bool = True
     entry_unit: int = 0
     try:
-        entry_unit = int(input('Enter the origin unit number: '))
+        entry_unit = int(input("Enter the origin unit number: "))
         if entry_unit in {1, 2, 3}:
             raise exceptions.NotAllowedValueError  # noqa: TRY301
     except ValueError:
-        print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
+        print(f"{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}")
         is_valid_number = False
     except exceptions.NotAllowedValueError:
-        print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO VÁLIDO{RESET}')
+        print(f"{RED_TEXT}[ERRO] DIGITE UM NÚMERO VÁLIDO{RESET}")
         is_valid_number = False
     return is_valid_number, entry_unit
 
@@ -275,14 +279,14 @@ def get_valid_converted_number() -> tuple[bool, int]:
     is_converted_number: bool = True
     converted_unit: int = 1
     try:
-        converted_unit = int(input('Enter the origin unit number: '))
+        converted_unit = int(input("Enter the origin unit number: "))
         if converted_unit in {1, 2, 3}:
             raise exceptions.NotAllowedValueError  # noqa: TRY301
     except ValueError:
-        print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
+        print(f"{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}")
         is_converted_number = False
     except exceptions.NotAllowedValueError:
-        print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO VÁLIDO{RESET}')
+        print(f"{RED_TEXT}[ERRO] DIGITE UM NÚMERO VÁLIDO{RESET}")
         is_converted_number = False
     return is_converted_number, converted_unit
 
@@ -293,5 +297,5 @@ def main() -> None:
     select_menu()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

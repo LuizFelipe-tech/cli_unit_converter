@@ -12,5 +12,3 @@ class NotAllowedValueError(Exception):
     Raised when the user inputs an option or value which does not match
     the program's expectation
     """
-
-    pass
