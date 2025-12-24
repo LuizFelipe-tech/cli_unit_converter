@@ -11,6 +11,12 @@ import exceptions
 DOUBLE_ARROW = '\u2194'
 
 
+RED_TEXT = '\x1b[31m'
+
+
+RESET = '\x1b[0m'
+
+
 def show_menu() -> None:
     """Displays the main menu options to the standard output.
 
@@ -38,16 +44,15 @@ def select_menu() -> None:
                     weight_module()
                 case 3:
                     temperature_module()
+                case _:
+                    raise exceptions.NotAllowedValueError  # noqa: TRY301
         except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]
-            print('[ERRO] Opção não existe')
+            print(f'{RED_TEXT}[ERRO] OPÇÃO NÃO EXISTE{RESET}')
         except ValueError:
-            print('[ERRO] Digite um número')
-        except:
-            print('[ERRO] Uma exceção ocorreu')
+            print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
 
 
-# TODO: adicionar cores e TRY method
-def get_temperature_units() -> tuple[int, int]:
+def show_temperature_units() -> None:
     """Prompts the user to select the source and target units for temperature.
 
     Returns:
@@ -60,13 +65,9 @@ def get_temperature_units() -> tuple[int, int]:
     print('1. Fahrenheit')
     print('2. Celsius')
     print('3. Kelvin')
-    entry_unit: int = int(input('Enter the origin unit number: '))
-    conversion_unit: int = int(input('Enter the converted unit: '))
-    return entry_unit, conversion_unit
 
 
-# TODO: adicionar cores e TRY method
-def get_weight_units() -> tuple[int, int]:
+def show_weight_units() -> None:
     """Prompts the user to select the source and target units for weight.
 
     Returns:
@@ -79,13 +80,10 @@ def get_weight_units() -> tuple[int, int]:
     print('1. Kilograms')
     print('2. Pounds')
     print('3. Ounces')
-    entry_unit: int = int(input('Enter the origin unit number: '))
-    conversion_unit: int = int(input('Enter the converted unit: '))
-    return entry_unit, conversion_unit
 
 
 # TODO: adicionar cores e TRY method
-def get_length_units() -> tuple[int, int]:
+def show_length_units() -> None:
     """Prompts the user to select the source and target units for length.
 
     Returns:
@@ -98,9 +96,6 @@ def get_length_units() -> tuple[int, int]:
     print('1. Meters')
     print('2. Kilometers')
     print('3. Miles')
-    entry_unit: int = int(input('Enter the origin unit number: '))
-    conversion_unit: int = int(input('Enter the converted unit: '))
-    return entry_unit, conversion_unit
 
 
 def convert_temperature(units: tuple[int, int], value_unit: int) -> float:
@@ -203,7 +198,8 @@ def temperature_module() -> None:
     This function manages the sequence of getting units, asking for the value,
      performing the conversion, and displaying the result.
     """
-    units_chosen: tuple[int, int] = get_temperature_units()
+    show_temperature_units()
+    units_chosen: tuple[int, int] = request_units_number()
     input_value: int = int(input('Enter the value to be converted: '))
     convert_temperature(units_chosen, input_value)
 
@@ -214,7 +210,8 @@ def weight_module() -> None:
     This function manages the sequence of getting units, asking for the value,
      performing the conversion, and displaying the result.
     """
-    units_chosen = get_weight_units()
+    show_weight_units()
+    units_chosen: tuple[int, int] = request_units_number()
     input_value: int = int(input('Enter the value to be converted: '))
     convert_weight(units_chosen, input_value)
 
@@ -225,9 +222,44 @@ def length_module() -> None:
     This function manages the sequence of getting units, asking for the value,
      performing the conversion, and displaying the result.
     """
-    units_chosen = get_length_units()
+    show_length_units()
+    units_chosen: tuple[int, int] = request_units_number()
     input_value: int = int(input('Enter the value to be converted: '))
     convert_length(units_chosen, input_value)
+
+
+def request_units_number() -> tuple[int, int]:
+    """Request the units number.
+
+    Inputs the user to type a valid unit number.
+    """
+    while True:
+        entry_unit = input('Enter the origin unit number: ')
+        if entry_unit in {'1', '2', '3'}:
+            try:
+                entry_unit = int(entry_unit)
+            except ValueError:
+                print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
+
+            if entry_unit not in {1, 2, 3}:
+                raise exceptions.NotAllowedValueError  # noqa: TRY301
+        except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]
+            print(f'{RED_TEXT}[ERRO] OPÇÃO NÃO EXISTE{RESET}')
+
+        else:
+            break
+    while True:
+        try:
+            conversion_unit: int = int(input('Enter the conversion unit number: '))
+            if conversion_unit not in {1, 2, 3}:
+                raise exceptions.NotAllowedValueError  # noqa: TRY301
+        except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]
+            print(f'{RED_TEXT}[ERRO] OPÇÃO NÃO EXISTE{RESET}')
+        except ValueError:
+            print(f'{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}')
+        else:
+            break
+    return entry_unit, conversion_unit
 
 
 def main() -> None:
