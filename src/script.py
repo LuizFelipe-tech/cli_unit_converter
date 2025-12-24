@@ -28,6 +28,8 @@ def select_menu() -> None:
     """
     selected_conversor: int = int(input('Enter the number for the selected option: '))
     match selected_conversor:
+        case 2:
+            weight_module()
         case 3:
             temperature_module()
         case _:
@@ -47,6 +49,24 @@ def get_temperature_units() -> tuple[int, int]:
     print('1. Fahrenheit')
     print('2. Celsius')
     print('3. Kelvin')
+    entry_unit: int = int(input('Enter the origin unit number: '))
+    conversion_unit: int = int(input('Enter the converted unit: '))
+    return entry_unit, conversion_unit
+
+
+def get_weight_units() -> tuple[int, int]:
+    """Prompts the user to select the source and target units for weight.
+
+    Returns:
+        tuple[int, int]: A tuple containing two integers:
+            - The first integer represents the source unit ID.
+            - The second integer represents the target unit ID.
+    """
+    print('--- Weight Conversor selected ---')
+    print('Available units below')
+    print('1. Kilograms')
+    print('2. Pounds')
+    print('3. Ounces')
     entry_unit: int = int(input('Enter the origin unit number: '))
     conversion_unit: int = int(input('Enter the converted unit: '))
     return entry_unit, conversion_unit
@@ -88,6 +108,35 @@ def convert_temperature(units: tuple[int, int], value_unit: int) -> float:
     return converted_t
 
 
+def convert_weight(units: tuple[int, int], value_unit: int) -> float:
+    """Performs weight conversion based on the selected units and value.
+
+    Returns:
+          float: The converted weight value.
+    """
+    converted_w: float = 0.0
+    match units:
+        case (1, 2):
+            converted_w = value_unit * 2.20462
+            print(f'{converted_w:.2f} pounds')
+        case (2, 1):
+            converted_w = value_unit / 2.20462
+            print(f'{converted_w:.2f} kilograms')
+        case (1, 3):
+            converted_w = value_unit * 35.274
+            print(f'{converted_w:.2f} ounces')
+        case (3, 1):
+            converted_w = value_unit / 35.274
+            print(f'{converted_w:.2f} kilograms')
+        case (2, 3):
+            converted_w = value_unit * 16
+            print(f'{converted_w:.2f} ounces')
+        case (3, 2):
+            converted_w = value_unit / 16
+            print(f'{converted_w:.2f} pounds')
+    return converted_w
+
+
 def temperature_module() -> None:
     """Orchestrates the temperature conversion workflow.
 
@@ -97,6 +146,17 @@ def temperature_module() -> None:
     units_chosen: tuple[int, int] = get_temperature_units()
     input_value: int = int(input('Enter the value to be converted: '))
     convert_temperature(units_chosen, input_value)
+
+
+def weight_module() -> None:
+    """Orchestrates the weight conversion workflow.
+
+    This function manages the sequence of getting units, asking for the value,
+     performing the conversion, and displaying the result.
+    """
+    units_chosen = get_weight_units()
+    input_value: int = int(input('Enter the value to be converted: '))
+    convert_weight(units_chosen, input_value)
 
 
 def main() -> None:
