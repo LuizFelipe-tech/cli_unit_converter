@@ -67,6 +67,7 @@ ignore = [
     "ANN102",
     "ANN204",
     "TRY003",
+    "TRY301",
     "EM101",
     "EM102",
     "T201",
@@ -74,7 +75,8 @@ ignore = [
     "TD002",
     "FIX002",
     "CPY",
-    "DOC501"
+    "DOC501",
+    "Q000",
 ]
 
 [tool.ruff.lint.mccabe]
