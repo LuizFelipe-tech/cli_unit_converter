@@ -13,7 +13,6 @@ dependencies = []
 
 # --- Setuptools configuration for package discovery. ---
 [tool.setuptools.packages.find]
-where = ["src"]
 namespaces = false
 exclude = [
     ".bzr",
@@ -134,7 +133,6 @@ exclude = ["tests"]
 [tool.pyright]
 typeCheckingMode = "strict"        # Align with Mypy strictness.
 pythonVersion = "3.10"
-include = ["src"]
 exclude = ["**/__pycache__", "tests", "**/.*"] # Ignore cache and dotfiles.
 
 # --- Alignment with Google Style Guide ---
