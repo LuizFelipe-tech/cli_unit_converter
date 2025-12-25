@@ -193,7 +193,7 @@ def temperature_module() -> None:
     """
     show_temperature_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input("Enter the value to be converted: "))
+    input_value: int = int(input('Enter the source unit ID: '))
     convert_temperature(units_chosen, input_value)
 
 
