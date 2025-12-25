@@ -26,26 +26,31 @@ def show_menu() -> None:
 
 
 def select_menu() -> None:
-    """Handles the user's menu selection.
+    """Processes the menu selection.
 
-    Prompts the user to enter an option number and executes the corresponding logic.
+    Asks for an option number and runs the corresponding conversion logic. Handles
+    invalid inputs internally by catching exceptions and printing error messages.
     """
     while True:
         try:
-            selected_conversor: int = int(input("Enter the number for the selected option: "))
-            match selected_conversor:
-                case 1:
-                    length_module()
-                case 2:
-                    weight_module()
-                case 3:
-                    temperature_module()
-                case _:
-                    raise exceptions.NotAllowedValueError  # noqa: TRY301
-        except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]
-            print(f"{RED_TEXT}[ERRO] OPÇÃO NÃO EXISTE{RESET}")
+            selected_conversor: int = int(input('Enter the number for the selected option: '))
+            if selected_conversor not in {1, 2, 3}:
+                raise exceptions.NotAllowedValueError
+        except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]  # noqa: PERF203
+            print(f'{RED_TEXT}[ERROR] PLEASE ENTER A VALID NUMBER{RESET}')
         except ValueError:
-            print(f"{RED_TEXT}[ERRO] DIGITE UM NÚMERO{RESET}")
+            print(f'{RED_TEXT}[ERROR] PLEASE ENTER A NUMBER{RESET}')
+        else:
+            break
+    match selected_conversor:
+        case 1:
+            length_module()
+        case 2:
+            weight_module()
+        case 3:
+            temperature_module()
+        case 4:
+            print('Exiting the program...')
 
 
 def show_temperature_units() -> None:
@@ -256,7 +261,7 @@ def get_valid_entry_number() -> tuple[bool, int]:
     try:
         entry_unit = int(input('Enter the origin unit number: '))
         if entry_unit in {1, 2, 3}:
-            raise exceptions.NotAllowedValueError  # noqa: TRY301
+            raise exceptions.NotAllowedValueError
     except ValueError:
         print(f'{RED_TEXT}[ERROR] PLEASE ENTER A NUMBER{RESET}')
         is_valid_number = False
@@ -279,7 +284,7 @@ def get_valid_converted_number() -> tuple[bool, int]:
     try:
         converted_unit = int(input('Enter the origin unit number: '))
         if converted_unit in {1, 2, 3}:
-            raise exceptions.NotAllowedValueError  # noqa: TRY301
+            raise exceptions.NotAllowedValueError
     except ValueError:
         print(f'{RED_TEXT}[ERRO] PLEASE ENTER A NUMBER{RESET}')
         is_converted_number = False
