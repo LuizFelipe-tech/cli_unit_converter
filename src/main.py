@@ -32,11 +32,14 @@ def display_main_menu() -> None:
     print('5. Exit')
 
 
-def process_menu_selection() -> None:
-    """Processes the menu selection.
+def get_menu_option() -> int:
+    """Gets a valid menu option.
 
-    Asks for an option number and runs the corresponding conversion logic. Handles
-    invalid inputs internally by catching exceptions and printing error messages.
+    Loops until valid inputs are received for both the entry unit and the
+    target unit.
+
+    Returns:
+        A valid menu option (int)
     """
     while True:
         try:
@@ -49,7 +52,17 @@ def process_menu_selection() -> None:
             print(f'{RED_TEXT}[ERROR] PLEASE ENTER A NUMBER{RESET}')
         else:
             break
-    match selected_option:
+    return selected_option
+
+
+def process_menu_selection() -> None:
+    """Processes the menu selection.
+
+    Runs the corresponding conversion logic. Handles
+    invalid inputs internally by catching exceptions and printing error messages.
+    """
+    valid_option: int = get_menu_option()
+    match valid_option:
         case 1:
             handle_length_conversion()
         case 2:
