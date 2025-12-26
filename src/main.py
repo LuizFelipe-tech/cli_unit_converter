@@ -1,7 +1,7 @@
 """CLI Unit Converter.
 
 Converts units of measurement using a command-line interface. Supports conversion
-between different systems for length, weight, and temperature.
+between different systems for length, weight and temperature.
 """
 
 from __future__ import annotations
@@ -131,17 +131,13 @@ def temperature_conversion(units: tuple[int, int], value_unit: float) -> float:
             # Kelvin to Fahrenheit.
             converted_t = (value_unit - 273.15) * (9 / 5) + 32
             print(
-                f'{converted_t:.2f} {
-                "Kelvins" if converted_t != 1 and converted_t != 0 else "Kelvin"
-                }'
+                f'{converted_t:.2f} {"Kelvins" if converted_t not in {1, 0} else "Kelvin"}',
             )
         case (2, 3):
             # Celsius to Kelvin.
             converted_t = value_unit + 273.15
             print(
-                f'{converted_t:.2f} {
-                "Kelvins" if converted_t != 1 and converted_t != 0 else "Kelvin"
-                }'
+                f'{converted_t:.2f} {"Kelvins" if converted_t not in {1, 0} else "Kelvin"}',
             )
         case (3, 2):
             # Kelvin to Celsius.
@@ -220,7 +216,7 @@ def length_conversion(units: tuple[int, int], value_unit: float) -> float:
     return converted_l
 
 
-def pressure_conversion(units: tuple[int, int], value_unit:float) -> float:
+def pressure_conversion(units: tuple[int, int], value_unit: float) -> float:
     """Performs pressure conversion based on the selected units and value.
 
     Args:
@@ -243,11 +239,11 @@ def pressure_conversion(units: tuple[int, int], value_unit:float) -> float:
             print(f'{converted_p:.2f} Pascal')
         case (1, 3):
             # Pascal to Bar
-            converted_p = value_unit * 100000
+            converted_p = value_unit / 100000
             print(f'{converted_p:.2f} Bar')
         case (3, 1):
             # Bar to Pascal
-            converted_p = value_unit / 100000
+            converted_p = value_unit * 100000
             print(f'{converted_p:.2f} Pascal')
         case (2, 3):
             # Atmosphere to Bar

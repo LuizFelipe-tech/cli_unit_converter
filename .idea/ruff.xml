@@ -3,6 +3,7 @@
   <component name="RuffConfigService">
     <option name="alwaysUseGlobalRuff" value="true" />
     <option name="enableRuffLogging" value="true" />
+    <option name="globalRuffExecutablePath" value="C:\Users\luizf\.local\bin\ruff.exe" />
     <option name="runRuffOnSave" value="true" />
     <option name="useRuffServer" value="true" />
   </component>
