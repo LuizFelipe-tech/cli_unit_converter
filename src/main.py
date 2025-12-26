@@ -118,27 +118,35 @@ def temperature_conversion(units: tuple[int, int], value_unit: float) -> float:
         case (1, 2):
             # Fahrenheit to Celsius option.
             converted_t = (5 / 9) * (value_unit - 32)
-            print(f'{converted_t:.2f} degrees Celsius')
+            print(f'{converted_t:.2f} {"degrees" if converted_t != 1 else "degree"} Celsius')
         case (2, 1):
             # Celsius to Fahrenheit option.
             converted_t = value_unit * (9 / 5) + 32
-            print(f'{converted_t:.2f} degrees Fahrenheit')
+            print(f'{converted_t:.2f} {"degrees" if converted_t != 1 else "degree"} Fahrenheit')
         case (1, 3):
             # Fahrenheit to Kelvin.
             converted_t = (value_unit - 32) * (5 / 9) + 273.15
-            print(f'{converted_t:.2f} Kelvin')
+            print(f'{converted_t:.2f} {"Kelvins" if converted_t != 1 else "Kelvin"}')
         case (3, 1):
             # Kelvin to Fahrenheit.
             converted_t = (value_unit - 273.15) * (9 / 5) + 32
-            print(f'{converted_t:.2f} degrees Fahrenheit')
+            print(
+                f'{converted_t:.2f} {
+                "Kelvins" if converted_t != 1 and converted_t != 0 else "Kelvin"
+                }'
+            )
         case (2, 3):
             # Celsius to Kelvin.
             converted_t = value_unit + 273.15
-            print(f'{converted_t:.2f} Kelvin')
+            print(
+                f'{converted_t:.2f} {
+                "Kelvins" if converted_t != 1 and converted_t != 0 else "Kelvin"
+                }'
+            )
         case (3, 2):
             # Kelvin to Celsius.
             converted_t = value_unit - 273.15
-            print(f'{converted_t:.2f} degrees Celsius')
+            print(f'{converted_t:.2f} {"degrees" if converted_t != 1 else "degree"} Celsius')
         case _:
             return 0.0
     return converted_t
