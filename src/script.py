@@ -37,8 +37,8 @@ def process_menu_selection() -> None:
     """
     while True:
         try:
-            selected_conversor: int = int(input('Enter the number for the selected option: '))
-            if selected_conversor not in {1, 2, 3}:
+            selected_option: int = int(input('Enter the number for the selected option: '))
+            if selected_option not in {1, 2, 3, 4}:
                 raise exceptions.NotAllowedValueError
         except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]  # noqa: PERF203
             print(f'{RED_TEXT}[ERROR] PLEASE ENTER A VALID NUMBER{RESET}')
@@ -54,7 +54,8 @@ def process_menu_selection() -> None:
         case 3:
             handle_temperature_conversion()
         case 4:
-            print('Exiting the program...')
+            print(f'{YELLOW_TEXT}Exiting the program...{RESET}')
+            sys.exit(0)
 
 
 def display_temperature_units() -> None:
@@ -306,9 +307,11 @@ def get_valid_converted_number() -> tuple[bool, int]:
 
 def main() -> None:
     """Main entry point of the application."""
+    print(f'{GREEN_TEXT}Welcome to the CLI Unit Conversor{RESET}')
     display_main_menu()
     process_menu_selection()
 
 
 if __name__ == '__main__':
-    main()
+    while True:
+        main()
