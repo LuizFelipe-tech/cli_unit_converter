@@ -305,6 +305,7 @@ def get_valid_converted_number() -> tuple[bool, int]:
 
 def main() -> None:
     """Main entry point of the application."""
+    print()
     print(f'{GREEN_TEXT}Welcome to the CLI Unit Conversor{RESET}')
     display_main_menu()
     process_menu_selection()
