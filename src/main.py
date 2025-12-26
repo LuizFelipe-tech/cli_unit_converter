@@ -263,7 +263,6 @@ def get_valid_entry_number() -> tuple[bool, int]:
     Returns:
         A tuple containing a validity flag (bool) and the unit ID (int).
     """
-    is_valid_number: bool = True
     entry_unit: int = 0
     try:
         entry_unit = int(input('Enter the origin unit number: '))
@@ -288,7 +287,6 @@ def get_valid_converted_number() -> tuple[bool, int]:
     Returns:
         A tuple containing a validity flag (bool) and the unit ID (int).
     """
-    is_valid_number: bool = True
     converted_unit: int = 1
     try:
         converted_unit = int(input('Enter the converted unit number: '))
