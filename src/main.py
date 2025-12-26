@@ -23,6 +23,7 @@ RESET = '\x1b[0m'
 
 def display_main_menu() -> None:
     """Displays the main menu options to the standard output."""
+    print()
     print(f'1. Length (Meters {BIDIRECTIONAL_ARROW} Kilometers {BIDIRECTIONAL_ARROW} Miles)')
     print(f'2. Weight (Kilograms {BIDIRECTIONAL_ARROW} Pound {BIDIRECTIONAL_ARROW} Ounces)')
     print(f'3. Temperature (Celsius {BIDIRECTIONAL_ARROW} Fahrenheit {BIDIRECTIONAL_ARROW} Kelvin)')
@@ -333,7 +334,7 @@ def get_valid_number(is_entry: bool) -> tuple[bool, int]:
     try:
         number = int(
             input(
-                'Enter the origin unit number:' if is_entry else 'Enter the converted unit number: '
+                'Enter the origin unit number: ' if is_entry else 'Enter the converted unit number: '
             )
         )
         if number not in {1, 2, 3}:
@@ -351,7 +352,6 @@ def get_valid_number(is_entry: bool) -> tuple[bool, int]:
 
 def main() -> None:
     """Main entry point of the application."""
-    print()
     print(f'{GREEN_TEXT}Welcome to the CLI Unit Conversor{RESET}')
     while True:
         display_main_menu()
