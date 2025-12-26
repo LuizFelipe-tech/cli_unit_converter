@@ -88,7 +88,7 @@ def display_length_units() -> None:
     print('3. Miles')
 
 
-def temperature_conversion(units: tuple[int, int], value_unit: int) -> float:
+def temperature_conversion(units: tuple[int, int], value_unit: float) -> float:
     """Performs temperature conversion based on the selected units and value.
 
     Args:
@@ -122,14 +122,15 @@ def temperature_conversion(units: tuple[int, int], value_unit: int) -> float:
             converted_t = value_unit + 273.15
             print(f'{converted_t:.2f} Kelvin')
         case (3, 2):
-            converted_t = (value_unit - 273.15) * (9 / 5) + 32
+            # Kelvin to Celsius.
+            converted_t = value_unit - 273.15
             print(f'{converted_t:.2f} degrees Celsius')
         case _:
             return 0.0
     return converted_t
 
 
-def weight_conversion(units: tuple[int, int], value_unit: int) -> float:
+def weight_conversion(units: tuple[int, int], value_unit: float) -> float:
     """Performs weight conversion based on the selected units and value.
 
     Args:
@@ -163,7 +164,7 @@ def weight_conversion(units: tuple[int, int], value_unit: int) -> float:
     return converted_w
 
 
-def length_conversion(units: tuple[int, int], value_unit: int) -> float:
+def length_conversion(units: tuple[int, int], value_unit: float) -> float:
     """Performs length conversion based on the selected units and value.
 
     Args:
@@ -205,7 +206,7 @@ def handle_temperature_conversion() -> None:
     """
     display_temperature_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input('Enter the number to be converted: '))
+    input_value: float = float(input('Enter the number to be converted: '))
     temperature_conversion(units_chosen, input_value)
 
 
@@ -217,7 +218,7 @@ def handle_weight_conversion() -> None:
     """
     display_weight_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input('Enter the number to be converted: '))
+    input_value: float = float(input('Enter the number to be converted: '))
     weight_conversion(units_chosen, input_value)
 
 
@@ -229,7 +230,7 @@ def handle_length_conversion() -> None:
     """
     display_length_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input('Enter the number to be converted: '))
+    input_value: float = float(input('Enter the number to be converted: '))
     length_conversion(units_chosen, input_value)
 
 
@@ -243,31 +244,33 @@ def request_units_number() -> tuple[int, int]:
       A tuple containing two integers: (valid_entry_number, valid_converted_number).
     """
     while True:
-        is_valid_number, valid_entry_number = get_valid_entry_number()
+        is_valid_number, valid_entry_number = get_valid_number(True)
         if is_valid_number:
             break
         continue
     while True:
-        is_valid_number, valid_converted_number = get_valid_converted_number()
+        is_valid_number, valid_converted_number = get_valid_number(False)
         if is_valid_number:
             break
         continue
     return valid_entry_number, valid_converted_number
 
 
-def get_valid_entry_number() -> tuple[bool, int]:
-    """Gets a valid source unit ID from user input.
+def get_valid_number(is_entry: bool) -> tuple[bool, int]:
+    """Gets a valid unit ID from user input.
 
     Validates that the user input corresponds to an available unit option.
 
     Returns:
         A tuple containing a validity flag (bool) and the unit ID (int).
     """
-    entry_unit: int = 0
+    number: int = 0
     try:
-        entry_unit = int(input('Enter the origin unit number: '))
-        if entry_unit not in {1, 2, 3}:
-            raise exceptions.NotAllowedValueError
+        number = int(
+            input(
+                'Enter the origin unit number:' if is_entry else 'Enter the converted unit number: '
+            )
+        )
     except ValueError:
         print(f'{RED_TEXT}[ERROR] PLEASE ENTER A NUMBER{RESET}')
         is_valid_number = False
@@ -276,41 +279,17 @@ def get_valid_entry_number() -> tuple[bool, int]:
         is_valid_number = False
     else:
         is_valid_number = True
-    return is_valid_number, entry_unit
-
-
-def get_valid_converted_number() -> tuple[bool, int]:
-    """Gets a valid target unit ID from user input.
-
-    Validates that the user input corresponds to an available unit option.
-
-    Returns:
-        A tuple containing a validity flag (bool) and the unit ID (int).
-    """
-    converted_unit: int = 1
-    try:
-        converted_unit = int(input('Enter the converted unit number: '))
-        if converted_unit not in {1, 2, 3}:
-            raise exceptions.NotAllowedValueError
-    except ValueError:
-        print(f'{RED_TEXT}[ERRO] PLEASE ENTER A NUMBER{RESET}')
-        is_valid_number = False
-    except exceptions.NotAllowedValueError:
-        print(f'{RED_TEXT}[ERRO] PLEASE ENTER A VALID NUMBER{RESET}')
-        is_valid_number = False
-    else:
-        is_valid_number = True
-    return is_valid_number, converted_unit
+    return is_valid_number, number
 
 
 def main() -> None:
     """Main entry point of the application."""
     print()
     print(f'{GREEN_TEXT}Welcome to the CLI Unit Conversor{RESET}')
-    display_main_menu()
-    process_menu_selection()
+    while True:
+        display_main_menu()
+        process_menu_selection()
 
 
 if __name__ == '__main__':
-    while True:
-        main()
+    main()
