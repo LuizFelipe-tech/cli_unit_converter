@@ -266,7 +266,7 @@ def get_valid_entry_number() -> tuple[bool, int]:
     entry_unit: int = 0
     try:
         entry_unit = int(input('Enter the origin unit number: '))
-        if entry_unit in {1, 2, 3}:
+        if entry_unit not in {1, 2, 3}:
             raise exceptions.NotAllowedValueError
     except ValueError:
         print(f'{RED_TEXT}[ERROR] PLEASE ENTER A NUMBER{RESET}')
@@ -274,6 +274,8 @@ def get_valid_entry_number() -> tuple[bool, int]:
     except exceptions.NotAllowedValueError:
         print(f'{RED_TEXT}[ERROR] PLEASE ENTER A VALID NUMBER{RESET}')
         is_valid_number = False
+    else:
+        is_valid_number = True
     return is_valid_number, entry_unit
 
 
@@ -285,19 +287,21 @@ def get_valid_converted_number() -> tuple[bool, int]:
     Returns:
         A tuple containing a validity flag (bool) and the unit ID (int).
     """
-    is_converted_number: bool = True
+    is_valid_number: bool = True
     converted_unit: int = 1
     try:
-        converted_unit = int(input('Enter the origin unit number: '))
-        if converted_unit in {1, 2, 3}:
+        converted_unit = int(input('Enter the converted unit number: '))
+        if converted_unit not in {1, 2, 3}:
             raise exceptions.NotAllowedValueError
     except ValueError:
         print(f'{RED_TEXT}[ERRO] PLEASE ENTER A NUMBER{RESET}')
-        is_converted_number = False
+        is_valid_number = False
     except exceptions.NotAllowedValueError:
         print(f'{RED_TEXT}[ERRO] PLEASE ENTER A VALID NUMBER{RESET}')
-        is_converted_number = False
-    return is_converted_number, converted_unit
+        is_valid_number = False
+    else:
+        is_valid_number = True
+    return is_valid_number, converted_unit
 
 
 def main() -> None:
