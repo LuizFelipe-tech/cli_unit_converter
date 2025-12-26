@@ -6,6 +6,8 @@ between different systems for length, weight, and temperature.
 
 from __future__ import annotations
 
+import sys
+
 import exceptions
 
 DOUBLE_ARROW = '\u2194'
@@ -13,6 +15,9 @@ DOUBLE_ARROW = '\u2194'
 
 RED_TEXT = '\x1b[31m'
 
+GREEN_TEXT = '\x1b[32m'
+
+YELLOW_TEXT = '\033[33m'
 
 RESET = '\x1b[0m'
 
@@ -55,7 +60,8 @@ def select_menu() -> None:
 
 def show_temperature_units() -> None:
     """Displays the available units for temperature conversion."""
-    print('--- Temperature Converter selected ---')
+    print()
+    print(f'{GREEN_TEXT}--- Temperature Converter selected ---{RESET}')
     print('Available units below')
     print('1. Fahrenheit')
     print('2. Celsius')
@@ -64,7 +70,8 @@ def show_temperature_units() -> None:
 
 def show_weight_units() -> None:
     """Displays the available units for weight conversion."""
-    print('--- Weight Converter selected ---')
+    print()
+    print(f'{GREEN_TEXT}--- Weight Converter selected ---{RESET}')
     print('Available units below')
     print('1. Kilograms')
     print('2. Pounds')
@@ -74,7 +81,8 @@ def show_weight_units() -> None:
 # TODO: adicionar cores e TRY method
 def show_length_units() -> None:
     """Displays the available units for length conversion."""
-    print('--- Length Converter selected ---')
+    print()
+    print(f'{GREEN_TEXT}--- Length Converter selected ---{RESET}')
     print('Available units below')
     print('1. Meters')
     print('2. Kilometers')
@@ -198,8 +206,8 @@ def temperature_module() -> None:
     """
     show_temperature_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input('Enter the source unit ID: '))
-    convert_temperature(units_chosen, input_value)
+    input_value: int = int(input('Enter the number to be converted: '))
+    temperature_conversion(units_chosen, input_value)
 
 
 def weight_module() -> None:
@@ -210,8 +218,8 @@ def weight_module() -> None:
     """
     show_weight_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input('Enter the value to be converted: '))
-    convert_weight(units_chosen, input_value)
+    input_value: int = int(input('Enter the number to be converted: '))
+    weight_conversion(units_chosen, input_value)
 
 
 def length_module() -> None:
@@ -222,8 +230,8 @@ def length_module() -> None:
     """
     show_length_units()
     units_chosen: tuple[int, int] = request_units_number()
-    input_value: int = int(input('Enter the value to be converted: '))
-    convert_length(units_chosen, input_value)
+    input_value: int = int(input('Enter the number to be converted: '))
+    length_conversion(units_chosen, input_value)
 
 
 def request_units_number() -> tuple[int, int]:
@@ -296,8 +304,6 @@ def get_valid_converted_number() -> tuple[bool, int]:
 
 def main() -> None:
     """Main entry point of the application."""
-    show_menu()
-    select_menu()
 
 
 if __name__ == '__main__':
