@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import sys
 
+import enums
 import exceptions
 
 BIDIRECTIONAL_ARROW = '\u2194'
@@ -314,19 +315,19 @@ def request_units_number() -> tuple[int, int]:
       A tuple containing two integers: (valid_entry_number, valid_converted_number).
     """
     while True:
-        is_valid_number, valid_entry_number = get_valid_number(True)
+        is_valid_number, valid_entry_number = get_valid_number(enums.NumberUsedFor(1))
         if is_valid_number:
             break
         continue
     while True:
-        is_valid_number, valid_converted_number = get_valid_number(False)
+        is_valid_number, valid_converted_number = get_valid_number(enums.NumberUsedFor(2))
         if is_valid_number:
             break
         continue
     return valid_entry_number, valid_converted_number
 
 
-def get_valid_number(is_entry: bool) -> tuple[bool, int]:
+def get_valid_number(unit_indicator: enums.NumberUsedFor) -> tuple[bool, int]:
     """Gets a valid unit ID from user input.
 
     Validates that the user input corresponds to an available unit option.
@@ -338,9 +339,10 @@ def get_valid_number(is_entry: bool) -> tuple[bool, int]:
     try:
         number = int(
             input(
-                'Enter the origin unit number: ' if is_entry
-                else 'Enter the converted unit number: '
-            )
+                'Enter the origin unit number: '
+                if unit_indicator == enums.NumberUsedFor.entry_input
+                else 'Enter the converted unit number: ',
+            ),
         )
         if number not in {1, 2, 3}:
             raise exceptions.NotAllowedValueError
