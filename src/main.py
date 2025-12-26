@@ -26,7 +26,8 @@ def display_main_menu() -> None:
     print(f'1. Length (Meters {BIDIRECTIONAL_ARROW} Kilometers {BIDIRECTIONAL_ARROW} Miles)')
     print(f'2. Weight (Kilograms {BIDIRECTIONAL_ARROW} Pound {BIDIRECTIONAL_ARROW} Ounces)')
     print(f'3. Temperature (Celsius {BIDIRECTIONAL_ARROW} Fahrenheit {BIDIRECTIONAL_ARROW} Kelvin)')
-    print('4. Exit')
+    print(f'4. Pressure (Pascal {BIDIRECTIONAL_ARROW} Atmosphere {BIDIRECTIONAL_ARROW} Bar)')
+    print('5. Exit')
 
 
 def process_menu_selection() -> None:
@@ -38,7 +39,7 @@ def process_menu_selection() -> None:
     while True:
         try:
             selected_option: int = int(input('Enter the number for the selected option: '))
-            if selected_option not in {1, 2, 3, 4}:
+            if selected_option not in {1, 2, 3, 4, 5}:
                 raise exceptions.NotAllowedValueError
         except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]  # noqa: PERF203
             print(f'{RED_TEXT}[ERROR] PLEASE ENTER A VALID NUMBER{RESET}')
@@ -54,6 +55,8 @@ def process_menu_selection() -> None:
         case 3:
             handle_temperature_conversion()
         case 4:
+            handle_pressure_conversion()
+        case 5:
             print(f'{YELLOW_TEXT}Exiting the program...{RESET}')
             sys.exit(0)
 
@@ -86,6 +89,16 @@ def display_length_units() -> None:
     print('1. Meters')
     print('2. Kilometers')
     print('3. Miles')
+
+
+def display_pressure_units() -> None:
+    """Displays the available units for pressure conversion."""
+    print()
+    print(f'{GREEN_TEXT}--- Pressure Converter selected ---{RESET}')
+    print('Available units below')
+    print('1. Pascal')
+    print('2. Atmosphere')
+    print('3. Bar')
 
 
 def temperature_conversion(units: tuple[int, int], value_unit: float) -> float:
@@ -198,6 +211,46 @@ def length_conversion(units: tuple[int, int], value_unit: float) -> float:
     return converted_l
 
 
+def pressure_conversion(units: tuple[int, int], value_unit:float) -> float:
+    """Performs pressure conversion based on the selected units and value.
+
+    Args:
+      units: A tuple containing two integers (source_unit, target_unit).
+      value_unit: The numerical value to be converted.
+
+    Returns:
+      The converted pressure value as a float. Returns 0.0 if the unit
+      combination is not matched.
+    """
+    converted_p: float = 0.0
+    match units:
+        case (1, 2):
+            # Pascal to Atmosphere
+            converted_p = value_unit / 101325
+            print(f'{converted_p:.2f} Atmosphere')
+        case (2, 1):
+            # Atmosphere to Pascal
+            converted_p = value_unit * 101325
+            print(f'{converted_p:.2f} Pascal')
+        case (1, 3):
+            # Pascal to Bar
+            converted_p = value_unit * 100000
+            print(f'{converted_p:.2f} Bar')
+        case (3, 1):
+            # Bar to Pascal
+            converted_p = value_unit / 100000
+            print(f'{converted_p:.2f} Pascal')
+        case (2, 3):
+            # Atmosphere to Bar
+            converted_p = value_unit * 1.01325
+            print(f'{converted_p:.2f} Bar')
+        case (3, 2):
+            # Bar to Atmosphere
+            converted_p = value_unit * 0.98692
+            print(f'{converted_p:.2f} Atmosphere')
+    return converted_p
+
+
 def handle_temperature_conversion() -> None:
     """Orchestrates the temperature conversion workflow.
 
@@ -232,6 +285,18 @@ def handle_length_conversion() -> None:
     units_chosen: tuple[int, int] = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
     length_conversion(units_chosen, input_value)
+
+
+def handle_pressure_conversion() -> None:
+    """Orchestrates the pressure conversion workflow.
+
+    Manages the sequence of displaying units, requesting user input for units
+    and values, performing the conversion, and displaying the result.
+    """
+    display_pressure_units()
+    units_chosen: tuple[int, int] = request_units_number()
+    input_value: float = float(input('Enter the number to be converted: '))
+    pressure_conversion(units_chosen, input_value)
 
 
 def request_units_number() -> tuple[int, int]:
