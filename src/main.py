@@ -334,7 +334,8 @@ def get_valid_number(is_entry: bool) -> tuple[bool, int]:
     try:
         number = int(
             input(
-                'Enter the origin unit number: ' if is_entry else 'Enter the converted unit number: '
+                'Enter the origin unit number: ' if is_entry
+                else 'Enter the converted unit number: '
             )
         )
         if number not in {1, 2, 3}:
