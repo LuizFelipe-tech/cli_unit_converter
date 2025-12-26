@@ -11,6 +11,8 @@ import sys
 import enums
 import exceptions
 
+__version__ = '1.0.0'
+
 BIDIRECTIONAL_ARROW = '\u2194'
 
 RED_TEXT = '\x1b[31m'

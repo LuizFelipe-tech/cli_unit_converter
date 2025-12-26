@@ -1,9 +1,6 @@
-.idea/
-.ruff_cache/
-.mypy_cache/
-venv/
-.venv/
-dist/
-build/
-*.txt
-.output.txt
+.idea
+config
+styles
+.vale.ini
+.vale.ignore
+pyproject.toml

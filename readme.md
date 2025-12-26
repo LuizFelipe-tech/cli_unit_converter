@@ -1,5 +1,6 @@
 # 🔄 CLI Unit Converter
 
+![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Code Style](https://img.shields.io/badge/Code%20Style-PEP8-green?style=for-the-badge)](https://peps.python.org/pep-0008/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
@@ -9,7 +10,8 @@ measurement. Built with modern Python, emphasizing clean code, type safety, and 
 
 ## 📖 Overview
 
-This project provides a fast and reliable way to convert units across four major categories: **Length, Weight, Temperature, and Pressure**. It features a bidirectional conversion logic and an
+This project provides a fast and reliable way to convert units across four major categories: *
+*Length, Weight, Temperature, and Pressure**. It features a bidirectional conversion logic and an
 intuitive text-based interface enhanced with ANSI color codes for better readability.
 
 ## ✨ Key Features
@@ -65,4 +67,8 @@ cli-unit-converter/
 │   └── exceptions.py # Custom exception classes
 ├── LICENSE           # MIT License
 └── README.md         # Project documentation
+```
 
+## 📜 Changelog
+
+Please see [changelog.md](changelog.md) for more information on what has changed recently.
