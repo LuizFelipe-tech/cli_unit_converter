@@ -20,6 +20,12 @@ YELLOW_TEXT = '\033[33m'
 
 RESET = '\x1b[0m'
 
+UNIT_OPTIONS = {
+    1: 'Length',
+    2: 'Weight',
+    3: 'Temperature',
+}
+
 
 def display_main_menu() -> None:
     """Displays the main menu options to the standard output."""
@@ -38,7 +44,7 @@ def process_menu_selection() -> None:
     while True:
         try:
             selected_option: int = int(input('Enter the number for the selected option: '))
-            if selected_option not in {1, 2, 3, 4}:
+            if selected_option not in UNIT_OPTIONS.keys() | {4}:
                 raise exceptions.NotAllowedValueError
         except exceptions.NotAllowedValueError:  # type: ignore[misc,unused-ignore]  # noqa: PERF203
             print(f'{RED_TEXT}[ERROR] PLEASE ENTER A VALID NUMBER{RESET}')
@@ -271,6 +277,8 @@ def get_valid_number(is_entry: bool) -> tuple[bool, int]:
                 'Enter the origin unit number:' if is_entry else 'Enter the converted unit number: '
             )
         )
+        if number not in UNIT_OPTIONS.keys():
+            raise exceptions.NotAllowedValueError
     except ValueError:
         print(f'{RED_TEXT}[ERROR] PLEASE ENTER A NUMBER{RESET}')
         is_valid_number = False
