@@ -10,8 +10,7 @@ import sys
 
 import exceptions
 
-DOUBLE_ARROW = '\u2194'
-
+BIDIRECTIONAL_ARROW = '\u2194'
 
 RED_TEXT = '\x1b[31m'
 
@@ -22,15 +21,15 @@ YELLOW_TEXT = '\033[33m'
 RESET = '\x1b[0m'
 
 
-def show_menu() -> None:
+def display_main_menu() -> None:
     """Displays the main menu options to the standard output."""
-    print(f'1. Length (Meters {DOUBLE_ARROW} Kilometers {DOUBLE_ARROW} Miles)')
-    print(f'2. Weight (Kilograms {DOUBLE_ARROW} Pound {DOUBLE_ARROW} Ounces)')
-    print(f'3. Temperature (Celsius {DOUBLE_ARROW} Fahrenheit {DOUBLE_ARROW} Kelvin)')
+    print(f'1. Length (Meters {BIDIRECTIONAL_ARROW} Kilometers {BIDIRECTIONAL_ARROW} Miles)')
+    print(f'2. Weight (Kilograms {BIDIRECTIONAL_ARROW} Pound {BIDIRECTIONAL_ARROW} Ounces)')
+    print(f'3. Temperature (Celsius {BIDIRECTIONAL_ARROW} Fahrenheit {BIDIRECTIONAL_ARROW} Kelvin)')
     print('4. Exit')
 
 
-def select_menu() -> None:
+def process_menu_selection() -> None:
     """Processes the menu selection.
 
     Asks for an option number and runs the corresponding conversion logic. Handles
@@ -47,18 +46,18 @@ def select_menu() -> None:
             print(f'{RED_TEXT}[ERROR] PLEASE ENTER A NUMBER{RESET}')
         else:
             break
-    match selected_conversor:
+    match selected_option:
         case 1:
-            length_module()
+            handle_length_conversion()
         case 2:
-            weight_module()
+            handle_weight_conversion()
         case 3:
-            temperature_module()
+            handle_temperature_conversion()
         case 4:
             print('Exiting the program...')
 
 
-def show_temperature_units() -> None:
+def display_temperature_units() -> None:
     """Displays the available units for temperature conversion."""
     print()
     print(f'{GREEN_TEXT}--- Temperature Converter selected ---{RESET}')
@@ -68,7 +67,7 @@ def show_temperature_units() -> None:
     print('3. Kelvin')
 
 
-def show_weight_units() -> None:
+def display_weight_units() -> None:
     """Displays the available units for weight conversion."""
     print()
     print(f'{GREEN_TEXT}--- Weight Converter selected ---{RESET}')
@@ -78,8 +77,7 @@ def show_weight_units() -> None:
     print('3. Ounces')
 
 
-# TODO: adicionar cores e TRY method
-def show_length_units() -> None:
+def display_length_units() -> None:
     """Displays the available units for length conversion."""
     print()
     print(f'{GREEN_TEXT}--- Length Converter selected ---{RESET}')
@@ -89,7 +87,7 @@ def show_length_units() -> None:
     print('3. Miles')
 
 
-def convert_temperature(units: tuple[int, int], value_unit: int) -> float:
+def temperature_conversion(units: tuple[int, int], value_unit: int) -> float:
     """Performs temperature conversion based on the selected units and value.
 
     Args:
@@ -130,7 +128,7 @@ def convert_temperature(units: tuple[int, int], value_unit: int) -> float:
     return converted_t
 
 
-def convert_weight(units: tuple[int, int], value_unit: int) -> float:
+def weight_conversion(units: tuple[int, int], value_unit: int) -> float:
     """Performs weight conversion based on the selected units and value.
 
     Args:
@@ -164,7 +162,7 @@ def convert_weight(units: tuple[int, int], value_unit: int) -> float:
     return converted_w
 
 
-def convert_length(units: tuple[int, int], value_unit: int) -> float:
+def length_conversion(units: tuple[int, int], value_unit: int) -> float:
     """Performs length conversion based on the selected units and value.
 
     Args:
@@ -198,37 +196,37 @@ def convert_length(units: tuple[int, int], value_unit: int) -> float:
     return converted_l
 
 
-def temperature_module() -> None:
+def handle_temperature_conversion() -> None:
     """Orchestrates the temperature conversion workflow.
 
     Manages the sequence of displaying units, requesting user input for units
     and values, performing the conversion, and displaying the result.
     """
-    show_temperature_units()
+    display_temperature_units()
     units_chosen: tuple[int, int] = request_units_number()
     input_value: int = int(input('Enter the number to be converted: '))
     temperature_conversion(units_chosen, input_value)
 
 
-def weight_module() -> None:
+def handle_weight_conversion() -> None:
     """Orchestrates the weight conversion workflow.
 
     Manages the sequence of displaying units, requesting user input for units
     and values, performing the conversion, and displaying the result.
     """
-    show_weight_units()
+    display_weight_units()
     units_chosen: tuple[int, int] = request_units_number()
     input_value: int = int(input('Enter the number to be converted: '))
     weight_conversion(units_chosen, input_value)
 
 
-def length_module() -> None:
+def handle_length_conversion() -> None:
     """Orchestrates the length conversion workflow.
 
     Manages the sequence of displaying units, requesting user input for units
     and values, performing the conversion, and displaying the result.
     """
-    show_length_units()
+    display_length_units()
     units_chosen: tuple[int, int] = request_units_number()
     input_value: int = int(input('Enter the number to be converted: '))
     length_conversion(units_chosen, input_value)
@@ -304,6 +302,8 @@ def get_valid_converted_number() -> tuple[bool, int]:
 
 def main() -> None:
     """Main entry point of the application."""
+    display_main_menu()
+    process_menu_selection()
 
 
 if __name__ == '__main__':
