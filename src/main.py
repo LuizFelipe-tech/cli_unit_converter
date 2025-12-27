@@ -127,21 +127,35 @@ def print_temperature_conversion(units: tuple[int, int], converted: float) -> No
     """
     match units:
         case enums.Temperature.FAHRENHEIT_TO_CELSIUS.value:
-            print(f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Celsius')
+            print(
+                f'{GREEN_TEXT}'
+                f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Celsius'
+                f'{RESET}',
+            )
         case enums.Temperature.CELSIUS_TO_FAHRENHEIT.value:
-            print(f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Fahrenheit')
+            print(
+                f'{GREEN_TEXT}'
+                f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Fahrenheit'
+                f'{RESET}',
+            )
         case enums.Temperature.FAHRENHEIT_TO_KELVIN.value:
             print(f'{converted:.2f} {"Kelvins" if converted != 1 else "Kelvin"}')
         case enums.Temperature.KELVIN_TO_FAHRENHEIT.value:
             print(
-                f'{converted:.2f} {"Kelvins" if converted not in {1, 0} else "Kelvin"}',
+                f'{GREEN_TEXT}'
+                f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Fahrenheit'
+                f'{RESET}',
             )
         case enums.Temperature.CELSIUS_TO_KELVIN.value:
             print(
                 f'{converted:.2f} {"Kelvins" if converted not in {1, 0} else "Kelvin"}',
             )
         case enums.Temperature.KELVIN_TO_CELSIUS.value:
-            print(f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Celsius')
+            print(
+                f'{GREEN_TEXT}'
+                f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Celsius'
+                f'{RESET}',
+            )
 
 
 def print_weight_conversion(units: tuple[int, int], converted: float) -> None:
@@ -153,17 +167,23 @@ def print_weight_conversion(units: tuple[int, int], converted: float) -> None:
     """
     match units:
         case enums.Weight.KILOGRAMS_TO_POUNDS.value:
-            print(f'{converted:.2f} {"Pounds" if converted != 1 else "Pound"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Pounds" if converted != 1 else "Pound"}{RESET}')
         case enums.Weight.POUNDS_TO_KILOGRAMS.value:
-            print(f'{converted:.2f} {"Kilograms" if converted != 1 else "Kilogram"}')
+            print(
+                f'{GREEN_TEXT}'
+                f'{converted:.2f}{"Kilograms" if converted != 1 else "Kilogram"}{RESET}',
+            )
         case enums.Weight.KILOGRAMS_TO_OUNCES.value:
-            print(f'{converted:.2f} {"Ounces" if converted != 1 else "Ounce"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Ounces" if converted != 1 else "Ounce"}{RESET}')
         case enums.Weight.OUNCES_TO_KILOGRAMS.value:
-            print(f'{converted:.2f} {"Kilograms" if converted != 1 else "Kilogram"}')
+            print(
+                f'{GREEN_TEXT}'
+                f'{converted:.2f}{"Kilograms" if converted != 1 else "Kilogram"}{RESET}',
+            )
         case enums.Weight.POUNDS_TO_OUNCES.value:
-            print(f'{converted:.2f} {"Ounces" if converted != 1 else "Ounce"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Ounces" if converted != 1 else "Ounce"}{RESET}')
         case enums.Weight.OUNCES_TO_POUNDS.value:
-            print(f'{converted:.2f} {"Pounds" if converted != 1 else "Pound"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Pounds" if converted != 1 else "Pound"}{RESET}')
 
 
 def print_length_conversion(units: tuple[int, int], converted: float) -> None:
@@ -175,17 +195,25 @@ def print_length_conversion(units: tuple[int, int], converted: float) -> None:
     """
     match units:
         case enums.Length.METERS_TO_KILOMETERS.value:
-            print(f'{converted:.2f} {"Kilometers" if converted != 1 else "Kilometer"}')
+            print(
+                f'{GREEN_TEXT}'
+                f'{converted:.2f} {"Kilometers" if converted != 1 else "Kilometer"}'
+                f'{RESET}',
+            )
         case enums.Length.KILOMETERS_TO_METERS.value:
-            print(f'{converted:.2f} {"Meters" if converted != 1 else "Meter"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Meters" if converted != 1 else "Meter"}{RESET}')
         case enums.Length.METERS_TO_MILES.value:
-            print(f'{converted:.2f} {"Miles" if converted != 1 else "Mile"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Miles" if converted != 1 else "Mile"}{RESET}')
         case enums.Length.MILES_TO_METERS.value:
-            print(f'{converted:.2f} {"Meters" if converted != 1 else "Meter"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Meters" if converted != 1 else "Meter"}{RESET}')
         case enums.Length.KILOMETERS_TO_MILES.value:
-            print(f'{converted:.2f} {"Miles" if converted != 1 else "Mile"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Miles" if converted != 1 else "Mile"}{RESET}')
         case enums.Length.MILES_TO_KILOMETERS.value:
-            print(f'{converted:.2f} {"Kilometers" if converted != 1 else "Kilometer"}')
+            print(
+                f'{GREEN_TEXT}'
+                f'{converted:.2f} {"Kilometers" if converted != 1 else "Kilometer"}'
+                f'{RESET}',
+            )
 
 
 def print_pressure_conversion(units: tuple[int, int], converted: float) -> None:
@@ -197,17 +225,25 @@ def print_pressure_conversion(units: tuple[int, int], converted: float) -> None:
     """
     match units:
         case enums.Pressure.PASCAL_TO_ATMOSPHERE.value:
-            print(f'{converted:.2f} {"Atmospheres" if converted != 1 else "Atmosphere"}')
+            print(
+                f'{GREEN_TEXT}'
+                f'{converted:.2f} {"Atmospheres" if converted != 1 else "Atmosphere"}'
+                f'{RESET}',
+            )
         case enums.Pressure.ATMOSPHERE_TO_PASCAL.value:
-            print(f'{converted:.2f} {"Pascals" if converted != 1 else "Pascal"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Pascals" if converted != 1 else "Pascal"}{RESET}')
         case enums.Pressure.PASCAL_TO_BAR.value:
-            print(f'{converted:.2f} {"Bars" if converted != 1 else "Bar"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Bars" if converted != 1 else "Bar"}{RESET}')
         case enums.Pressure.BAR_TO_PASCAL.value:
-            print(f'{converted:.2f} {"Pascals" if converted != 1 else "Pascal"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Pascals" if converted != 1 else "Pascal"}{RESET}')
         case enums.Pressure.ATMOSPHERE_TO_BAR.value:
-            print(f'{converted:.2f} {"Bars" if converted != 1 else "Bar"}')
+            print(f'{GREEN_TEXT}{converted:.2f} {"Bars" if converted != 1 else "Bar"}{RESET}')
         case enums.Pressure.BAR_TO_ATMOSPHERE.value:
-            print(f'{converted:.2f} {"Atmospheres" if converted != 1 else "Atmosphere"}')
+            print(
+                f'{GREEN_TEXT}'
+                f'{converted:.2f} {"Atmospheres" if converted != 1 else "Atmosphere"}'
+                f'{RESET}',
+            )
 
 
 def temperature_conversion(units: tuple[int, int], value_unit: float) -> float:
