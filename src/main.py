@@ -179,22 +179,22 @@ def weight_conversion(units: tuple[int, int], value_unit: float) -> float:
     match units:
         case (1, 2):
             converted_w = value_unit * 2.20462
-            print(f'{converted_w:.2f} Pounds')
+            print(f'{converted_w:.2f} {"Pounds" if converted_w != 1 else "Pound"}')
         case (2, 1):
             converted_w = value_unit / 2.20462
-            print(f'{converted_w:.2f} Kilograms')
+            print(f'{converted_w:.2f} {"Kilograms" if converted_w != 1 else "Kilogram"}')
         case (1, 3):
             converted_w = value_unit * 35.274
-            print(f'{converted_w:.2f} Ounces')
+            print(f'{converted_w:.2f} {"Ounces" if converted_w != 1 else "Ounce"}')
         case (3, 1):
             converted_w = value_unit / 35.274
-            print(f'{converted_w:.2f} Kilograms')
+            print(f'{converted_w:.2f} {"Kilograms" if converted_w != 1 else "Kilogram"}')
         case (2, 3):
             converted_w = value_unit * 16
-            print(f'{converted_w:.2f} Ounces')
+            print(f'{converted_w:.2f} {"Ounces" if converted_w != 1 else "Ounce"}')
         case (3, 2):
             converted_w = value_unit / 16
-            print(f'{converted_w:.2f} Pounds')
+            print(f'{converted_w:.2f} {"Pounds" if converted_w != 1 else "Pound"}')
     return converted_w
 
 
@@ -213,22 +213,22 @@ def length_conversion(units: tuple[int, int], value_unit: float) -> float:
     match units:
         case (1, 2):
             converted_l = value_unit / 1000
-            print(f'{converted_l:.2f} Kilometers')
+            print(f'{converted_l:.2f} {"Kilometers" if converted_l != 1 else "Kilogram"}')
         case (2, 1):
             converted_l = value_unit * 1000
-            print(f'{converted_l:.2f} Meters')
+            print(f'{converted_l:.2f} {"Meters" if converted_l != 1 else "Meter"}')
         case (1, 3):
             converted_l = value_unit / 1609.34
-            print(f'{converted_l:.2f} Miles')
+            print(f'{converted_l:.2f} {"Miles" if converted_l != 1 else "Mile"}')
         case (3, 1):
             converted_l = value_unit * 1609.34
-            print(f'{converted_l:.2f} Meters')
+            print(f'{converted_l:.2f} {"Meters" if converted_l != 1 else "Meter"}')
         case (2, 3):
             converted_l = value_unit / 1.60934
-            print(f'{converted_l:.2f} Miles')
+            print(f'{converted_l:.2f} {"Miles" if converted_l != 1 else "Mile"}')
         case (3, 2):
             converted_l = value_unit * 1.60934
-            print(f'{converted_l:.2f} Kilometers')
+            print(f'{converted_l:.2f} {"Kilometers" if converted_l != 1 else "Kilogram"}')
     return converted_l
 
 
@@ -248,27 +248,27 @@ def pressure_conversion(units: tuple[int, int], value_unit: float) -> float:
         case (1, 2):
             # Pascal to Atmosphere
             converted_p = value_unit / 101325
-            print(f'{converted_p:.2f} Atmosphere')
+            print(f'{converted_p:.2f} {"Atmospheres" if converted_p != 1 else "Atmosphere"}')
         case (2, 1):
             # Atmosphere to Pascal
             converted_p = value_unit * 101325
-            print(f'{converted_p:.2f} Pascal')
+            print(f'{converted_p:.2f} {"Pascals" if converted_p != 1 else "Pascal"}')
         case (1, 3):
             # Pascal to Bar
             converted_p = value_unit / 100000
-            print(f'{converted_p:.2f} Bar')
+            print(f'{converted_p:.2f} {"Bars" if converted_p != 1 else "Bar"}')
         case (3, 1):
             # Bar to Pascal
             converted_p = value_unit * 100000
-            print(f'{converted_p:.2f} Pascal')
+            print(f'{converted_p:.2f} {"Pascals" if converted_p != 1 else "Pascal"}')
         case (2, 3):
             # Atmosphere to Bar
             converted_p = value_unit * 1.01325
-            print(f'{converted_p:.2f} Bar')
+            print(f'{converted_p:.2f} {"Bars" if converted_p != 1 else "Bar"}')
         case (3, 2):
             # Bar to Atmosphere
             converted_p = value_unit * 0.98692
-            print(f'{converted_p:.2f} Atmosphere')
+            print(f'{converted_p:.2f} {"Atmospheres" if converted_p != 1 else "Atmosphere"}')
     return converted_p
 
 
