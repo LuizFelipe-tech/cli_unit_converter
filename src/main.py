@@ -306,7 +306,6 @@ def weight_conversion(units: tuple[int, int], value_unit: float) -> float:
             converted_w = value_unit / 16
         case _:
             return 0.0
-    print_weight_conversion(units, converted_w)
     return converted_w
 
 
@@ -338,7 +337,6 @@ def length_conversion(units: tuple[int, int], value_unit: float) -> float:
             converted_l = value_unit * 1.60934
         case _:
             return 0.0
-    print_length_conversion(units, converted_l)
     return converted_l
 
 
@@ -370,7 +368,6 @@ def pressure_conversion(units: tuple[int, int], value_unit: float) -> float:
             converted_p = value_unit * 0.98692
         case _:
             return 0.0
-    print_pressure_conversion(units, converted_p)
     return converted_p
 
 
@@ -385,6 +382,7 @@ def handle_temp_conversion() -> None:
     input_value: float = float(input('Enter the number to be converted: '))
     converted_t = temp_conversion(units_chosen, input_value)
     print()
+    validate_physical_limits(3, units_chosen[0], input_value)
     print_temp_conversion(units_chosen, converted_t)
 
 
@@ -399,6 +397,7 @@ def handle_weight_conversion() -> None:
     input_value: float = float(input('Enter the number to be converted: '))
     converted_w = weight_conversion(units_chosen, input_value)
     print()
+    validate_physical_limits(2, units_chosen[0], input_value)
     print_weight_conversion(units_chosen, converted_w)
 
 
@@ -413,6 +412,7 @@ def handle_length_conversion() -> None:
     input_value: float = float(input('Enter the number to be converted: '))
     converted_l = length_conversion(units_chosen, input_value)
     print()
+    validate_physical_limits(1, units_chosen[0], input_value)
     print_length_conversion(units_chosen, converted_l)
 
 
@@ -425,9 +425,10 @@ def handle_pressure_conversion() -> None:
     display_pressure_units()
     units_chosen: tuple[int, int] = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
-    converted_l = length_conversion(units_chosen, input_value)
+    converted_p = pressure_conversion(units_chosen, input_value)
     print()
-    print_length_conversion(units_chosen, converted_l)
+    validate_physical_limits(4, units_chosen[0], input_value)
+    print_pressure_conversion(units_chosen, converted_p)
 
 
 def validate_physical_limits(category: int, source_unit: int, value: float) -> None:
