@@ -6,6 +6,7 @@ between different systems for length, weight and temperature.
 
 from __future__ import annotations
 
+import math
 import sys
 
 import enums
@@ -70,7 +71,7 @@ def process_menu_selection() -> None:
         case 2:
             handle_weight_conversion()
         case 3:
-            handle_temperature_conversion()
+            handle_temp_conversion()
         case 4:
             handle_pressure_conversion()
         case 5:
@@ -78,7 +79,7 @@ def process_menu_selection() -> None:
             sys.exit(0)
 
 
-def display_temperature_units() -> None:
+def display_temp_units() -> None:
     """Displays the available units for temperature conversion."""
     print()
     print(f'{GREEN_TEXT}--- Temperature Converter selected ---{RESET}')
@@ -118,7 +119,7 @@ def display_pressure_units() -> None:
     print('3. Bar')
 
 
-def print_temperature_conversion(units: tuple[int, int], converted: float) -> None:
+def print_temp_conversion(units: tuple[int, int], converted: float) -> None:
     """Prints the converted temperature.
 
     Args:
@@ -246,7 +247,7 @@ def print_pressure_conversion(units: tuple[int, int], converted: float) -> None:
             )
 
 
-def temperature_conversion(units: tuple[int, int], value_unit: float) -> float:
+def temp_conversion(units: tuple[int, int], value_unit: float) -> float:
     """Performs temperature conversion based on the selected units and value.
 
     Args:
@@ -274,7 +275,6 @@ def temperature_conversion(units: tuple[int, int], value_unit: float) -> float:
             converted_t = value_unit - 273.15
         case _:
             return 0.0
-    print_temperature_conversion(units, converted_t)
     return converted_t
 
 
@@ -290,6 +290,7 @@ def weight_conversion(units: tuple[int, int], value_unit: float) -> float:
       combination is not matched.
     """
     converted_w: float = 0.0
+    # Converts weight based on a matched unit combination
     match units:
         case enums.Weight.KILOGRAMS_TO_POUNDS.value:
             converted_w = value_unit * 2.20462
@@ -373,16 +374,18 @@ def pressure_conversion(units: tuple[int, int], value_unit: float) -> float:
     return converted_p
 
 
-def handle_temperature_conversion() -> None:
+def handle_temp_conversion() -> None:
     """Orchestrates the temperature conversion workflow.
 
     Manages the sequence of displaying units, requesting user input for units
     and values, performing the conversion, and displaying the result.
     """
-    display_temperature_units()
+    display_temp_units()
     units_chosen: tuple[int, int] = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
-    temperature_conversion(units_chosen, input_value)
+    converted_t = temp_conversion(units_chosen, input_value)
+    print()
+    print_temp_conversion(units_chosen, converted_t)
 
 
 def handle_weight_conversion() -> None:
@@ -394,7 +397,9 @@ def handle_weight_conversion() -> None:
     display_weight_units()
     units_chosen: tuple[int, int] = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
-    weight_conversion(units_chosen, input_value)
+    converted_w = weight_conversion(units_chosen, input_value)
+    print()
+    print_weight_conversion(units_chosen, converted_w)
 
 
 def handle_length_conversion() -> None:
@@ -406,7 +411,9 @@ def handle_length_conversion() -> None:
     display_length_units()
     units_chosen: tuple[int, int] = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
-    length_conversion(units_chosen, input_value)
+    converted_l = length_conversion(units_chosen, input_value)
+    print()
+    print_length_conversion(units_chosen, converted_l)
 
 
 def handle_pressure_conversion() -> None:
@@ -418,7 +425,56 @@ def handle_pressure_conversion() -> None:
     display_pressure_units()
     units_chosen: tuple[int, int] = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
-    pressure_conversion(units_chosen, input_value)
+    converted_l = length_conversion(units_chosen, input_value)
+    print()
+    print_length_conversion(units_chosen, converted_l)
+
+
+def validate_physical_limits(category: int, source_unit: int, value: float) -> None:
+    """Checks for physical and logical limits and warns the user if exceeded.
+
+    Verifies against Absolute Zero for temperature and non-negativity for
+    scalar measures (Length, Weight, Pressure). Also checks for computational
+    overflow (infinity).
+
+    Args:
+        category: The main menu option (1=Length, 2=Weight, 3=Temp, 4=Pressure).
+        source_unit: The ID of the unit being converted from.
+        value: The input value to check.
+    """
+    # 1. Check for Computational Limits (Infinity)
+    if math.isinf(value):
+        print(
+            f'{YELLOW_TEXT}[WARNING] Input is too large for standard calculation '
+            f'(Infinite).{RESET}',
+        )
+        return
+
+    # 2. Check for Physical Limits
+    if category == 3:
+        # Temperature (Has specific Absolute Zero limits)
+        abs_zero_limit: float = 0.0
+        match source_unit:
+            case 1:  # Fahrenheit
+                abs_zero_limit = -459.67
+            case 2:  # Celsius
+                abs_zero_limit = -273.15
+            case 3:  # Kelvin
+                abs_zero_limit = 0.0
+
+        if value < abs_zero_limit:
+            print(
+                f'{YELLOW_TEXT}[WARNING] Physics violation: Value is below Absolute Zero '
+                f'({abs_zero_limit}).{RESET}',
+            )
+
+    elif category in {1, 2, 4}:  # Length, Weight, Pressure (Scalar units)
+        # Generally, these cannot be negative in physical measurement contexts
+        if value < 0:
+            print(
+                f'{YELLOW_TEXT}[WARNING] Physical limitation: '
+                f'This measurement usually cannot be negative.{RESET}',
+            )
 
 
 def request_units_number() -> tuple[int, int]:
