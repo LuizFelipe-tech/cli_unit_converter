@@ -60,6 +60,8 @@ CONVERSION_FACTORS: dict[Enum, _ConversionFunc] = {
     enums.Pressure.BAR_TO_ATMOSPHERE: lambda x: x / 1.01325,
 }
 
+PRINTS: dict[Enum, str] = {}
+
 
 def display_main_menu() -> None:
     """Displays the main menu options to the standard output."""
@@ -155,7 +157,7 @@ def display_pressure_units() -> None:
     print('3. Bar')
 
 
-def print_temp_conversion(units: tuple[int, int], converted: float) -> None:
+def print_temp_conversion(units: Enum, converted: float) -> None:
     """Prints the converted temperature.
 
     Args:
@@ -163,31 +165,31 @@ def print_temp_conversion(units: tuple[int, int], converted: float) -> None:
       converted: The numerical result of the conversion.
     """
     match units:
-        case enums.Temperature.FAHRENHEIT_TO_CELSIUS.value:
+        case enums.Temperature.FAHRENHEIT_TO_CELSIUS:
             print(
                 f'{GREEN_TEXT}'
                 f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Celsius'
                 f'{RESET}',
             )
-        case enums.Temperature.CELSIUS_TO_FAHRENHEIT.value:
+        case enums.Temperature.CELSIUS_TO_FAHRENHEIT:
             print(
                 f'{GREEN_TEXT}'
                 f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Fahrenheit'
                 f'{RESET}',
             )
-        case enums.Temperature.FAHRENHEIT_TO_KELVIN.value:
+        case enums.Temperature.FAHRENHEIT_TO_KELVIN:
             print(f'{converted:.2f} {"Kelvins" if converted != 1 else "Kelvin"}')
-        case enums.Temperature.KELVIN_TO_FAHRENHEIT.value:
+        case enums.Temperature.KELVIN_TO_FAHRENHEIT:
             print(
                 f'{GREEN_TEXT}'
                 f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Fahrenheit'
                 f'{RESET}',
             )
-        case enums.Temperature.CELSIUS_TO_KELVIN.value:
+        case enums.Temperature.CELSIUS_TO_KELVIN:
             print(
                 f'{converted:.2f} {"Kelvins" if converted not in {1, 0} else "Kelvin"}',
             )
-        case enums.Temperature.KELVIN_TO_CELSIUS.value:
+        case enums.Temperature.KELVIN_TO_CELSIUS:
             print(
                 f'{GREEN_TEXT}'
                 f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Celsius'
@@ -310,7 +312,7 @@ def handle_temp_conversion() -> None:
     print(converted_t)
     print()
     validate_physical_limits(3, units_chosen[0], input_value)
-    print_temp_conversion(units_chosen, converted_t)
+    print_temp_conversion(enums.Temperature(units_chosen), converted_t)
 
 
 def handle_weight_conversion() -> None:
