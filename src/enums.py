@@ -1,185 +1,267 @@
-"""An enumeration representing the purpose for which a number is used.
-
-This module defines the `NumberUsedFor` enumeration, which specifies
-different contexts in which a number might be utilized. It enables
-a clear distinction between the number of usage types within the program.
-"""
-
 from __future__ import annotations
 
 from enum import Enum, auto
-from typing import TYPE_CHECKING
-
-# We use typing_extensions for compatibility with older Python versions
-# if you are on Python 3.11+, you can import Self from typing directly.
-from typing_extensions import Self
+import typing
+from typing import TYPE_CHECKING, NamedTuple
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class NumberUsedFor(Enum):
-    """Defines the different contexts in which a number might be used.
-
-    Provides specific categories that can be assigned to numbers to denote their
-    use case in different scenarios, ensuring type safety and clarity.
+# 1. Physical Categories
+class Category(Enum):
+    """Defines physical categories to prevent invalid cross-category conversions.
 
     Attributes:
-        entry_input: Indicates that the number is utilized for direct entry input.
-        conversion_unit_input: Indicates that the number is used specifically
-            for unit conversion purposes.
+        LENGTH: Represents length units (base: Meter).
+        WEIGHT: Represents weight/mass units (base: Kilogram).
+        TEMPERATURE: Represents temperature units (base: Celsius).
+        PRESSURE: Represents pressure units (base: Pascal).
     """
 
-    entry_input = auto()
-    conversion_unit_input = auto()
+    LENGTH = auto()
+    WEIGHT = auto()
+    TEMPERATURE = auto()
+    PRESSURE = auto()
 
 
-class RichConversionEnum(Enum):
-    """Base enumeration class for unit conversions with rich metadata.
-
-    This class extends the standard Enum to support embedded conversion logic
-    (lambda functions) and string formatting (singular/plural labels).
-    Specific unit categories (e.g., Length, Weight) extend this class.
+# 2. Data Structure for Unit Definitions
+class UnitDefinition(NamedTuple):
+    """Data structure holding metadata and conversion logic for a specific unit.
 
     Attributes:
-        conversion_func (Callable[[float], float]): The function that performs
-            the mathematical conversion.
-        label_singular (str): The label to use when the value is 1 (e.g., “Meter”).
-        label_plural (str): The label to use when the value is not 1 (e.g., “Meters”).
+        id: A unique numeric identifier for the unit.
+        name: The singular name of the unit (e.g., 'Meter').
+        plural: The plural name of the unit (e.g., 'Meters').
+        category: The physical category the unit belongs to.
+        to_base: A callable that converts a value *from* this unit *to* the base unit.
+        from_base: A callable that converts a value *from* the base unit *to* this unit.
     """
 
-    conversion_func: Callable[[float], float]
-    label_singular: str
-    label_plural: str
+    id: int
+    name: str
+    plural: str
+    category: Category
+    to_base: Callable[[float], float]
+    from_base: Callable[[float], float]
 
-    def __new__(
-        cls,
-        source: int,
-        target: int,
-        func: Callable[[float], float],
-        singular: str,
-        plural: str,
-    ) -> Self:
-        """Creates a new instance of the RichConversionEnum.
+
+class UnitConverter:
+    """Centralizes unit registration and conversion logic using a Base Unit pattern.
+
+    This class acts as a registry and a processor. It normalizes values to a
+    base unit (defined per Category) before converting them to the target unit.
+
+    Base units assumed:
+        * Length: Meters
+        * Weight: Kilograms
+        * Temperature: Celsius (Chosen due to the complexity of Kelvin/Fahrenheit formulas)
+        * Pressure: Pascal
+
+    Attributes:
+        _registry (dict[str, UnitDefinition]): Internal storage for unit definitions.
+    """
+
+    _registry: typing.ClassVar[dict[str, UnitDefinition]] = {}
+
+    @classmethod
+    def register(cls, key: str, definition: UnitDefinition) -> None:
+        """Registers a new unit definition in the central registry.
 
         Args:
-            source (int): The unique identifier for the source unit.
-            target (int): The unique identifier for the target unit.
-            func (Callable[[float], float]): A lambda or function that takes a
-                float value and returns the converted float value.
-            singular (str): The display name for a singular unit value.
-            plural (str): The display name for a plural unit value.
-
-        Returns:
-            Self: The created enumeration member instance.
+            key: The string identifier for the unit (case-insensitive).
+            definition: The UnitDefinition object containing metadata and formulas.
         """
-        obj = object.__new__(cls)
-        obj._value_ = (source, target)
-        obj.conversion_func = func
-        obj.label_singular = singular
-        obj.label_plural = plural
-        return obj
+        cls._registry[key.upper()] = definition
 
-    def convert(self, value: float) -> float:
-        """Performs the unit conversion on the given value.
+    @classmethod
+    def convert(cls, value: float, from_unit: str, to_unit: str) -> float:
+        """Converts a value from one unit to another.
 
         Args:
-            value (float): The numerical value to convert.
+            value: The numeric value to convert.
+            from_unit: The string key of the source unit (e.g., 'KM').
+            to_unit: The string key of the target unit (e.g., 'MILE').
 
         Returns:
-            float: The converted value based on the stored conversion function.
-        """
-        return self.conversion_func(value)
+            float: The converted value in the target unit.
 
-    def format_text(self, value: float) -> str:
-        """Formats the value with the appropriate unit label.
+        Raises:
+            ValueError: If either unit key is not found in the registry.
+            TypeError: If the units belong to different physical categories
+                (e.g., attempting to convert Length to Weight).
+        """
+        source = cls._registry.get(from_unit.upper())
+        target = cls._registry.get(to_unit.upper())
+
+        # Safety Validations (Logic and Consistency)
+        if not source or not target:
+            raise ValueError(f'Unknown unit: {from_unit} or {to_unit}')
+
+        if source.category != target.category:
+            raise TypeError(
+                f'Invalid conversion: Cannot convert {source.category.name} '
+                f'to {target.category.name}.',
+            )
+
+        # Step 1: Normalize to base
+        value_in_base = source.to_base(value)
+
+        # Step 2: Convert from base to target
+        return target.from_base(value_in_base)
+
+    @classmethod
+    def get_unit_info(cls, unit_key: str) -> UnitDefinition | None:
+        """Retrieves metadata for a specific unit.
 
         Args:
-            value (float): The numerical value to format.
+            unit_key: The string identifier for the unit.
 
         Returns:
-            str: A formatted string (e.g., “1.00 Meter” or "2.50 Meters”).
+            UnitDefinition | None: The unit details if found, otherwise None.
         """
-        name = self.label_singular if value in {1, -1} else self.label_plural
-        return f'{value:.2f} {name}'
+        return cls._registry.get(unit_key.upper())
 
 
-class Length(RichConversionEnum):
-    """Mapping of length unit conversions.
+# --- Unit Configuration (Where the magic happens) ---
 
-    IDs:
-        1: Meters
-        2: Kilometers
-        3: Miles
-    """
-
-    METERS_TO_KILOMETERS = (1, 2, lambda x: x / 1000.0, 'Kilometer', 'Kilometers')
-    KILOMETERS_TO_METERS = (2, 1, lambda x: x * 1000.0, 'Meter', 'Meters')
-
-    METERS_TO_MILES = (1, 3, lambda x: x * 0.000621371, 'Mile', 'Miles')
-    MILES_TO_METERS = (3, 1, lambda x: x / 0.000621371, 'Meter', 'Meters')
-    KILOMETERS_TO_MILES = (2, 3, lambda x: x * 0.621371, 'Mile', 'Miles')
-    MILES_TO_KILOMETERS = (3, 2, lambda x: x / 0.621371, 'Kilometer', 'Kilometers')
-
-
-class Weight(RichConversionEnum):
-    """Mapping of weight unit conversions.
-
-    IDs:
-        1: Kilograms
-        2: Pounds
-        3: Ounces
-    """
-
-    KILOGRAMS_TO_POUNDS = (1, 2, lambda x: x * 2.20462, 'Pound', 'Pounds')
-    POUNDS_TO_KILOGRAMS = (2, 1, lambda x: x / 2.20462, 'Kilogram', 'Kilograms')
-    KILOGRAMS_TO_OUNCES = (1, 3, lambda x: x * 35.274, 'Ounce', 'Ounces')
-    OUNCES_TO_KILOGRAMS = (3, 1, lambda x: x / 35.274, 'Kilogram', 'Kilograms')
-    POUNDS_TO_OUNCES = (2, 3, lambda x: x * 16.0, 'Ounce', 'Ounces')
-    OUNCES_TO_POUNDS = (3, 2, lambda x: x / 16.0, 'Pound', 'Pounds')
-
-
-class Temperature(RichConversionEnum):
-    """Mapping of temperature unit conversions.
-
-    IDs:
-        1: Fahrenheit
-        2: Celsius
-        3: Kelvin
-    """
-
-    FAHRENHEIT_TO_CELSIUS = (1, 2, lambda x: (x - 32) * 5 / 9, 'Degree Celsius', 'Degrees Celsius')
-    CELSIUS_TO_FAHRENHEIT = (
+# LENGTH (Base: Meters)
+UnitConverter.register(
+    'METER',
+    UnitDefinition(
+        1,
+        'Meter',
+        'Meters',
+        Category.LENGTH,
+        lambda x: x,  # Already base
+        lambda x: x,
+    ),
+)
+UnitConverter.register(
+    'KM',
+    UnitDefinition(
         2,
-        1,
-        lambda x: (x * 9 / 5) + 32,
-        'Degree Fahrenheit',
-        'Degrees Fahrenheit',
-    )
-    FAHRENHEIT_TO_KELVIN = (1, 3, lambda x: (x - 32) * 5 / 9 + 273.15, 'Kelvin', 'Kelvin')
-    KELVIN_TO_FAHRENHEIT = (
+        'Kilometer',
+        'Kilometers',
+        Category.LENGTH,
+        lambda x: x * 1000.0,  # km -> m
+        lambda x: x / 1000.0,  # m -> km
+    ),
+)
+UnitConverter.register(
+    'MILE',
+    UnitDefinition(
         3,
+        'Mile',
+        'Miles',
+        Category.LENGTH,
+        lambda x: x * 1609.34,  # mile -> m
+        lambda x: x / 1609.34,  # m -> mile
+    ),
+)
+
+# WEIGHT (Base: Kilograms)
+UnitConverter.register(
+    'KG',
+    UnitDefinition(
         1,
-        lambda x: (x - 273.15) * 9 / 5 + 32,
+        'Kilogram',
+        'Kilograms',
+        Category.WEIGHT,
+        lambda x: x,
+        lambda x: x,
+    ),
+)
+UnitConverter.register(
+    'POUND',
+    UnitDefinition(
+        2,
+        'Pound',
+        'Pounds',
+        Category.WEIGHT,
+        lambda x: x * 0.453592,  # lb -> kg
+        lambda x: x / 0.453592,  # kg -> lb
+    ),
+)
+UnitConverter.register(
+    'OUNCE',
+    UnitDefinition(
+        3,
+        'Ounce',
+        'Ounces',
+        Category.WEIGHT,
+        lambda x: x * 0.0283495,  # oz -> kg
+        lambda x: x / 0.0283495,  # kg -> oz
+    ),
+)
+
+# TEMPERATURE (Base: Celsius)
+# Note: Temperature requires linear formulas (y = ax + b), not just a multiplier factor.
+UnitConverter.register(
+    'CELSIUS',
+    UnitDefinition(
+        1,
+        'Degree Celsius',
+        'Degrees Celsius',
+        Category.TEMPERATURE,
+        lambda x: x,
+        lambda x: x,
+    ),
+)
+UnitConverter.register(
+    'FAHRENHEIT',
+    UnitDefinition(
+        2,
         'Degree Fahrenheit',
         'Degrees Fahrenheit',
-    )
-    CELSIUS_TO_KELVIN = (2, 3, lambda x: x + 273.15, 'Kelvin', 'Kelvin')
-    KELVIN_TO_CELSIUS = (3, 2, lambda x: x - 273.15, 'Degree Celsius', 'Degrees Celsius')
+        Category.TEMPERATURE,
+        lambda x: (x - 32) * 5 / 9,  # F -> C
+        lambda x: (x * 9 / 5) + 32,  # C -> F
+    ),
+)
+UnitConverter.register(
+    'KELVIN',
+    UnitDefinition(
+        3,
+        'Kelvin',
+        'Kelvin',
+        Category.TEMPERATURE,
+        lambda x: x - 273.15,  # K -> C
+        lambda x: x + 273.15,  # C -> K
+    ),
+)
 
-
-class Pressure(RichConversionEnum):
-    """Mapping of pressure unit conversions.
-
-    IDs:
-        1: Pascal
-        2: Atmosphere
-        3: Bar
-    """
-
-    PASCAL_TO_ATMOSPHERE = (1, 2, lambda x: x / 101325.0, 'Atmosphere', 'Atmospheres')
-    ATMOSPHERE_TO_PASCAL = (2, 1, lambda x: x * 101325.0, 'Pascal', 'Pascals')
-    PASCAL_TO_BAR = (1, 3, lambda x: x / 100000.0, 'Bar', 'Bars')
-    BAR_TO_PASCAL = (3, 1, lambda x: x * 100000.0, 'Pascal', 'Pascals')
-    ATMOSPHERE_TO_BAR = (2, 3, lambda x: x * 1.01325, 'Bar', 'Bars')
-    BAR_TO_ATMOSPHERE = (3, 2, lambda x: x / 1.01325, 'Atmosphere', 'Atmospheres')
+# PRESSURE (Base: Pascal)
+UnitConverter.register(
+    'PASCAL',
+    UnitDefinition(
+        1,
+        'Pascal',
+        'Pascals',
+        Category.PRESSURE,
+        lambda x: x,
+        lambda x: x,
+    ),
+)
+UnitConverter.register(
+    'BAR',
+    UnitDefinition(
+        2,
+        'Bar',
+        'Bars',
+        Category.PRESSURE,
+        lambda x: x * 100000.0,  # bar -> Pa
+        lambda x: x / 100000.0,  # Pa -> bar
+    ),
+)
+UnitConverter.register(
+    'ATM',
+    UnitDefinition(
+        3,
+        'Atmosphere',
+        'Atmospheres',
+        Category.PRESSURE,
+        lambda x: x * 101325.0,  # atm -> Pa
+        lambda x: x / 101325.0,  # Pa -> atm
+    ),
+)
