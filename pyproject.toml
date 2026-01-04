@@ -9,7 +9,7 @@ description = "Enterprise-Grade Python Template focused on Scalability and Secur
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Luiz Felipe", email = "luizfelipemelos@gamil.com" }]
-dependencies = []
+dependencies = ["rich>=13.0.0"]
 
 # --- Setuptools configuration for package discovery. ---
 [tool.setuptools.packages.find]
