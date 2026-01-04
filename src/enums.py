@@ -1,3 +1,10 @@
+"""Unit conversion enums and registry logic.
+
+This module defines the physical categories, unit definitions, and the
+central UnitConverter class, which manages the conversion between different
+units of measurement using a base-unit normalization approach.
+"""
+
 from __future__ import annotations
 
 from enum import Enum, auto
@@ -132,9 +139,10 @@ class UnitConverter:
         return unit
 
 
-# --- Unit Configuration (Where the magic happens) ---
+# --- Unit Configuration (Registration of supported units) ---
 
-# LENGTH (Base: Meters)
+# LENGTH CATEGORY (Base Unit: Meters)
+# All length units are registered with their conversion factors to and from Meters.
 UnitConverter.register(
     'METER',
     UnitDefinition(
@@ -143,7 +151,7 @@ UnitConverter.register(
         'Meters',
         'Length',
         Category.LENGTH,
-        lambda x: x,  # Already base
+        lambda x: x,  # Already base unit.
         lambda x: x,
     ),
 )
@@ -155,8 +163,8 @@ UnitConverter.register(
         'Kilometers',
         'Length',
         Category.LENGTH,
-        lambda x: x * 1000.0,  # km -> m
-        lambda x: x / 1000.0,  # m -> km
+        lambda x: x * 1000.0,  # kilometer -> meter
+        lambda x: x / 1000.0,  # meter -> kilometer
     ),
 )
 UnitConverter.register(
@@ -167,12 +175,13 @@ UnitConverter.register(
         'Miles',
         'Length',
         Category.LENGTH,
-        lambda x: x * 1609.34,  # mile -> m
-        lambda x: x / 1609.34,  # m -> mile
+        lambda x: x * 1609.34,  # mile -> meter
+        lambda x: x / 1609.34,  # meter -> mile
     ),
 )
 
-# WEIGHT (Base: Kilograms)
+# WEIGHT CATEGORY (Base Unit: Kilograms)
+# All weight units are registered with their conversion factors to and from Kilograms.
 UnitConverter.register(
     'KG',
     UnitDefinition(
@@ -181,7 +190,7 @@ UnitConverter.register(
         'Kilograms',
         'Weight',
         Category.WEIGHT,
-        lambda x: x,
+        lambda x: x,  # Already base unit.
         lambda x: x,
     ),
 )
@@ -193,8 +202,8 @@ UnitConverter.register(
         'Pounds',
         'Weight',
         Category.WEIGHT,
-        lambda x: x * 0.453592,  # lb -> kg
-        lambda x: x / 0.453592,  # kg -> lb
+        lambda x: x * 0.453592,  # pound -> kilogram
+        lambda x: x / 0.453592,  # kilogram -> pound
     ),
 )
 UnitConverter.register(
@@ -205,13 +214,13 @@ UnitConverter.register(
         'Ounces',
         'Weight',
         Category.WEIGHT,
-        lambda x: x * 0.0283495,  # oz -> kg
-        lambda x: x / 0.0283495,  # kg -> oz
+        lambda x: x * 0.0283495,  # ounce -> kilogram
+        lambda x: x / 0.0283495,  # kilogram -> ounce
     ),
 )
 
-# TEMPERATURE (Base: Celsius)
-# Note: Temperature requires linear formulas (y = ax + b), not just a multiplier factor.
+# TEMPERATURE CATEGORY (Base Unit: Celsius)
+# Temperature requires linear formulas (y = ax + b) due to non-zero offsets.
 UnitConverter.register(
     'CELSIUS',
     UnitDefinition(
@@ -220,7 +229,7 @@ UnitConverter.register(
         'Degrees Celsius',
         'Temperature',
         Category.TEMPERATURE,
-        lambda x: x,
+        lambda x: x,  # Already base unit.
         lambda x: x,
     ),
 )
@@ -232,8 +241,8 @@ UnitConverter.register(
         'Degrees Fahrenheit',
         'Temperature',
         Category.TEMPERATURE,
-        lambda x: (x - 32) * 5 / 9,  # F -> C
-        lambda x: (x * 9 / 5) + 32,  # C -> F
+        lambda x: (x - 32) * 5 / 9,  # Fahrenheit -> Celsius
+        lambda x: (x * 9 / 5) + 32,  # Celsius -> Fahrenheit
     ),
 )
 UnitConverter.register(
@@ -244,12 +253,13 @@ UnitConverter.register(
         'Kelvin',
         'Temperature',
         Category.TEMPERATURE,
-        lambda x: x - 273.15,  # K -> C
-        lambda x: x + 273.15,  # C -> K
+        lambda x: x - 273.15,  # Kelvin -> Celsius
+        lambda x: x + 273.15,  # Celsius -> Kelvin
     ),
 )
 
-# PRESSURE (Base: Pascal)
+# PRESSURE CATEGORY (Base Unit: Pascal)
+# All pressure units are registered with their conversion factors to and from Pascals.
 UnitConverter.register(
     'PASCAL',
     UnitDefinition(
@@ -258,7 +268,7 @@ UnitConverter.register(
         'Pascals',
         'Pressure',
         Category.PRESSURE,
-        lambda x: x,
+        lambda x: x,  # Already base unit.
         lambda x: x,
     ),
 )
@@ -270,8 +280,8 @@ UnitConverter.register(
         'Bars',
         'Pressure',
         Category.PRESSURE,
-        lambda x: x * 100000.0,  # bar -> Pa
-        lambda x: x / 100000.0,  # Pa -> bar
+        lambda x: x * 100000.0,  # bar -> Pascal
+        lambda x: x / 100000.0,  # Pascal -> bar
     ),
 )
 UnitConverter.register(
@@ -282,7 +292,7 @@ UnitConverter.register(
         'Atmospheres',
         'Pressure',
         Category.PRESSURE,
-        lambda x: x * 101325.0,  # atm -> Pa
-        lambda x: x / 101325.0,  # Pa -> atm
+        lambda x: x * 101325.0,  # atmosphere -> Pascal
+        lambda x: x / 101325.0,  # Pascal -> atmosphere
     ),
 )

@@ -1,7 +1,7 @@
 docstring
 __future__
 script
-conversor
+converter
 fahrenheit_t
 kelvin_t
 db_url

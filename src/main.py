@@ -66,25 +66,25 @@ def get_menu_option() -> int:
 def process_menu_selection() -> None:
     """Processes the user's menu selection and triggers conversion flows.
 
-    Route the execution to the specific handler functions (Length, Weight, etc.)
+    Routes the execution to the specific handler functions (Length, Weight, etc.)
     based on the selected option.
     """
     valid_option: int = get_menu_option()
-    # Executes conversion logic based on menu selection
+    # Execute conversion logic based on menu selection.
     if valid_option == MENU_OPTIONS[-1]:
         console.print('[yellow]Exiting the program...[/yellow]')
         sys.exit(0)
-
-    # Executes conversion logic based on menu selection
-    match enums.Category(valid_option):
+    selected_category = enums.Category(valid_option)
+    # Match the selected category to its respective unit keys.
+    match selected_category:
         case enums.Category.LENGTH:
-            handle_length_conversion()
+            handle_conversion(selected_category, ['METER', 'KM', 'MILE'])
         case enums.Category.WEIGHT:
-            handle_weight_conversion()
+            handle_conversion(selected_category, ['KG', 'POUND', 'OUNCE'])
         case enums.Category.TEMPERATURE:
-            handle_temp_conversion()
+            handle_conversion(selected_category, ['CELSIUS', 'FAHRENHEIT', 'KELVIN'])
         case enums.Category.PRESSURE:
-            handle_pressure_conversion()
+            handle_conversion(selected_category, ['PASCAL', 'BAR', 'ATM'])
 
 
 def display_units(keys: list[str]) -> None:
@@ -123,121 +123,64 @@ def print_conversion(converted_value: float, unit_key: str) -> None:
     )
 
 
-def handle_temp_conversion() -> None:
-    """Orchestrates the temperature conversion workflow.
+def handle_conversion(category: enums.Category, units_keys: list[str]) -> None:
+    """Orchestrates a generic conversion workflow for any category.
 
-    Sequence of operations:
-    1. Displays available temperature units.
-    2. Requests source and target unit indices.
-    3. Captures the value to convert.
-    4. Calls the conversion logic.
-    5. Validates physical limits (e.g., Absolute Zero).
-    6. Prints the formatted result.
+    This function abstracts the repetition found in specific handlers.
+    It guides the user through selecting units from the provided list,
+    inputting values, performing the conversion, and viewing the result,
+    while enforcing category-specific physical limits.
+
+    Args:
+        category: The category enum member (e.g., Category.LENGTH) is used
+            to determine specific validation rules (like absolute zero).
+        units_keys: A list of string keys representing the available units
+            in the registry for this category (e.g., ['METER', 'KM']).
     """
-    nomes: list[str] = ['CELSIUS', 'FAHRENHEIT', 'KELVIN']
-    display_units(nomes)
-    entry_unit, converted_unit = request_units_number()
+    # 1. Dynamically display units
+    display_units(units_keys)
+
+    # 2. Get inputs
+    entry_index, target_index = request_units_number()
+
+    # Validates if the indices are within the real list size
+    if not (1 <= entry_index <= len(units_keys)) or not (1 <= target_index <= len(units_keys)):
+        console.print('[bold red]Invalid unit option![/bold red]')
+        return
+
     input_value: float = float(
         console.input('[bold blue]Enter the number to be converted: [/bold blue]'),
     )
-    converted_t = enums.UnitConverter.convert(
-        input_value,
-        nomes[entry_unit - 1],
-        nomes[converted_unit - 1],
-    )
-    validate_physical_limits(3, entry_unit, input_value)
-    print_conversion(converted_t, nomes[converted_unit - 1])
+
+    # 3. Map the chosen index (1, 2, 3) to the real key ('CELSIUS', etc.)
+    source_key = units_keys[entry_index - 1]
+    target_key = units_keys[target_index - 1]
+
+    # 4. Convert
+    result = enums.UnitConverter.convert(input_value, source_key, target_key)
+
+    # 5. Validation (We pass the KEY, not the number, to be safer)
+    validate_physical_limits(category, source_key, input_value)
+
+    # 6. Print
+    print_conversion(result, target_key)
 
 
-def handle_weight_conversion() -> None:
-    """Orchestrates the weight conversion workflow.
+def validate_physical_limits(
+    category: enums.Category,
+    unit_key: str,
+    value: float,
+) -> None:
+    """Checks for physical/logical limits and warns if exceeded.
 
-    Sequence of operations:
-    1. Displays available weight units.
-    2. Requests source and target unit indices.
-    3. Captures the value to convert.
-    4. Calls the conversion logic.
-    5. Validates physical limits (e.g., Absolute Zero).
-    6. Prints the formatted result.
-    """
-    nomes: list[str] = ['KG', 'POUND', 'OUNCE']
-    display_units(nomes)
-    entry_unit, converted_unit = request_units_number()
-    input_value: float = float(
-        console.input('[bold blue]Enter the number to be converted: [/bold blue]'),
-    )
-    converted_w = enums.UnitConverter.convert(
-        input_value,
-        nomes[entry_unit - 1],
-        nomes[converted_unit - 1],
-    )
-    validate_physical_limits(2, entry_unit, input_value)
-    print_conversion(converted_w, nomes[converted_unit - 1])
-
-
-def handle_length_conversion() -> None:
-    """Orchestrates the length conversion workflow.
-
-    Sequence of operations:
-    1. Displays available length units.
-    2. Requests source and target unit indices.
-    3. Captures the value to convert.
-    4. Calls the conversion logic.
-    5. Validates physical limits (e.g., Absolute Zero).
-    6. Prints the formatted result.
-    """
-    nomes: list[str] = ['METER', 'KM', 'MILE']
-    display_units(nomes)
-    entry_unit, converted_unit = request_units_number()
-    input_value: float = float(
-        console.input('[bold blue]Enter the number to be converted: [/bold blue]'),
-    )
-    converted_l = enums.UnitConverter.convert(
-        input_value,
-        nomes[entry_unit - 1],
-        nomes[converted_unit - 1],
-    )
-    validate_physical_limits(1, entry_unit, input_value)
-    print_conversion(converted_l, nomes[converted_unit - 1])
-
-
-def handle_pressure_conversion() -> None:
-    """Orchestrates the pressure conversion workflow.
-
-    Sequence of operations:
-    1. Displays available pressure units.
-    2. Requests source and target unit indices.
-    3. Captures the value to convert.
-    4. Calls the conversion logic.
-    5. Validates physical limits (e.g., Absolute Zero).
-    6. Prints the formatted result.
-    """
-    nomes: list[str] = ['PASCAL', 'BAR', 'ATM']
-    display_units(nomes)
-    entry_unit, converted_unit = request_units_number()
-    input_value: float = float(
-        console.input('[bold blue]Enter the number to be converted: [/bold blue]'),
-    )
-    converted_p = enums.UnitConverter.convert(
-        input_value,
-        nomes[entry_unit - 1],
-        nomes[converted_unit - 1],
-    )
-    validate_physical_limits(4, entry_unit, input_value)
-    print_conversion(converted_p, nomes[converted_unit - 1])
-
-
-def validate_physical_limits(category: int, source_unit: int, value: float) -> None:
-    """Checks for physical and logical limits and warns the user if exceeded.
-
-    Verifies against Absolute Zero for temperature and non-negativity for
-    scalar measures (Length, Weight, Pressure). Also guards against
+    Verifies against Absolute Zero for temperature and non-negativity
+    for scalar measures (Length, Weight, Pressure). Guards against
     computational overflow (infinity).
 
     Args:
-        category: The main menu option (1=Length, 2=Weight, 3=Temp, 4=Pressure).
-        source_unit: The ID of the source unit (used specifically in Temperature
-            to determine the correct absolute zero scale).
+        category: The category enum member (e.g., Category.TEMPERATURE).
+        unit_key: The registry key of the source unit (e.g., 'CELSIUS',
+            'FAHRENHEIT'). Used to look up specific physical limits.
         value: The input value to validate.
     """
     # 1. Check for Computational Limits (Infinity)
@@ -248,30 +191,30 @@ def validate_physical_limits(category: int, source_unit: int, value: float) -> N
         return
 
     # 2. Check for Physical Limits
-    if category == MENU_OPTIONS[2]:
-        # Temperature (Has specific Absolute Zero limits)
-        abs_zero_limit: float = 0.0
-        match source_unit:
-            case 1:  # Fahrenheit
-                abs_zero_limit = -459.67
-            case 2:  # Celsius
-                abs_zero_limit = -273.15
-            case 3:  # Kelvin
-                abs_zero_limit = 0.0
+    if category == enums.Category.TEMPERATURE:
+        # Dictionary mapping unit keys to their Absolute Zero limit
+        abs_zero_limits: dict[str, float] = {
+            'FAHRENHEIT': -459.67,
+            'CELSIUS': -273.15,
+            'KELVIN': 0.0,
+        }
 
-        if value < abs_zero_limit:
+        # Uses .get() to prevent crashes if a key is missing (defensive coding)
+        limit = abs_zero_limits.get(unit_key)
+
+        if limit is not None and value < limit:
             console.print(
-                f'[yellow][WARNING] Physics violation: Value is below Absolute Zero '
-                f'({abs_zero_limit}).[/yellow]',
+                f'[yellow][WARNING] Physics violation: Value is below Absolute '
+                f'Zero ({limit}).[/yellow]',
             )
 
-    elif category in {1, 2, 4}:  # Length, Weight, Pressure (Scalar units)
-        # Generally, these cannot be negative in physical measurement contexts
-        if value < 0:
-            console.print(
-                '[yellow][WARNING] Physical limitation: '
-                'This measurement usually cannot be negative.[/yellow]',
-            )
+    # For scalar units (Length, Weight, Pressure), values usually cannot be negative.
+    # We check if the category is NOT temperature.
+    elif value < 0:
+        console.print(
+            '[yellow][WARNING] Physical limitation: '
+            'This measurement usually cannot be negative.[/yellow]',
+        )
 
 
 def request_units_number() -> tuple[int, int]:
@@ -281,14 +224,17 @@ def request_units_number() -> tuple[int, int]:
     target unit.
 
     Returns:
-      A tuple containing two integers: (valid_entry_number, valid_converted_number).
+        tuple[int, int]: A tuple containing the valid entry unit number and
+            converted unit number.
     """
     while True:
+        # Get and validate the origin unit.
         is_valid_number, valid_entry_number = get_valid_number(is_an_entry_number=True)
         if is_valid_number:
             break
         continue
     while True:
+        # Get and validate the target unit.
         is_valid_number, valid_converted_number = get_valid_number(is_an_entry_number=False)
         if is_valid_number:
             break
@@ -313,29 +259,34 @@ def get_valid_number(*, is_an_entry_number: bool) -> tuple[bool, int]:
     """
     number: int = 0
     try:
-        number = int(
-            console.input(
-                '[bold blue]Enter the origin unit number: [/bold blue]'
-                if is_an_entry_number
-                else '[bold blue]Enter the converted unit number: [/bold blue]',
-            ),
+        # Prompt the user for input based on whether it's an origin or target unit.
+        prompt = (
+            '[bold blue]Enter the origin unit number: [/bold blue]'
+            if is_an_entry_number
+            else '[bold blue]Enter the converted unit number: [/bold blue]'
         )
+        number = int(console.input(prompt))
+
+        # Check if the entered number is within the allowed unit range (1-3).
         if number not in {1, 2, 3}:
             raise exceptions.NotAllowedValueError
     except ValueError:
+        # Handle cases where the input is not a valid integer.
         console.print('[red][ERROR] PLEASE ENTER A NUMBER[/red]')
         is_valid_number = False
     except exceptions.NotAllowedValueError:
+        # Handle cases where the number is an integer but not a valid option.
         console.print('[red][ERROR] PLEASE ENTER A VALID NUMBER[/red]')
         is_valid_number = False
     else:
+        # Input is valid and within range.
         is_valid_number = True
     return is_valid_number, number
 
 
 def main() -> None:
     """Main entry point of the application."""
-    console.print('[green]Welcome to the CLI Unit Conversor[/green]')
+    console.print('[green]Welcome to the CLI Unit Converter[/green]')
     while True:
         display_main_menu()
         process_menu_selection()
