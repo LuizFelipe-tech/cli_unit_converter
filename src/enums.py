@@ -31,13 +31,24 @@ class Category(Enum):
     TEMPERATURE = auto()
     PRESSURE = auto()
 
+    @property
+    def display_name(self) -> str:
+        """Returns the human-readable name of the category."""
+        return self.name.capitalize()
+
+    @property
+    def min_value_base(self) -> float | None:
+        """Returns the physical minimum value in the base unit."""
+        if self == Category.TEMPERATURE:
+            return -273.15
+        return 0.0
+
 
 # 2. Data Structure for Unit Definitions
 class UnitDefinition(NamedTuple):
     """Data structure holding metadata and conversion logic for a specific unit.
 
     Attributes:
-        id: A unique numeric identifier for the unit.
         name: The singular name of the unit (e.g., 'Meter').
         plural: The plural name of the unit (e.g., 'Meters').
         category: The physical category the unit belongs to.
@@ -45,10 +56,8 @@ class UnitDefinition(NamedTuple):
         from_base: A callable that converts a value *from* the base unit *to* this unit.
     """
 
-    id: int
     name: str
     plural: str
-    category_name: str
     category: Category
     to_base: Callable[[float], float]
     from_base: Callable[[float], float]
@@ -138,6 +147,18 @@ class UnitConverter:
 
         return unit
 
+    @classmethod
+    def get_keys_by_category(cls, category: Category) -> list[str]:
+        """Returns all registered keys for a given category.
+
+        Args:
+            category: The physical category to filter by.
+
+        Returns:
+            list[str]: A list of unit keys belonging to the category.
+        """
+        return [key for key, defn in cls.registry.items() if defn.category == category]
+
 
 # --- Unit Configuration (Registration of supported units) ---
 
@@ -146,10 +167,8 @@ class UnitConverter:
 UnitConverter.register(
     'METER',
     UnitDefinition(
-        1,
         'Meter',
         'Meters',
-        'Length',
         Category.LENGTH,
         lambda x: x,  # Already base unit.
         lambda x: x,
@@ -158,10 +177,8 @@ UnitConverter.register(
 UnitConverter.register(
     'KM',
     UnitDefinition(
-        2,
         'Kilometer',
         'Kilometers',
-        'Length',
         Category.LENGTH,
         lambda x: x * 1000.0,  # kilometer -> meter
         lambda x: x / 1000.0,  # meter -> kilometer
@@ -170,10 +187,8 @@ UnitConverter.register(
 UnitConverter.register(
     'MILE',
     UnitDefinition(
-        3,
         'Mile',
         'Miles',
-        'Length',
         Category.LENGTH,
         lambda x: x * 1609.34,  # mile -> meter
         lambda x: x / 1609.34,  # meter -> mile
@@ -185,10 +200,8 @@ UnitConverter.register(
 UnitConverter.register(
     'KG',
     UnitDefinition(
-        1,
         'Kilogram',
         'Kilograms',
-        'Weight',
         Category.WEIGHT,
         lambda x: x,  # Already base unit.
         lambda x: x,
@@ -197,10 +210,8 @@ UnitConverter.register(
 UnitConverter.register(
     'POUND',
     UnitDefinition(
-        2,
         'Pound',
         'Pounds',
-        'Weight',
         Category.WEIGHT,
         lambda x: x * 0.453592,  # pound -> kilogram
         lambda x: x / 0.453592,  # kilogram -> pound
@@ -209,10 +220,8 @@ UnitConverter.register(
 UnitConverter.register(
     'OUNCE',
     UnitDefinition(
-        3,
         'Ounce',
         'Ounces',
-        'Weight',
         Category.WEIGHT,
         lambda x: x * 0.0283495,  # ounce -> kilogram
         lambda x: x / 0.0283495,  # kilogram -> ounce
@@ -224,10 +233,8 @@ UnitConverter.register(
 UnitConverter.register(
     'CELSIUS',
     UnitDefinition(
-        1,
         'Degree Celsius',
         'Degrees Celsius',
-        'Temperature',
         Category.TEMPERATURE,
         lambda x: x,  # Already base unit.
         lambda x: x,
@@ -236,10 +243,8 @@ UnitConverter.register(
 UnitConverter.register(
     'FAHRENHEIT',
     UnitDefinition(
-        2,
         'Degree Fahrenheit',
         'Degrees Fahrenheit',
-        'Temperature',
         Category.TEMPERATURE,
         lambda x: (x - 32) * 5 / 9,  # Fahrenheit -> Celsius
         lambda x: (x * 9 / 5) + 32,  # Celsius -> Fahrenheit
@@ -248,10 +253,8 @@ UnitConverter.register(
 UnitConverter.register(
     'KELVIN',
     UnitDefinition(
-        3,
         'Kelvin',
         'Kelvin',
-        'Temperature',
         Category.TEMPERATURE,
         lambda x: x - 273.15,  # Kelvin -> Celsius
         lambda x: x + 273.15,  # Celsius -> Kelvin
@@ -263,10 +266,8 @@ UnitConverter.register(
 UnitConverter.register(
     'PASCAL',
     UnitDefinition(
-        1,
         'Pascal',
         'Pascals',
-        'Pressure',
         Category.PRESSURE,
         lambda x: x,  # Already base unit.
         lambda x: x,
@@ -275,10 +276,8 @@ UnitConverter.register(
 UnitConverter.register(
     'BAR',
     UnitDefinition(
-        2,
         'Bar',
         'Bars',
-        'Pressure',
         Category.PRESSURE,
         lambda x: x * 100000.0,  # bar -> Pascal
         lambda x: x / 100000.0,  # Pascal -> bar
@@ -287,10 +286,8 @@ UnitConverter.register(
 UnitConverter.register(
     'ATM',
     UnitDefinition(
-        3,
         'Atmosphere',
         'Atmospheres',
-        'Pressure',
         Category.PRESSURE,
         lambda x: x * 101325.0,  # atmosphere -> Pascal
         lambda x: x / 101325.0,  # Pascal -> atmosphere

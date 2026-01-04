@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-01-04
+
+### Added
+- **Dynamic Registry:** Added get_keys_by_category to UnitConverter to allow dynamic discovery of units.
+
+- **Category Metadata:** Added display_name and min_value_base properties to the Category enum to centralize domain rules and UI strings.
+
+### Changed
+- **UI Orchestration:** Refactored main.py to generate the main menu and unit sub-menus dynamically by iterating over categories and the unit registry.
+
+- **Validation Engine:** Unified physical limit checks in validate_physical_limits using the new min_value_base property, ensuring consistent validation across all measurement types.
+
+- **Refined Data Structures:** Removed redundant id and category_name from UnitDefinition to follow DRY (Don't Repeat Yourself) principles.
+
+### Fixed
+- **Accuracy:** Improved physical limit validation by performing comparisons in the base unit (e.g., Kelvin/Celsius normalization) before triggering warnings.
+
+
 ## [1.1.0] - 2026-01-04
 
 ### Added

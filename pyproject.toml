@@ -62,8 +62,6 @@ ignore = [
     "D213", # Conflict with Google docstring (prefer D212 - summary on the first line).
     "D406",
     "D407",
-    "ANN101",
-    "ANN102",
     "ANN204",
     "TRY003",
     "TRY301",
