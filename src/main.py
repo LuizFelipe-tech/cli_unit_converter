@@ -6,16 +6,11 @@ between different systems for length, weight and temperature.
 
 from __future__ import annotations
 
-from collections.abc import Callable
 import math
 import sys
-from typing import TYPE_CHECKING, TypeAlias
 
 import enums
 import exceptions
-
-if TYPE_CHECKING:
-    from enum import Enum
 
 __version__ = '1.0.0'
 
@@ -28,39 +23,6 @@ GREEN_TEXT = '\x1b[32m'
 YELLOW_TEXT = '\033[33m'
 
 RESET = '\x1b[0m'
-
-
-_ConversionFunc: TypeAlias = Callable[[float], float]
-
-
-CONVERSION_FACTORS: dict[Enum, _ConversionFunc] = {
-    enums.Temperature.FAHRENHEIT_TO_CELSIUS: lambda x: (5 / 9) * (x - 32),
-    enums.Temperature.CELSIUS_TO_FAHRENHEIT: lambda x: x * (9 / 5) + 32,
-    enums.Temperature.FAHRENHEIT_TO_KELVIN: lambda x: (x - 32) * (5 / 9) + 273.15,
-    enums.Temperature.KELVIN_TO_FAHRENHEIT: lambda x: (x - 273.15) * (9 / 5) + 32,
-    enums.Temperature.CELSIUS_TO_KELVIN: lambda x: x + 273.15,
-    enums.Temperature.KELVIN_TO_CELSIUS: lambda x: x - 273.15,
-    enums.Weight.KILOGRAMS_TO_POUNDS: lambda x: x * 2.20462,
-    enums.Weight.POUNDS_TO_KILOGRAMS: lambda x: x * 35.274,
-    enums.Weight.KILOGRAMS_TO_OUNCES: lambda x: x * 35.274,
-    enums.Weight.OUNCES_TO_KILOGRAMS: lambda x: x / 35.274,
-    enums.Weight.POUNDS_TO_OUNCES: lambda x: x * 16,
-    enums.Weight.OUNCES_TO_POUNDS: lambda x: x / 16,
-    enums.Length.METERS_TO_KILOMETERS: lambda x: x / 1000,
-    enums.Length.KILOMETERS_TO_METERS: lambda x: x * 1000,
-    enums.Length.METERS_TO_MILES: lambda x: x / 1609.34,
-    enums.Length.MILES_TO_METERS: lambda x: x * 1609.34,
-    enums.Length.KILOMETERS_TO_MILES: lambda x: x / 1.60934,
-    enums.Length.MILES_TO_KILOMETERS: lambda x: x * 1.60934,
-    enums.Pressure.PASCAL_TO_ATMOSPHERE: lambda x: x / 101325,
-    enums.Pressure.ATMOSPHERE_TO_PASCAL: lambda x: x * 101325,
-    enums.Pressure.PASCAL_TO_BAR: lambda x: x / 100000,
-    enums.Pressure.BAR_TO_PASCAL: lambda x: x * 100000,
-    enums.Pressure.ATMOSPHERE_TO_BAR: lambda x: x * 1.01325,
-    enums.Pressure.BAR_TO_ATMOSPHERE: lambda x: x / 1.01325,
-}
-
-PRINTS: dict[Enum, str] = {}
 
 
 def display_main_menu() -> None:
@@ -103,200 +65,36 @@ def process_menu_selection() -> None:
     invalid inputs internally by catching exceptions and printing error messages.
     """
     valid_option: int = get_menu_option()
-    match valid_option:
-        case 1:
+    # Executes conversion logic based on menu selection
+    match enums.Category(valid_option):
+        case enums.Category.LENGTH:
             handle_length_conversion()
-        case 2:
+        case enums.Category.WEIGHT:
             handle_weight_conversion()
-        case 3:
+        case enums.Category.TEMPERATURE:
             handle_temp_conversion()
-        case 4:
+        case enums.Category.PRESSURE:
             handle_pressure_conversion()
-        case 5:
+        case _:
             print(f'{YELLOW_TEXT}Exiting the program...{RESET}')
             sys.exit(0)
 
 
-def display_temp_units() -> None:
-    """Displays the available units for temperature conversion."""
+def display_units(keys: list[str]) -> None:
     print()
-    print(f'{GREEN_TEXT}--- Temperature Converter selected ---{RESET}')
+    print(
+        f'{GREEN_TEXT}'
+        f'--- {enums.UnitConverter.registry[keys[0]].category_name} Converter selected ---'
+        f'{RESET}',
+    )
     print('Available units below')
-    print('1. Fahrenheit')
-    print('2. Celsius')
-    print('3. Kelvin')
+    for i, key in enumerate(keys, start=1):
+        print(f'{i}. {enums.UnitConverter.registry[key].name.split()[-1]}')
 
 
-def display_weight_units() -> None:
-    """Displays the available units for weight conversion."""
-    print()
-    print(f'{GREEN_TEXT}--- Weight Converter selected ---{RESET}')
-    print('Available units below')
-    print('1. Kilograms')
-    print('2. Pounds')
-    print('3. Ounces')
-
-
-def display_length_units() -> None:
-    """Displays the available units for length conversion."""
-    print()
-    print(f'{GREEN_TEXT}--- Length Converter selected ---{RESET}')
-    print('Available units below')
-    print('1. Meters')
-    print('2. Kilometers')
-    print('3. Miles')
-
-
-def display_pressure_units() -> None:
-    """Displays the available units for pressure conversion."""
-    print()
-    print(f'{GREEN_TEXT}--- Pressure Converter selected ---{RESET}')
-    print('Available units below')
-    print('1. Pascal')
-    print('2. Atmosphere')
-    print('3. Bar')
-
-
-def print_temp_conversion(units: Enum, converted: float) -> None:
-    """Prints the converted temperature.
-
-    Args:
-      units: A tuple containing two integers (source_unit, target_unit).
-      converted: The numerical result of the conversion.
-    """
-    match units:
-        case enums.Temperature.FAHRENHEIT_TO_CELSIUS:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Celsius'
-                f'{RESET}',
-            )
-        case enums.Temperature.CELSIUS_TO_FAHRENHEIT:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Fahrenheit'
-                f'{RESET}',
-            )
-        case enums.Temperature.FAHRENHEIT_TO_KELVIN:
-            print(f'{converted:.2f} {"Kelvins" if converted != 1 else "Kelvin"}')
-        case enums.Temperature.KELVIN_TO_FAHRENHEIT:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Fahrenheit'
-                f'{RESET}',
-            )
-        case enums.Temperature.CELSIUS_TO_KELVIN:
-            print(
-                f'{converted:.2f} {"Kelvins" if converted not in {1, 0} else "Kelvin"}',
-            )
-        case enums.Temperature.KELVIN_TO_CELSIUS:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f} {"degrees" if converted != 1 else "degree"} Celsius'
-                f'{RESET}',
-            )
-
-
-def print_weight_conversion(units: tuple[int, int], converted: float) -> None:
-    """Prints the converted weight.
-
-    Args:
-      units: A tuple containing two integers (source_unit, target_unit).
-      converted: The numerical result of the conversion.
-    """
-    match units:
-        case enums.Weight.KILOGRAMS_TO_POUNDS.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Pounds" if converted != 1 else "Pound"}{RESET}')
-        case enums.Weight.POUNDS_TO_KILOGRAMS.value:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f}{"Kilograms" if converted != 1 else "Kilogram"}{RESET}',
-            )
-        case enums.Weight.KILOGRAMS_TO_OUNCES.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Ounces" if converted != 1 else "Ounce"}{RESET}')
-        case enums.Weight.OUNCES_TO_KILOGRAMS.value:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f}{"Kilograms" if converted != 1 else "Kilogram"}{RESET}',
-            )
-        case enums.Weight.POUNDS_TO_OUNCES.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Ounces" if converted != 1 else "Ounce"}{RESET}')
-        case enums.Weight.OUNCES_TO_POUNDS.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Pounds" if converted != 1 else "Pound"}{RESET}')
-
-
-def print_length_conversion(units: tuple[int, int], converted: float) -> None:
-    """Prints the converted length.
-
-    Args:
-      units: A tuple containing two integers (source_unit, target_unit).
-      converted: The numerical result of the conversion.
-    """
-    match units:
-        case enums.Length.METERS_TO_KILOMETERS.value:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f} {"Kilometers" if converted != 1 else "Kilometer"}'
-                f'{RESET}',
-            )
-        case enums.Length.KILOMETERS_TO_METERS.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Meters" if converted != 1 else "Meter"}{RESET}')
-        case enums.Length.METERS_TO_MILES.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Miles" if converted != 1 else "Mile"}{RESET}')
-        case enums.Length.MILES_TO_METERS.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Meters" if converted != 1 else "Meter"}{RESET}')
-        case enums.Length.KILOMETERS_TO_MILES.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Miles" if converted != 1 else "Mile"}{RESET}')
-        case enums.Length.MILES_TO_KILOMETERS.value:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f} {"Kilometers" if converted != 1 else "Kilometer"}'
-                f'{RESET}',
-            )
-
-
-def print_pressure_conversion(units: tuple[int, int], converted: float) -> None:
-    """Prints the converted pressure.
-
-    Args:
-        units: A tuple containing two integers (source_unit, target_unit).
-        converted: The numerical value to be converted.
-    """
-    match units:
-        case enums.Pressure.PASCAL_TO_ATMOSPHERE.value:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f} {"Atmospheres" if converted != 1 else "Atmosphere"}'
-                f'{RESET}',
-            )
-        case enums.Pressure.ATMOSPHERE_TO_PASCAL.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Pascals" if converted != 1 else "Pascal"}{RESET}')
-        case enums.Pressure.PASCAL_TO_BAR.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Bars" if converted != 1 else "Bar"}{RESET}')
-        case enums.Pressure.BAR_TO_PASCAL.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Pascals" if converted != 1 else "Pascal"}{RESET}')
-        case enums.Pressure.ATMOSPHERE_TO_BAR.value:
-            print(f'{GREEN_TEXT}{converted:.2f} {"Bars" if converted != 1 else "Bar"}{RESET}')
-        case enums.Pressure.BAR_TO_ATMOSPHERE.value:
-            print(
-                f'{GREEN_TEXT}'
-                f'{converted:.2f} {"Atmospheres" if converted != 1 else "Atmosphere"}'
-                f'{RESET}',
-            )
-
-
-def perform_conversion(units: Enum, value: float) -> float:
-    """Generic conversion function handling linear and affine transformations.
-
-    Args:
-        units: A tuple (source_unit, target_unit) identifying the conversion.
-        value: The numerical value to convert.
-
-    Returns:
-        The converted float value.
-    """
-    conversion_func = CONVERSION_FACTORS[units]
-    return conversion_func(value)
+def print_conversion(converted_unit: float) -> None:
+    unit_plural = enums.UnitConverter.get_unit_info('METER').plural
+    print(f'{converted_unit} {unit_plural}')
 
 
 def handle_temp_conversion() -> None:
@@ -305,14 +103,13 @@ def handle_temp_conversion() -> None:
     Manages the sequence of displaying units, requesting user input for units
     and values, performing the conversion, and displaying the result.
     """
-    display_temp_units()
-    units_chosen: tuple[int, int] = request_units_number()
+    nomes: list[str] = ['CELSIUS', 'FAHRENHEIT', 'KELVIN']
+    display_units(nomes)
+    entry_unit, converted_unit = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
-    converted_t = perform_conversion(enums.Temperature(units_chosen), input_value)
-    print(converted_t)
-    print()
-    validate_physical_limits(3, units_chosen[0], input_value)
-    print_temp_conversion(enums.Temperature(units_chosen), converted_t)
+    converted_t = enums.UnitConverter.convert(input_value, nomes[entry_unit], nomes[converted_unit])
+    validate_physical_limits(3, entry_unit, input_value)
+    print_conversion(converted_t)
 
 
 def handle_weight_conversion() -> None:
@@ -321,13 +118,13 @@ def handle_weight_conversion() -> None:
     Manages the sequence of displaying units, requesting user input for units
     and values, performing the conversion, and displaying the result.
     """
-    display_weight_units()
-    units_chosen: tuple[int, int] = request_units_number()
+    nomes: list[str] = ['KG', 'POUND', 'OUNCE']
+    display_units(nomes)
+    entry_unit, converted_unit = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
-    converted_w = perform_conversion(enums.Weight(units_chosen), input_value)
-    print()
-    validate_physical_limits(2, units_chosen[0], input_value)
-    print_weight_conversion(units_chosen, converted_w)
+    converted_w = enums.UnitConverter.convert(input_value, nomes[entry_unit], nomes[converted_unit])
+    validate_physical_limits(3, entry_unit, input_value)
+    print_conversion(converted_w)
 
 
 def handle_length_conversion() -> None:
@@ -336,13 +133,13 @@ def handle_length_conversion() -> None:
     Manages the sequence of displaying units, requesting user input for units
     and values, performing the conversion, and displaying the result.
     """
-    display_length_units()
-    units_chosen: tuple[int, int] = request_units_number()
+    nomes: list[str] = ['METER', 'KM', 'MILE']
+    display_units(nomes)
+    entry_unit, converted_unit = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
-    converted_l = perform_conversion(enums.Length(units_chosen), input_value)
-    print()
-    validate_physical_limits(1, units_chosen[0], input_value)
-    print_length_conversion(units_chosen, converted_l)
+    converted_l = enums.UnitConverter.convert(input_value, nomes[entry_unit], nomes[converted_unit])
+    validate_physical_limits(3, entry_unit, input_value)
+    print_conversion(converted_l)
 
 
 def handle_pressure_conversion() -> None:
@@ -351,13 +148,13 @@ def handle_pressure_conversion() -> None:
     Manages the sequence of displaying units, requesting user input for units
     and values, performing the conversion, and displaying the result.
     """
-    display_pressure_units()
-    units_chosen: tuple[int, int] = request_units_number()
+    nomes: list[str] = ['PASCAL', 'BAR', 'ATM']
+    display_units(nomes)
+    entry_unit, converted_unit = request_units_number()
     input_value: float = float(input('Enter the number to be converted: '))
-    converted_p = perform_conversion(enums.Pressure(units_chosen), input_value)
-    print()
-    validate_physical_limits(4, units_chosen[0], input_value)
-    print_pressure_conversion(units_chosen, converted_p)
+    converted_p = enums.UnitConverter.convert(input_value, nomes[entry_unit], nomes[converted_unit])
+    validate_physical_limits(3, entry_unit, input_value)
+    print_conversion(converted_p)
 
 
 def validate_physical_limits(category: int, source_unit: int, value: float) -> None:
@@ -417,19 +214,19 @@ def request_units_number() -> tuple[int, int]:
       A tuple containing two integers: (valid_entry_number, valid_converted_number).
     """
     while True:
-        is_valid_number, valid_entry_number = get_valid_number(enums.NumberUsedFor(1))
+        is_valid_number, valid_entry_number = get_valid_number(is_an_entry_number=True)
         if is_valid_number:
             break
         continue
     while True:
-        is_valid_number, valid_converted_number = get_valid_number(enums.NumberUsedFor(2))
+        is_valid_number, valid_converted_number = get_valid_number(is_an_entry_number=False)
         if is_valid_number:
             break
         continue
     return valid_entry_number, valid_converted_number
 
 
-def get_valid_number(unit_indicator: enums.NumberUsedFor) -> tuple[bool, int]:
+def get_valid_number(is_an_entry_number: bool) -> tuple[bool, int]:
     """Gets a valid unit ID from user input.
 
     Validates that the user input corresponds to an available unit option.
@@ -442,7 +239,7 @@ def get_valid_number(unit_indicator: enums.NumberUsedFor) -> tuple[bool, int]:
         number = int(
             input(
                 'Enter the origin unit number: '
-                if unit_indicator == enums.NumberUsedFor.entry_input
+                if is_an_entry_number
                 else 'Enter the converted unit number: ',
             ),
         )
