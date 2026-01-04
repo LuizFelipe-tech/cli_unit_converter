@@ -20,7 +20,7 @@ import exceptions
 
 console = Console()
 
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 MENU_OPTIONS = [1, 2, 3, 4, 5]
 
