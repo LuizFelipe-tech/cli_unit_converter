@@ -59,10 +59,10 @@ class UnitConverter:
         * Pressure: Pascal
 
     Attributes:
-        _registry (dict[str, UnitDefinition]): Internal storage for unit definitions.
+        registry (dict[str, UnitDefinition]): Internal storage for unit definitions.
     """
 
-    _registry: typing.ClassVar[dict[str, UnitDefinition]] = {}
+    registry: typing.ClassVar[dict[str, UnitDefinition]] = {}
 
     @classmethod
     def register(cls, key: str, definition: UnitDefinition) -> None:
@@ -72,7 +72,7 @@ class UnitConverter:
             key: The string identifier for the unit (case-insensitive).
             definition: The UnitDefinition object containing metadata and formulas.
         """
-        cls._registry[key.upper()] = definition
+        cls.registry[key.upper()] = definition
 
     @classmethod
     def convert(cls, value: float, from_unit: str, to_unit: str) -> float:
@@ -91,8 +91,8 @@ class UnitConverter:
             TypeError: If the units belong to different physical categories
                 (e.g., attempting to convert Length to Weight).
         """
-        source = cls._registry.get(from_unit.upper())
-        target = cls._registry.get(to_unit.upper())
+        source = cls.registry.get(from_unit.upper())
+        target = cls.registry.get(to_unit.upper())
 
         # Safety Validations (Logic and Consistency)
         if not source or not target:
