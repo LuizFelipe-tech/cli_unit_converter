@@ -112,16 +112,24 @@ class UnitConverter:
         return target.from_base(value_in_base)
 
     @classmethod
-    def get_unit_info(cls, unit_key: str) -> UnitDefinition | None:
+    def get_unit_info(cls, unit_key: str) -> UnitDefinition:
         """Retrieves metadata for a specific unit.
 
         Args:
             unit_key: The string identifier for the unit.
 
         Returns:
-            UnitDefinition | None: The unit details if found, otherwise None.
+            UnitDefinition: The unit details the object.
+
+        Raises:
+            ValueError: If the provided unit_key is not found in the registry.
         """
-        return cls._registry.get(unit_key.upper())
+        unit = cls.registry.get(unit_key.upper())
+
+        if unit is None:
+            raise ValueError(f"Unit '{unit_key}' not found in registry.")
+
+        return unit
 
 
 # --- Unit Configuration (Where the magic happens) ---
