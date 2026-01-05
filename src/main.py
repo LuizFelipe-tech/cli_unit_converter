@@ -37,14 +37,15 @@ def display_main_menu() -> None:
     menu_lines = []
     for category in enums.Category:
         units = enums.UnitConverter.get_keys_by_category(category)
-        plural_names = [enums.UnitConverter.get_unit_info(k).plural for k in units]
-        units_str = ' :left_right_arrow: '.join(plural_names)
+        names = [enums.UnitConverter.get_unit_info(k).name.split()[-1] for k in units]
+        units_str = ' :left_right_arrow: '.join(names)
         menu_lines.append(f'{category.value}. {category.display_name} ({units_str})')
 
     exit_option = len(enums.Category) + 1
     menu_lines.append(f'{exit_option}. Exit')
 
     menu_content = '\n'.join(menu_lines)
+    print()
     console.print(Panel(menu_content, title='[bold blue]Main Menu[/bold blue]', expand=False))
 
 
@@ -106,7 +107,7 @@ def display_units(category: enums.Category, keys: list[str]) -> None:
     console.print(f'[green]--- {category.display_name} Converter selected ---[/green]')
     console.print('Available units below')
     for i, key in enumerate(keys, start=1):
-        console.print(f'{i}. {enums.UnitConverter.get_unit_info(key).name}')
+        console.print(f'{i}. {enums.UnitConverter.get_unit_info(key).name.split()[-1]}')
 
 
 def print_conversion(converted_value: float, unit_key: str) -> None:
@@ -120,8 +121,10 @@ def print_conversion(converted_value: float, unit_key: str) -> None:
         unit_key: The registry key of the target unit (to fetch its display name).
     """
     unit_plural = enums.UnitConverter.get_unit_info(unit_key).plural
+    unit_singular = enums.UnitConverter.get_unit_info(unit_key).name
     console.print(
-        f'[bold green]Result:[/bold green] [yellow]{converted_value}[/yellow] {unit_plural}',
+        f'[bold green]Result:[/bold green] [yellow]{converted_value:.2f}[/yellow]'
+        f' {unit_singular if converted_value in {0, 1} else unit_plural}',
     )
 
 
@@ -164,11 +167,7 @@ def handle_conversion(category: enums.Category, units_keys: list[str]) -> None:
     print_conversion(result, target_key)
 
 
-def validate_physical_limits(
-    category: enums.Category,
-    unit_key: str,
-    value: float,
-) -> None:
+def validate_physical_limits(category: enums.Category, unit_key: str, value: float) -> None:
     """Checks for physical/logical limits and warns if exceeded.
 
     Verifies against Absolute Zero for temperature and non-negativity
