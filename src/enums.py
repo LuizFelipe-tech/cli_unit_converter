@@ -86,8 +86,8 @@ class UnitConverter:
         """Registers a new unit definition in the central registry.
 
         Args:
-            key: The string identifier for the unit (case-insensitive).
-            definition: The UnitDefinition object containing metadata and formulas.
+            key (str): The string identifier for the unit (case-insensitive).
+            definition (UnitDefinition): The UnitDefinition object containing metadata and formulas.
         """
         cls.registry[key.upper()] = definition
 
@@ -96,9 +96,9 @@ class UnitConverter:
         """Converts a value from one unit to another.
 
         Args:
-            value: The numeric value to convert.
-            from_unit: The string key of the source unit (e.g., 'KM').
-            to_unit: The string key of the target unit (e.g., 'MILE').
+            value (float): The numeric value to convert.
+            from_unit (str): The string key of the source unit (e.g., 'KM').
+            to_unit (str): The string key of the target unit (e.g., 'MILE').
 
         Returns:
             float: The converted value in the target unit.
@@ -132,7 +132,7 @@ class UnitConverter:
         """Retrieves metadata for a specific unit.
 
         Args:
-            unit_key: The string identifier for the unit.
+            unit_key (str): The string identifier for the unit.
 
         Returns:
             UnitDefinition: The unit details the object.
@@ -152,7 +152,7 @@ class UnitConverter:
         """Returns all registered keys for a given category.
 
         Args:
-            category: The physical category to filter by.
+            category (Category): The physical category to filter by.
 
         Returns:
             list[str]: A list of unit keys belonging to the category.

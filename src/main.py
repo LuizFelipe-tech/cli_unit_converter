@@ -99,8 +99,8 @@ def display_units(category: enums.Category, keys: list[str]) -> None:
     corresponding selection numbers based on the provided registry keys.
 
     Args:
-        category: The selected physical category.
-        keys: A list of strings representing the keys in the UnitConverter
+        category (enums.Category): The selected physical category.
+        keys (list[str]): A list of strings representing the keys in the UnitConverter
             registry (e.g., ['METER', 'KM', 'MILE']).
     """
     console.print()
@@ -117,8 +117,8 @@ def print_conversion(converted_value: float, unit_key: str) -> None:
     grammatically correct output.
 
     Args:
-        converted_value: The numeric result of the conversion.
-        unit_key: The registry key of the target unit (to fetch its display name).
+        converted_value (float): The numeric result of the conversion.
+        unit_key (str): The registry key of the target unit (to fetch its display name).
     """
     unit_plural = enums.UnitConverter.get_unit_info(unit_key).plural
     unit_singular = enums.UnitConverter.get_unit_info(unit_key).name
@@ -137,9 +137,9 @@ def handle_conversion(category: enums.Category, units_keys: list[str]) -> None:
     while enforcing category-specific physical limits.
 
     Args:
-        category: The category enum member (e.g., Category.LENGTH) is used
+        category (enums.Category): The category enum member (e.g., Category.LENGTH) is used
             to determine specific validation rules (like absolute zero).
-        units_keys: A list of string keys representing the available units
+        units_keys (list[str]): A list of string keys representing the available units
             in the registry for this category (e.g., ['METER', 'KM']).
     """
     # 1. Dynamically display units
@@ -175,10 +175,10 @@ def validate_physical_limits(category: enums.Category, unit_key: str, value: flo
     computational overflow (infinity).
 
     Args:
-        category: The category enum member (e.g., Category.TEMPERATURE).
-        unit_key: The registry key of the source unit (e.g., 'CELSIUS',
+        category (enums.Category): The category enum member (e.g., Category.TEMPERATURE).
+        unit_key (str): The registry key of the source unit (e.g., 'CELSIUS',
             'FAHRENHEIT'). Used to look up specific physical limits.
-        value: The input value to validate.
+        value (float): The input value to validate.
     """
     # 1. Check for Computational Limits (Infinity)
     if math.isinf(value):
@@ -210,7 +210,7 @@ def request_units_number(max_units: int) -> tuple[int, int]:
     target unit.
 
     Args:
-        max_units: The maximum allowed unit number.
+        max_units (int): The maximum allowed unit number.
 
     Returns:
         tuple[int, int]: A tuple containing the valid entry unit number and
@@ -241,9 +241,9 @@ def get_valid_number(*, is_an_entry_number: bool, max_value: int) -> tuple[bool,
     Ensures the user enters a number corresponding to an available unit.
 
     Args:
-        is_an_entry_number: If True, prompts for the 'origin' unit.
+        is_an_entry_number (bool): If True, prompts for the 'origin' unit.
             If False, prompts for the 'target' unit.
-        max_value: The maximum allowed unit number.
+        max_value (int): The maximum allowed unit number.
 
     Returns:
         tuple[bool, int]: A tuple containing:
