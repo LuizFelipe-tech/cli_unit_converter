@@ -16,30 +16,33 @@ intuitive text-based interface enhanced with the rich library for better readabi
 
 ## ✨ Key Features
 
-- **Multi-Category Support:**
-    - 📏 **Length:** Meters ↔ Kilometers ↔ Miles
-    - ⚖️ **Weight:** Kilograms ↔ Pounds ↔ Ounces
-    - 🌡️ **Temperature:** Celsius ↔ Fahrenheit ↔ Kelvin
-    - 🎈 **Pressure:** Pascal ↔ Atmosphere ↔ Bar
-- **Scientific Validation:** Enforces physical limits (e.g., prevents temperatures below Absolute Zero).
-- **Modern UI:** Uses Rich Panels and colored feedback for a superior User Experience.
-- **Type Safe:** Fully annotated with type hints for better maintainability and static analysis.
+* **Multi-Category Support:**
+    * 📏 **Length:** Meters ↔ Kilometers ↔ Miles
+    * ⚖️ **Weight:** Kilograms ↔ Pounds ↔ Ounces
+    * 🌡️ **Temperature:** Celsius ↔ Fahrenheit ↔ Kelvin
+    * 🎈 **Pressure:** Pascal ↔ Atmosphere ↔ Bar
+* **Scientific Validation:** Enforces physical limits
+  (e.g., prevents temperatures below Absolute Zero).
+* **Modern UI:** Uses Rich Panels and colored feedback for a superior User Experience.
+* **Type Safe:** Fully annotated with type hints for better maintainability and static analysis.
 
 ## 🛠️ Technical Highlights
 
 *Designed with scalability and readability in mind.*
 
-- **Modular Design:** Each conversion category is encapsulated in its own logical block.
-- **Registry Pattern:** Uses a centralized `UnitConverter` class to manage unit definitions dynamically.
-- **Input Validation:** A dedicated validation loop ensures that user input is sanitized before
+* **Modular Design:** Each conversion category is encapsulated in its own logical block.
+* **Registry Pattern:** Uses a centralized `UnitConverter` class to manage unit definitions
+  dynamically.
+* **Input Validation:** A dedicated validation loop ensures that user input is sanitized before
   processing.
-- **Normalization Strategy:** Converts all values to a "Base Unit" before converting to the target, reducing algorithmic complexity.
+* **Normalization Strategy:** Converts all values to a "Base Unit" before converting to the target,
+  reducing algorithmic complexity.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- **Python 3.10** or higher.
+* **Python 3.10** or higher.
 
 ### Installation
 
@@ -55,7 +58,6 @@ intuitive text-based interface enhanced with the rich library for better readabi
     # OR manually install the requirement
     pip install rich
     ```
-
 
 
 3. **Run the application:**
