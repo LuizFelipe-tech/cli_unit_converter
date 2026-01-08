@@ -189,6 +189,7 @@ def validate_physical_limits(category: enums.Category, unit_key: str, value: flo
 
     # 2. Check for Physical Limits
     min_base = category.min_value_base
+    # Warns when the value is below a physical minimum
     if min_base is not None:
         unit_info = enums.UnitConverter.get_unit_info(unit_key)
         value_in_base = unit_info.to_base(value)
