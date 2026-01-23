@@ -8,3 +8,7 @@ pyproject.toml
 .editorconfig
 styles/
 logs/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
