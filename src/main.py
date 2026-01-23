@@ -32,7 +32,7 @@ import enums  # noqa: E402
 import exceptions  # noqa: E402
 
 # --- Metadata ---
-__version__: Final[str] = '1.2.0'
+__version__: Final[str] = '1.2.1'
 __author__: Final[str] = 'Luiz Felipe'
 
 # --- Global Instances ---
