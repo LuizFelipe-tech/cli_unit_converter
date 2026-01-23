@@ -44,3 +44,5 @@
 2026-01-23T13:39:44.517173Z unit_registered                category=PRESSURE key=BAR
 2026-01-23T13:39:44.517302Z unit_registered                category=PRESSURE key=ATM
 2026-01-23T13:39:44.544524Z app_startup                    version=1.1.0
+2026-01-23T16:46:20.911159Z app_startup                    version=1.2.0
+2026-01-23T16:59:58.920590Z app_startup                    version=1.2.0

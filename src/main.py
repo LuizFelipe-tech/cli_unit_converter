@@ -12,27 +12,30 @@ from __future__ import annotations
 # --- Standard Library ---
 import math
 import sys
+from typing import Final
 
 from rich.console import Console
 from rich.panel import Panel
 
-# --- Third-Party Libraries ---
-import structlog
-
-import enums
-import exceptions
-
-# --- Internal Modules & Configuration ---
+# --- Internal Modules ---
 from logging_config import configure_logging
 
-# Initialize Configuration
+# Configure logging before importing modules that log at import time
 configure_logging()
 
-# Metadata
-__version__ = '1.2.0'
-__author__ = 'Luiz Felipe'
+# --- Third-Party Libraries ---
+import structlog  # noqa: E402
 
-# Global Instances
+import enums  # noqa: E402
+
+# --- Internal Modules ---
+import exceptions  # noqa: E402
+
+# --- Metadata ---
+__version__: Final[str] = '1.2.0'
+__author__: Final[str] = 'Luiz Felipe'
+
+# --- Global Instances ---
 console = Console()
 logger = structlog.get_logger()
 

@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-01-23
+
+### Fixed
+- **Logging:** Fixed an issue where debug logs were appearing in the CLI output. Logs are now correctly restricted to `converter_debug.log`.
 
 ## [1.2.0] - 2026-01-23
 
