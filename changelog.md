@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.2.0] - 2026-01-23
+
+### Added
+- **New Domain:** Added **Volume** category support with conversions for Liters, Milliliters, and US Gallons.
+- **Observability:** Implemented **Structured Logging** (`structlog`) to capture debug data silently to `logs/converter_debug.log`, keeping the UI clean.
+- **CI/CD:** Added `.github/workflows/release.yml` to automate GitHub Releases upon tagging versions (e.g., `v1.2.0`).
+- **Development Experience:** Added enterprise-grade configuration for `Ruff` (linter/formatter), `Mypy` (strict typing), and `Bumpver` in `pyproject.toml`.
+
+### Changed
+- **Architecture:** Decoupled logging configuration into `src/logging_config.py` to adhere to Single Responsibility Principle.
+- **Dependencies:** Updated `pyproject.toml` to include `structlog` and explicit build-system requirements.
+
 ## [1.1.1] - 2026-01-04
 
 ### Added

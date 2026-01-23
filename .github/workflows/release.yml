@@ -1,0 +1,27 @@
+name: Auto Release on Tag
+
+on:
+    push:
+        tags:
+            - 'v*'
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+            -   name: Checkout Code
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth:
+
+            -   name: Create GitHub Release
+                uses: softprops/action-gh-release@v2
+                with:
+                    tag_name: ${{ github.ref_name }}
+                    name: Release ${{ github.ref_name }}
+                    generate_release_notes: true
+                    draft: false
+                    prerelease: false

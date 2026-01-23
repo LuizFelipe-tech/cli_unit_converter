@@ -10,10 +10,12 @@ from __future__ import annotations
 from enum import Enum, auto
 import typing
 from typing import TYPE_CHECKING, NamedTuple
+import structlog
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+logger = structlog.get_logger()
 
 # 1. Physical Categories
 class Category(Enum):
@@ -30,6 +32,7 @@ class Category(Enum):
     WEIGHT = auto()
     TEMPERATURE = auto()
     PRESSURE = auto()
+    VOLUME = auto()
 
     @property
     def display_name(self) -> str:
@@ -90,6 +93,7 @@ class UnitConverter:
             definition (UnitDefinition): The UnitDefinition object containing metadata and formulas.
         """
         cls.registry[key.upper()] = definition
+        logger.debug("unit_registered", key=key.upper(), category=definition.category.name)
 
     @classmethod
     def convert(cls, value: float, from_unit: str, to_unit: str) -> float:
@@ -113,9 +117,15 @@ class UnitConverter:
 
         # Safety Validations (Logic and Consistency)
         if not source or not target:
+            logger.error("conversion_failed_unknown_unit", from_unit=from_unit, to_unit=to_unit)
             raise ValueError(f'Unknown unit: {from_unit} or {to_unit}')
 
         if source.category != target.category:
+            logger.error(
+                "conversion_failed_category_mismatch",
+                source_category=source.category.name,
+                target_category=target.category.name
+            )
             raise TypeError(
                 f'Invalid conversion: Cannot convert {source.category.name} '
                 f'to {target.category.name}.',
@@ -143,6 +153,7 @@ class UnitConverter:
         unit = cls.registry.get(unit_key.upper())
 
         if unit is None:
+            logger.error("unit_lookup_failed", unit_key=unit_key)
             raise ValueError(f"Unit '{unit_key}' not found in registry.")
 
         return unit
@@ -291,5 +302,38 @@ UnitConverter.register(
         Category.PRESSURE,
         lambda x: x * 101325.0,  # atmosphere -> Pascal
         lambda x: x / 101325.0,  # Pascal -> atmosphere
+    ),
+)
+
+# VOLUME CATEGORY (Base Unit: Liters)
+# All volume units are registered with their conversion factors to and from Liters.
+UnitConverter.register(
+    'LITER',
+    UnitDefinition(
+        'Liter',
+        'Liters',
+        Category.VOLUME,
+        lambda x: x,  # Already base unit.
+        lambda x: x,
+    ),
+)
+UnitConverter.register(
+    'MILLILITER',
+    UnitDefinition(
+        'Milliliter',
+        'Milliliters',
+        Category.VOLUME,
+        lambda x: x / 1000.0,  # milliliter -> liter
+        lambda x: x * 1000.0,  # liter -> milliliter
+    ),
+)
+UnitConverter.register(
+    'GALLON_US',
+    UnitDefinition(
+        'US Gallon',
+        'US Gallons',
+        Category.VOLUME,
+        lambda x: x * 3.78541,  # gallon -> liter
+        lambda x: x / 3.78541,  # liter -> gallon
     ),
 )
