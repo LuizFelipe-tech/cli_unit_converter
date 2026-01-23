@@ -7,3 +7,4 @@ pyproject.toml
 .idea/
 .editorconfig
 styles/
+logs/converter_debug.log
