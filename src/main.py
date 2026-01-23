@@ -13,22 +13,24 @@ from __future__ import annotations
 import math
 import sys
 
-# --- Third-Party Libraries ---
-import structlog
 from rich.console import Console
 from rich.panel import Panel
 
-# --- Internal Modules & Configuration ---
-from logging_config import configure_logging
+# --- Third-Party Libraries ---
+import structlog
+
 import enums
 import exceptions
+
+# --- Internal Modules & Configuration ---
+from logging_config import configure_logging
 
 # Initialize Configuration
 configure_logging()
 
 # Metadata
-__version__ = '1.2.0'
-__author__ = "Luiz Felipe"
+__version__ = '1.1.1'
+__author__ = 'Luiz Felipe'
 
 # Global Instances
 console = Console()
@@ -80,10 +82,10 @@ def get_menu_option() -> int:
             if selected_option not in valid_options:
                 raise exceptions.NotAllowedValueError
         except exceptions.NotAllowedValueError:  # noqa: PERF203
-            logger.debug("menu_selection_invalid", value=selected_option)
+            logger.debug('menu_selection_invalid', value=selected_option)
             console.print('[bold red][ERROR] PLEASE ENTER A VALID NUMBER [/bold red]')
         except ValueError:
-            logger.debug("menu_selection_error", error="not_a_number")
+            logger.debug('menu_selection_error', error='not_a_number')
             console.print('[bold red][ERROR] PLEASE ENTER A NUMBER[/bold red]')
         else:
             break
@@ -99,12 +101,12 @@ def process_menu_selection() -> None:
     exit_option = len(enums.Category) + 1
     # Execute conversion logic based on menu selection.
     if valid_option == exit_option:
-        logger.info("app_exit", reason="user_selected_exit")
+        logger.info('app_exit', reason='user_selected_exit')
         console.print('[yellow]Exiting the program...[/yellow]')
         sys.exit(0)
 
     selected_category = enums.Category(valid_option)
-    logger.info("category_selected", category=selected_category.name)
+    logger.info('category_selected', category=selected_category.name)
     units_keys = enums.UnitConverter.get_keys_by_category(selected_category)
     handle_conversion(selected_category, units_keys)
 
@@ -171,7 +173,7 @@ def handle_conversion(category: enums.Category, units_keys: list[str]) -> None:
             console.input('[bold blue]Enter the number to be converted: [/bold blue]'),
         )
     except ValueError:
-        logger.error("conversion_input_error", error="invalid_number")
+        logger.exception('conversion_input_error', error='invalid_number')
         console.print('[bold red][ERROR] PLEASE ENTER A VALID NUMBER[/bold red]')
         return
 
@@ -180,17 +182,17 @@ def handle_conversion(category: enums.Category, units_keys: list[str]) -> None:
     target_key = units_keys[target_index - 1]
 
     logger.info(
-        "conversion_started",
+        'conversion_started',
         category=category.name,
         source_unit=source_key,
         target_unit=target_key,
-        input_value=input_value
+        input_value=input_value,
     )
 
     # 4. Convert
     result = enums.UnitConverter.convert(input_value, source_key, target_key)
 
-    logger.info("conversion_completed", result=result)
+    logger.info('conversion_completed', result=result)
 
     # 5. Validation
     validate_physical_limits(category, source_key, input_value)
@@ -214,7 +216,7 @@ def validate_physical_limits(category: enums.Category, unit_key: str, value: flo
     """
     # 1. Check for Computational Limits (Infinity)
     if math.isinf(value):
-        logger.warning("physical_limit_infinity", value=value)
+        logger.warning('physical_limit_infinity', value=value)
         console.print(
             '[yellow][WARNING] Input is too large for standard calculation (Infinite).[/yellow]',
         )
@@ -232,10 +234,10 @@ def validate_physical_limits(category: enums.Category, unit_key: str, value: flo
             # Round for display
             min_in_unit = round(min_in_unit, 2)
             logger.warning(
-                "physical_limit_violation",
+                'physical_limit_violation',
                 value=value,
                 min_allowed_base=min_base,
-                unit=unit_key
+                unit=unit_key,
             )
             console.print(
                 f'[yellow][WARNING] Physical limitation: Value is below '
@@ -305,12 +307,12 @@ def get_valid_number(*, is_an_entry_number: bool, max_value: int) -> tuple[bool,
             raise exceptions.NotAllowedValueError
     except ValueError:
         # Handle cases where the input is not a valid integer.
-        logger.debug("unit_selection_error", error="not_a_number")
+        logger.debug('unit_selection_error', error='not_a_number')
         console.print('[red][ERROR] PLEASE ENTER A NUMBER[/red]')
         is_valid_number = False
     except exceptions.NotAllowedValueError:
         # Handle cases where the number is an integer but not a valid option.
-        logger.debug("unit_selection_invalid", value=number, max_allowed=max_value)
+        logger.debug('unit_selection_invalid', value=number, max_allowed=max_value)
         console.print('[red][ERROR] PLEASE ENTER A VALID NUMBER[/red]')
         is_valid_number = False
     else:
@@ -321,7 +323,7 @@ def get_valid_number(*, is_an_entry_number: bool, max_value: int) -> tuple[bool,
 
 def main() -> None:
     """Main entry point of the application."""
-    logger.info("app_startup", version=__version__)
+    logger.info('app_startup', version=__version__)
     console.print('[green]Welcome to the CLI Unit Converter[/green]')
     while True:
         display_main_menu()

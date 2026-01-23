@@ -10,12 +10,14 @@ from __future__ import annotations
 from enum import Enum, auto
 import typing
 from typing import TYPE_CHECKING, NamedTuple
+
 import structlog
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 logger = structlog.get_logger()
+
 
 # 1. Physical Categories
 class Category(Enum):
@@ -93,7 +95,7 @@ class UnitConverter:
             definition (UnitDefinition): The UnitDefinition object containing metadata and formulas.
         """
         cls.registry[key.upper()] = definition
-        logger.debug("unit_registered", key=key.upper(), category=definition.category.name)
+        logger.debug('unit_registered', key=key.upper(), category=definition.category.name)
 
     @classmethod
     def convert(cls, value: float, from_unit: str, to_unit: str) -> float:
@@ -117,14 +119,14 @@ class UnitConverter:
 
         # Safety Validations (Logic and Consistency)
         if not source or not target:
-            logger.error("conversion_failed_unknown_unit", from_unit=from_unit, to_unit=to_unit)
+            logger.error('conversion_failed_unknown_unit', from_unit=from_unit, to_unit=to_unit)
             raise ValueError(f'Unknown unit: {from_unit} or {to_unit}')
 
         if source.category != target.category:
             logger.error(
-                "conversion_failed_category_mismatch",
+                'conversion_failed_category_mismatch',
                 source_category=source.category.name,
-                target_category=target.category.name
+                target_category=target.category.name,
             )
             raise TypeError(
                 f'Invalid conversion: Cannot convert {source.category.name} '
@@ -153,7 +155,7 @@ class UnitConverter:
         unit = cls.registry.get(unit_key.upper())
 
         if unit is None:
-            logger.error("unit_lookup_failed", unit_key=unit_key)
+            logger.error('unit_lookup_failed', unit_key=unit_key)
             raise ValueError(f"Unit '{unit_key}' not found in registry.")
 
         return unit

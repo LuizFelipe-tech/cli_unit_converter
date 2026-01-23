@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import structlog
 from dataclasses import dataclass, field
-from typing import List
+
+import structlog
 
 logger = structlog.get_logger()
 
@@ -11,4 +11,4 @@ logger = structlog.get_logger()
 class ExtractionConfig:
     model_name: str = 'en_core_web_lg'
     fuzzy_threshold: int = 80
-    target_skills: List[str] = field(default_factory=list)
+    target_skills: list[str] = field(default_factory=list)

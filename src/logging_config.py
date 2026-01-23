@@ -5,35 +5,33 @@ logging library, ensuring that logs are captured silently without cluttering
 the terminal output.
 """
 
-import structlog
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 
+import structlog
+
 # Path where the log will be stored
-LOG_FILE = Path("../logs/converter_debug.log")
+LOG_FILE = Path('../logs/converter_debug.log')
 
 
 # noinspection PyTypeChecker
-def configure_logging():
+def configure_logging() -> None:
     """Configures silent file-based logging.
 
     Sets up structlog processors and a standard logging file handler to redirect
     all debug information to a local log file. This configuration ensures that
     the developer has access to the full execution history while the user
     interface remains clean.
-
-    Returns:
-        None
     """
-
     processors = [
         structlog.contextvars.merge_contextvars,
-        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.TimeStamper(fmt='iso'),
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
-
         # Using a readable key=value format for the local log file
-        structlog.dev.ConsoleRenderer(colors=False)
+        structlog.dev.ConsoleRenderer(colors=False),
     ]
 
     structlog.configure(

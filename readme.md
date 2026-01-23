@@ -1,6 +1,6 @@
 # 🔄 CLI Unit Converter
 
-![Version](https://img.shields.io/badge/version-1.2.0-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.1.1-blue?style=for-the-badge)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Rich](https://img.shields.io/badge/UI-Rich-purple?style=for-the-badge)](https://github.com/Textualize/rich)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
