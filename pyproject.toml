@@ -50,7 +50,7 @@ push = true
 
 [tool.bumpver.file_patterns]
 "src/main.py" = [
-    "__version__: Final[str] = '1.2.0'",
+    '__version__: Final\[str\] = "MAJOR.MINOR.PATCH"',
 ]
 "readme.md" = [
     'https://img.shields.io/badge/version-{version}-blue',
