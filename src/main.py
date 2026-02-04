@@ -114,6 +114,10 @@ def process_menu_selection() -> None:
     handle_conversion(selected_category, units_keys)
 
 
+def nlp_handling() -> None:
+    user_text = input()
+
+
 def display_units(category: enums.Category, keys: list[str]) -> None:
     """Displays the available units for the selected category.
 
