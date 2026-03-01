@@ -1,49 +1,46 @@
 """Module for configuring structured logging for the CLI Unit Converter.
 
-This module sets up a file-based logging system using structlog and the standard
-logging library, ensuring that logs are captured silently without cluttering
-the terminal output.
+This module sets up a file-based logging system using Loguru, ensuring that
+debug information is captured silently to a rotating log file without
+cluttering the terminal output.
 """
 
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 
-import structlog
+from loguru import logger
 
-LOG_FILE = Path('../logs/converter_debug.log')
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+LOG_DIR = _PROJECT_ROOT / 'logs'
+LOG_FILE = LOG_DIR / 'converter.log'
+
+_LOG_FORMAT = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {module}:{function}:{line} | {message}'
+
+# Remove the default stderr sink immediately on import so that any module
+# imported after this one (e.g. enums, which registers units at import time)
+# does not leak debug output to the terminal.
+logger.remove()
 
 
-# noinspection PyTypeChecker
 def configure_logging() -> None:
-    """Configures silent file-based logging.
+    """Configures silent file-based logging with Loguru.
 
-    Sets up structlog processors and a standard logging file handler to redirect
-    all debug information to a local log file. This configuration ensures that
-    the developer has access to the full execution history while the user
-    interface remains clean.
+    Adds a rotating file sink that captures everything from DEBUG upwards.
+    Old log files are compressed and kept for 7 days. The default stderr sink
+    is already removed at module-import time (see above) so that early log
+    calls during other module imports stay silent.
     """
-    processors = [
-        structlog.contextvars.merge_contextvars,
-        structlog.processors.TimeStamper(fmt='iso'),
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
-        # Using a readable key=value format for the local log file
-        structlog.dev.ConsoleRenderer(colors=False),
-    ]
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-    structlog.configure(
-        processors=processors,
-        logger_factory=structlog.stdlib.LoggerFactory(),
-        wrapper_class=structlog.stdlib.BoundLogger,
-        cache_logger_on_first_use=True,
+    logger.add(
+        LOG_FILE,
+        format=_LOG_FORMAT,
+        level='DEBUG',
+        rotation='5 MB',
+        retention='7 days',
+        compression='zip',
+        backtrace=True,
+        diagnose=True,
+        encoding='utf-8',
     )
-
-    file_handler = logging.FileHandler(LOG_FILE)
-    file_handler.setLevel(logging.DEBUG)
-
-    # Reset root logger configuration to prevent printing to stdout
-    root_logger = logging.getLogger()
-    root_logger.handlers = [file_handler]
-    root_logger.setLevel(logging.DEBUG)
