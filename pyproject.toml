@@ -150,6 +150,8 @@ exclude = ["tests"]
 [tool.pyright]
 typeCheckingMode = "strict"        # Align with Mypy strictness.
 pythonVersion = "3.10"
+venvPath = "."
+venv = ".venv"
 exclude = ["**/__pycache__", "tests", "**/.*"] # Ignore cache and dotfiles.
 
 # --- Alignment with Google Style Guide ---

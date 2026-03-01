@@ -9,31 +9,23 @@ conversion logic delegated to the 'enums' module.
 
 from __future__ import annotations
 
-# --- Standard Library ---
 import math
 import sys
 from typing import Final
 
 from rich.console import Console
 from rich.panel import Panel
+import structlog
 
-# --- Internal Modules ---
+import enums
+import exceptions
 from logging_config import configure_logging
-
-# Configure logging before importing modules that log at import time
-configure_logging()
-
-# --- Third-Party Libraries ---
-import structlog  # noqa: E402
-
-import enums  # noqa: E402
-
-# --- Internal Modules ---
-import exceptions  # noqa: E402
 
 # --- Metadata ---
 __version__: Final[str] = '1.2.1'
 __author__: Final[str] = 'Luiz Felipe'
+# Configure logging before importing modules that log at import time
+configure_logging()
 
 # --- Global Instances ---
 console = Console()
@@ -51,7 +43,7 @@ def get_menu_options() -> list[int]:
 
 def display_main_menu() -> None:
     """Displays the main menu options to the standard output."""
-    menu_lines = []
+    menu_lines: list[str] = []
     for category in enums.Category:
         units = enums.UnitConverter.get_keys_by_category(category)
         names = [enums.UnitConverter.get_unit_info(k).name.split()[-1] for k in units]
@@ -70,7 +62,7 @@ def get_menu_option() -> int:
     """Prompts the user to select a category from the main menu.
 
     Loops continuously until a valid integer is received.
-    Handles noninteger inputs and values outside the allowed range internally.
+    Handles non-integer inputs and values outside the allowed range internally.
 
     Returns:
         int: The selected menu option.
