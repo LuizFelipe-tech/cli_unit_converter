@@ -9,9 +9,19 @@ import structlog
 
 logger = structlog.get_logger()
 
+NLP_REGEX = regex.compile(r'(?P<num>\d+)\s*(?P<unit>\p{L}+)\s([a-zA-Z]+\s)?(?P<conv_unit>\p{L}+)')
 
-@dataclass(frozen=True)
-class ExtractionConfig:
-    """Stores NLP info."""
-    model_name: str = 'en_core_web_lg'
-    fuzzy_threshold: int = 80
+
+def get_value(text: str) -> tuple[int, str, str]:
+    """Handle the user input text.
+
+    Args:
+        text: a string contaiming the user input
+    Returns:
+        tuple: a tuple containing a number, the unit to converted, unit to convert
+    """
+    match_regex = regex.search(NLP_REGEX, text)
+    num = match_regex.group('num')
+    conversion_unit = match_regex.group('unit')
+    conv_unit = match_regex.group('conv_unit')
+    return int(num), conversion_unit, conv_unit
