@@ -12,7 +12,6 @@ from pathlib import Path
 
 import structlog
 
-# Path where the log will be stored
 LOG_FILE = Path('../logs/converter_debug.log')
 
 
@@ -41,8 +40,6 @@ def configure_logging() -> None:
         cache_logger_on_first_use=True,
     )
 
-    # File Handler Configuration
-    # Ensures that logs are directed to a file and not the terminal
     file_handler = logging.FileHandler(LOG_FILE)
     file_handler.setLevel(logging.DEBUG)
 

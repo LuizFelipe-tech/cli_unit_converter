@@ -1,24 +1,34 @@
-"""Classes and functions related to the NLP module."""
+"""Natural language parsing for unit conversion expressions.
+
+Extracts numeric values and unit identifiers from free-text user input
+using regex-based pattern matching.
+"""
 
 from __future__ import annotations
-
-from dataclasses import dataclass
 
 import regex
 import structlog
 
 logger = structlog.get_logger()
 
+# Pattern: <number> <source_unit> [optional_connector] <target_unit>
 NLP_REGEX = regex.compile(r'(?P<num>\d+)\s*(?P<unit>\p{L}+)\s([a-zA-Z]+\s)?(?P<conv_unit>\p{L}+)')
 
 
 def get_value(text: str) -> tuple[int, str, str]:
-    """Handle the user input text.
+    """Parse a natural language conversion expression into its components.
+
+    Expects input in the form: ``<number> <source_unit> [connector] <target_unit>``.
 
     Args:
-        text: a string contaiming the user input
+        text: A free-text string containing the conversion request
+            (e.g., "100 km to miles").
+
     Returns:
-        tuple: a tuple containing a number, the unit to converted, unit to convert
+        tuple[int, str, str]: A tuple of (numeric_value, source_unit, target_unit).
+
+    Raises:
+        AttributeError: If the input text does not match the expected pattern.
     """
     match_regex = regex.search(NLP_REGEX, text)
     num = match_regex.group('num')

@@ -1,15 +1,11 @@
-"""Custom exception classes for the unit converter application.
-
-This module contains specialized exception classes used to handle specific
-error scenarios such as invalid user input or out-of-range values.
-"""
+"""Custom exceptions for input validation in the unit converter."""
 
 from __future__ import annotations
 
 
 class NotAllowedValueError(Exception):
-    """Exception raised when an invalid option or value is inputted.
+    """Raised when user input falls outside the set of valid options.
 
-    Raised when the user inputs an option or value that does not match
-    the program's expectations.
+    Used to signal that a syntactically valid value (e.g., an integer)
+    does not correspond to any available menu or unit selection.
     """

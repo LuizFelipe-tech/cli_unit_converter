@@ -123,56 +123,47 @@ ban-relative-imports = "all"  # Do not use relative names in imports.
 classmethod-decorators = ["classmethod", "pydantic.validator"]
 # --- Mypy configuration for static type checking. ---
 # --- Mypy configuration for static type checking. ---
+
+# --- Mypy configuration for static type checking. ---
 [tool.mypy]
+# Versão do Python alvo (deve alinhar com requires-python)
 python_version = "3.10"
-# Google Style 3.19: Prioritize safety and clarity.
-strict = true                      # Enable all strict flags (disallow_untyped_defs).
-warn_return_any = true             # Google Style 3.19.1: Avoid Anywhere possible.
-warn_unused_configs = true
-disallow_any_unimported = true     # Block types from libraries without typing stubs.
-show_error_codes = true
-enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 
-# Google Style 3.19.12: Explicit imports are preferred.
-# This prevents re-exporting modules implicitly unless __all__ is used.
-implicit_reexport = false
+# Modo Strict: Ativa todas as checagens mais rigorosas por padrão.
+# A Google preza por tipagem explícita em 100% do código público.
+strict = true
 
-# Exclude tests from strict type checking to avoid conflicts with mocking/fixtures.
-exclude = ["tests"]
+# Configurações detalhadas (muitas já inclusas no strict, mas explícitas para clareza)
+warn_return_any = true             # Alerta se uma função retornar Any quando deveria retornar algo específico.
+warn_unused_configs = true         # Alerta sobre configurações do mypy não utilizadas.
+disallow_subclassing_any = true    # Proíbe herdar de classes não tipadas (Any).
+disallow_any_generics = true       # Proíbe List, Dict sem tipos (ex: deve usar List[str]).
+disallow_untyped_calls = true      # Proíbe chamar funções que não têm anotação de tipo.
+disallow_untyped_defs = true       # Obriga anotação de tipo em todas as definições de função.
+disallow_incomplete_defs = true    # Obriga anotação completa (não pode faltar apenas o retorno).
+check_untyped_defs = true          # Checa o corpo de funções mesmo que elas não tenham anotação.
+disallow_untyped_decorators = true # Decorators também precisam ser tipados.
+no_implicit_optional = true        # Argumentos com valor default None devem ser Optional[T].
+warn_redundant_casts = true        # Alerta casts desnecessários.
+warn_unused_ignores = true         # Alerta se um # type: ignore não for mais necessário.
+warn_no_return = true              # Garante que todas as saídas de função retornem valor.
+warn_unreachable = true            # Alerta código inalcançável (dead code).
+implicit_reexport = false          # Exige exportação explícita em __init__.py.
+strict_equality = true             # Evita comparações entre tipos incompatíveis.
 
-# Ignore errors from specific libraries that do not have typing.
+# Configuração de Output
+show_error_codes = true            # Mostra o código do erro (ex: [arg-type]) para facilitar ignores.
+show_column_numbers = true         # Ajuda na integração com IDEs.
+pretty = true                      # Melhora a legibilidade no terminal.
+
+# Configuração de Importação e Caminhos (Fundamental para layout src/)
+mypy_path = "src"
+explicit_package_bases = true
+namespace_packages = true
+
+# --- Per-module options ---
+# Use isso para bibliotecas que não possuem tipos (stubs) oficiais.
+# Exemplo: Se você usar uma lib antiga que dá erro, adicione aqui.
 # [[tool.mypy.overrides]]
-# module = "library_without_type.*"
+# module = ["library_sem_tipo.*"]
 # ignore_missing_imports = true
-
-
-# --- Pyright configuration for speed and safety. ---
-[tool.pyright]
-typeCheckingMode = "strict"        # Align with Mypy strictness.
-pythonVersion = "3.10"
-venvPath = "."
-venv = ".venv"
-exclude = ["**/__pycache__", "tests", "**/.*"] # Ignore cache and dotfiles.
-
-# --- Alignment with Google Style Guide ---
-
-# Google Style 2.2.4: Do not use relative names in imports.
-reportMissingImports = "error"
-
-# Google Style 3.19.15: "Prefer to specify type parameters for generic types".
-# This flags usages like `l: list = []` (missing [type]).
-reportMissingTypeArgument = "error"
-
-# Google Style 3.2: "Make use of Python’s implicit line joining inside parentheses".
-# We DISABLE this warning because Google Style explicitly allows implicit concatenation
-# for long strings/URLs split across lines.
-reportImplicitStringConcatenation = false
-
-# --- Enterprise Safety Checks ---
-reportMissingTypeStubs = "error"
-reportUnknownMemberType = "warning"
-reportUnknownVariableType = "warning"
-reportUnknownArgumentType = "warning"
-reportUnknownParameterType = "warning"
-reportUnusedCallResult = "warning"
-reportUnnecessaryIsInstance = "warning"

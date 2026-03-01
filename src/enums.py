@@ -7,8 +7,8 @@ units of measurement using a base-unit normalization approach.
 
 from __future__ import annotations
 
-from enum import Enum, auto
 import typing
+from enum import Enum, auto
 from typing import TYPE_CHECKING, NamedTuple
 
 import structlog
@@ -19,15 +19,15 @@ if TYPE_CHECKING:
 logger = structlog.get_logger()
 
 
-# 1. Physical Categories
 class Category(Enum):
     """Defines physical categories to prevent invalid cross-category conversions.
 
     Attributes:
-        LENGTH: Represents length units (base: Meter).
-        WEIGHT: Represents weight/mass units (base: Kilogram).
-        TEMPERATURE: Represents temperature units (base: Celsius).
-        PRESSURE: Represents pressure units (base: Pascal).
+        LENGTH: Length units (base: Meter).
+        WEIGHT: Weight/mass units (base: Kilogram).
+        TEMPERATURE: Temperature units (base: Celsius).
+        PRESSURE: Pressure units (base: Pascal).
+        VOLUME: Volume units (base: Liter).
     """
 
     LENGTH = auto()
@@ -49,7 +49,6 @@ class Category(Enum):
         return 0.0
 
 
-# 2. Data Structure for Unit Definitions
 class UnitDefinition(NamedTuple):
     """Data structure holding metadata and conversion logic for a specific unit.
 
@@ -77,8 +76,9 @@ class UnitConverter:
     Base units assumed:
         * Length: Meters
         * Weight: Kilograms
-        * Temperature: Celsius (Chosen due to the complexity of Kelvin/Fahrenheit formulas)
+        * Temperature: Celsius
         * Pressure: Pascal
+        * Volume: Liters
 
     Attributes:
         registry (dict[str, UnitDefinition]): Internal storage for unit definitions.
@@ -117,7 +117,6 @@ class UnitConverter:
         source = cls.registry.get(from_unit.upper())
         target = cls.registry.get(to_unit.upper())
 
-        # Safety Validations (Logic and Consistency)
         if not source or not target:
             logger.error('conversion_failed_unknown_unit', from_unit=from_unit, to_unit=to_unit)
             raise ValueError(f'Unknown unit: {from_unit} or {to_unit}')
@@ -147,7 +146,7 @@ class UnitConverter:
             unit_key (str): The string identifier for the unit.
 
         Returns:
-            UnitDefinition: The unit details the object.
+            UnitDefinition: The unit's metadata and conversion functions.
 
         Raises:
             ValueError: If the provided unit_key is not found in the registry.
@@ -173,10 +172,9 @@ class UnitConverter:
         return [key for key, defn in cls.registry.items() if defn.category == category]
 
 
-# --- Unit Configuration (Registration of supported units) ---
+# --- Unit Registration ---
 
-# LENGTH CATEGORY (Base Unit: Meters)
-# All length units are registered with their conversion factors to and from Meters.
+# LENGTH (Base: Meters)
 UnitConverter.register(
     'METER',
     UnitDefinition(
@@ -208,8 +206,7 @@ UnitConverter.register(
     ),
 )
 
-# WEIGHT CATEGORY (Base Unit: Kilograms)
-# All weight units are registered with their conversion factors to and from Kilograms.
+# WEIGHT (Base: Kilograms)
 UnitConverter.register(
     'KG',
     UnitDefinition(
@@ -241,8 +238,7 @@ UnitConverter.register(
     ),
 )
 
-# TEMPERATURE CATEGORY (Base Unit: Celsius)
-# Temperature requires linear formulas (y = ax + b) due to non-zero offsets.
+# TEMPERATURE (Base: Celsius) — uses linear formulas due to non-zero offsets
 UnitConverter.register(
     'CELSIUS',
     UnitDefinition(
@@ -274,8 +270,7 @@ UnitConverter.register(
     ),
 )
 
-# PRESSURE CATEGORY (Base Unit: Pascal)
-# All pressure units are registered with their conversion factors to and from Pascals.
+# PRESSURE (Base: Pascal)
 UnitConverter.register(
     'PASCAL',
     UnitDefinition(
@@ -307,8 +302,7 @@ UnitConverter.register(
     ),
 )
 
-# VOLUME CATEGORY (Base Unit: Liters)
-# All volume units are registered with their conversion factors to and from Liters.
+# VOLUME (Base: Liters)
 UnitConverter.register(
     'LITER',
     UnitDefinition(
