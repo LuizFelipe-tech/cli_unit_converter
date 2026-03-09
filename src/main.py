@@ -7,10 +7,11 @@ temperature, pressure, and volume).
 
 from __future__ import annotations
 
-from typing import Final
+from typing import Annotated, Final
 
 from loguru import logger
 import questionary
+import typer
 
 from config.logging_config import configure_logging
 from core.convert import handle_conversion
@@ -19,15 +20,22 @@ import core.select_menu as menu
 __version__: Final[str] = '1.2.1'
 __author__: Final[str] = 'Luiz Felipe'
 
+app = typer.Typer()
+
 configure_logging()
 
 
-def main() -> None:
+@app.command()
+def main(argumentos: list[str] = typer.Argument(None, help="Type your conversion request")) -> None:
     """Starts the interactive conversion workflow.
 
     Displays a welcome banner, presents the category selection menu,
     collects the unit pair, and delegates to the conversion handler.
     """
+    if argumentos:
+        full_arguments = " ". join(argumentos)
+        print(full_arguments)
+
     logger.info('app_startup | version={ver}', ver=__version__)
     questionary.print('Welcome to the CLI Unit Converter!', style='bold fg:green')
 
@@ -42,4 +50,4 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    app()
