@@ -7,8 +7,8 @@ units of measurement using a base-unit normalization approach.
 
 from __future__ import annotations
 
-import typing
 from enum import Enum, auto
+import typing
 from typing import TYPE_CHECKING, NamedTuple
 
 from loguru import logger
@@ -93,11 +93,6 @@ class UnitConverter:
             definition (UnitDefinition): The UnitDefinition object containing metadata and formulas.
         """
         cls.registry[key.upper()] = definition
-        logger.debug(
-            'unit_registered | key={key} category={cat}',
-            key=key.upper(),
-            cat=definition.category.name,
-        )
 
     @classmethod
     def convert(cls, value: float, from_unit: str, to_unit: str) -> float:
