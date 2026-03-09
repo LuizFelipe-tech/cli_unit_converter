@@ -1,11 +1,7 @@
-"""Custom exceptions for input validation in the unit converter."""
+"""Custom exceptions for input validation."""
 
 from __future__ import annotations
 
 
 class NotAllowedValueError(Exception):
-    """Raised when user input falls outside the set of valid options.
-
-    Used to signal that a syntactically valid value (e.g., an integer)
-    does not correspond to any available menu or unit selection.
-    """
+    """Raised when user input is not among the valid options."""

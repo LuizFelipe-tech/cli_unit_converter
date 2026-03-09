@@ -1,8 +1,7 @@
-"""Module for configuring structured logging for the CLI Unit Converter.
+"""Loguru configuration for the CLI Unit Converter.
 
-This module sets up a file-based logging system using Loguru, ensuring that
-debug information is captured silently to a rotating log file without
-cluttering the terminal output.
+Sets up a rotating, file-based logging sink so that debug information
+is captured silently without cluttering the terminal.
 """
 
 from __future__ import annotations
@@ -17,19 +16,16 @@ LOG_FILE = LOG_DIR / 'converter.log'
 
 _LOG_FORMAT = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {module}:{function}:{line} | {message}'
 
-# Remove the default stderr sink immediately on import so that any module
-# imported after this one (e.g. enums, which registers units at import time)
-# does not leak debug output to the terminal.
+# Remove the default stderr sink on import so early log calls
+# (e.g., unit registration in enums) stay silent.
 logger.remove()
 
 
 def configure_logging() -> None:
-    """Configures silent file-based logging with Loguru.
+    """Adds the rotating file sink for the application.
 
-    Adds a rotating file sink that captures everything from DEBUG upwards.
-    Old log files are compressed and kept for 7 days. The default stderr sink
-    is already removed at module-import time (see above) so that early log
-    calls during other module imports stay silent.
+    Call once at startup.  Logs from DEBUG upward are written to a
+    rotating file; old files are compressed and kept for 7 days.
     """
     LOG_DIR.mkdir(parents=True, exist_ok=True)
 

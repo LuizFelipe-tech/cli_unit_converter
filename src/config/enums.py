@@ -1,8 +1,7 @@
-"""Unit conversion enums and registry logic.
+"""Unit conversion enums and registry.
 
-This module defines the physical categories, unit definitions, and the
-central UnitConverter class, which manages the conversion between different
-units of measurement using a base-unit normalization approach.
+Defines physical categories, unit metadata, and the ``UnitConverter``
+registry that normalizes values through a base-unit approach.
 """
 
 from __future__ import annotations
@@ -18,14 +17,10 @@ if TYPE_CHECKING:
 
 
 class Category(Enum):
-    """Defines physical categories to prevent invalid cross-category conversions.
+    """Physical categories that prevent invalid cross-category conversions.
 
-    Attributes:
-        LENGTH: Length units (base: Meter).
-        WEIGHT: Weight/mass units (base: Kilogram).
-        TEMPERATURE: Temperature units (base: Celsius).
-        PRESSURE: Pressure units (base: Pascal).
-        VOLUME: Volume units (base: Liter).
+    Each member maps to a group of compatible units sharing the same
+    dimensional quantity (length, mass, temperature, etc.).
     """
 
     LENGTH = auto()
@@ -36,26 +31,26 @@ class Category(Enum):
 
     @property
     def display_name(self) -> str:
-        """Returns the human-readable name of the category."""
+        """Returns a human-readable category name."""
         return self.name.capitalize()
 
     @property
     def min_value_base(self) -> float | None:
-        """Returns the physical minimum value in the base unit."""
+        """Returns the physical minimum in base units, or ``None``."""
         if self == Category.TEMPERATURE:
             return -273.15
         return 0.0
 
 
 class UnitDefinition(NamedTuple):
-    """Data structure holding metadata and conversion logic for a specific unit.
+    """Metadata and conversion lambdas for a single unit.
 
     Attributes:
-        name: The singular name of the unit (e.g., 'Meter').
-        plural: The plural name of the unit (e.g., 'Meters').
-        category: The physical category the unit belongs to.
-        to_base: A callable that converts a value *from* this unit *to* the base unit.
-        from_base: A callable that converts a value *from* the base unit *to* this unit.
+        name: Singular display name (e.g., ``'Meter'``).
+        plural: Plural display name (e.g., ``'Meters'``).
+        category: The physical category this unit belongs to.
+        to_base: Converts a value from this unit to the base unit.
+        from_base: Converts a value from the base unit to this unit.
     """
 
     name: str
@@ -66,50 +61,51 @@ class UnitDefinition(NamedTuple):
 
 
 class UnitConverter:
-    """Centralizes unit registration and conversion logic using a Base Unit pattern.
+    """Central registry and processor for unit conversions.
 
-    This class acts as a registry and a processor. It normalizes values to a
-    base unit (defined per Category) before converting them to the target unit.
+    Normalizes values to a base unit per category before converting
+    to the target unit.
 
-    Base units assumed:
-        * Length: Meters
-        * Weight: Kilograms
-        * Temperature: Celsius
-        * Pressure: Pascal
-        * Volume: Liters
-
-    Attributes:
-        registry (dict[str, UnitDefinition]): Internal storage for unit definitions.
+    Base units:
+        - Length: Meter
+        - Weight: Kilogram
+        - Temperature: Celsius
+        - Pressure: Pascal
+        - Volume: Liter
     """
 
     registry: typing.ClassVar[dict[str, UnitDefinition]] = {}
 
     @classmethod
     def register(cls, key: str, definition: UnitDefinition) -> None:
-        """Registers a new unit definition in the central registry.
+        """Registers a unit definition in the registry.
 
         Args:
-            key (str): The string identifier for the unit (case-insensitive).
-            definition (UnitDefinition): The UnitDefinition object containing metadata and formulas.
+            key: Case-insensitive string identifier for the unit.
+            definition: ``UnitDefinition`` with metadata and conversion lambdas.
         """
         cls.registry[key.upper()] = definition
+        logger.debug(
+            'unit_registered | key={k} category={c}',
+            k=key.upper(),
+            c=definition.category.name,
+        )
 
     @classmethod
     def convert(cls, value: float, from_unit: str, to_unit: str) -> float:
-        """Converts a value from one unit to another.
+        """Converts a value between two registered units.
 
         Args:
-            value (float): The numeric value to convert.
-            from_unit (str): The string key of the source unit (e.g., 'KM').
-            to_unit (str): The string key of the target unit (e.g., 'MILE').
+            value: The numeric value to convert.
+            from_unit: Registry key of the source unit.
+            to_unit: Registry key of the target unit.
 
         Returns:
-            float: The converted value in the target unit.
+            The converted value in the target unit.
 
         Raises:
-            ValueError: If either unit key is not found in the registry.
-            TypeError: If the units belong to different physical categories
-                (e.g., attempting to convert Length to Weight).
+            ValueError: If either unit key is unknown.
+            TypeError: If the units belong to different categories.
         """
         source = cls.registry.get(from_unit.upper())
         target = cls.registry.get(to_unit.upper())
@@ -137,16 +133,16 @@ class UnitConverter:
 
     @classmethod
     def get_unit_info(cls, unit_key: str) -> UnitDefinition:
-        """Retrieves metadata for a specific unit.
+        """Retrieves metadata for a registered unit.
 
         Args:
-            unit_key (str): The string identifier for the unit.
+            unit_key: The string identifier for the unit.
 
         Returns:
-            UnitDefinition: The unit's metadata and conversion functions.
+            The corresponding ``UnitDefinition``.
 
         Raises:
-            ValueError: If the provided unit_key is not found in the registry.
+            ValueError: If the key is not found in the registry.
         """
         unit = cls.registry.get(unit_key.upper())
 
@@ -161,10 +157,10 @@ class UnitConverter:
         """Returns all registered keys for a given category.
 
         Args:
-            category (Category): The physical category to filter by.
+            category: The ``Category`` to filter by.
 
         Returns:
-            list[str]: A list of unit keys belonging to the category.
+            A list of unit keys belonging to the category.
         """
         return [key for key, defn in cls.registry.items() if defn.category == category]
 

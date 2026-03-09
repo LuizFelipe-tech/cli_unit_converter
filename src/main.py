@@ -1,10 +1,8 @@
 """CLI Unit Converter.
 
-Converts units of measurement using a command-line interface.
-
-This module orchestrates the user interaction, input validation, and
-display of results using the 'Rich' library for a better UX. It supports
-conversion logic delegated to the 'enums' module.
+Provides an interactive command-line interface for converting units of
+measurement across multiple physical categories (length, weight,
+temperature, pressure, and volume).
 """
 
 from __future__ import annotations
