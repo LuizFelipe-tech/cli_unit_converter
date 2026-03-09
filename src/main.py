@@ -12,8 +12,7 @@ from __future__ import annotations
 from typing import Final
 
 from loguru import logger
-from rich.console import Console
-from rich.traceback import install
+import questionary
 
 from config.logging_config import configure_logging
 from core.convert import handle_conversion
@@ -24,22 +23,25 @@ __author__: Final[str] = 'Luiz Felipe'
 
 configure_logging()
 
-console = Console()
-
 
 def main() -> None:
-    """Entry point that starts the interactive conversion loop.
+    """Starts the interactive conversion workflow.
 
-    Initializes logging, displays a welcome message, and continuously
-    presents the main menu until the user exits.
+    Displays a welcome banner, presents the category selection menu,
+    collects the unit pair, and delegates to the conversion handler.
     """
     logger.info('app_startup | version={ver}', ver=__version__)
-    console.print('[green]Welcome to the CLI Unit Converter[/green]')
+    questionary.print('Welcome to the CLI Unit Converter!', style='bold fg:green')
+
     selected_category = menu.main_menu()
+    logger.debug('category_selected | category={cat}', cat=selected_category.name)
+
     units = menu.process_menu_selection(selected_category)
+    logger.debug('units_selected | source={src} target={tgt}', src=units[0], tgt=units[1])
+
     handle_conversion(selected_category, units)
+    logger.info('app_shutdown | graceful=True')
 
 
 if __name__ == '__main__':
-    install(show_locals=True)
     main()
