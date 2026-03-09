@@ -9,18 +9,15 @@ conversion logic delegated to the 'enums' module.
 
 from __future__ import annotations
 
-import math
-import sys
 from typing import Final
 
 from loguru import logger
 from rich.console import Console
-from rich.panel import Panel
+from rich.traceback import install
 
-from logging_config import configure_logging
-
-import enums
-import exceptions
+from config.logging_config import configure_logging
+from core.convert import handle_conversion
+import core.select_menu as menu
 
 __version__: Final[str] = '1.2.1'
 __author__: Final[str] = 'Luiz Felipe'
@@ -28,280 +25,6 @@ __author__: Final[str] = 'Luiz Felipe'
 configure_logging()
 
 console = Console()
-
-
-def get_menu_options() -> list[int]:
-    """Returns the list of valid menu options based on registered categories.
-
-    Returns:
-        list[int]: A list of integers representing valid menu selections,
-            including the exit option as the last entry.
-    """
-    return [i.value for i in enums.Category] + [len(enums.Category) + 1]
-
-
-def display_main_menu() -> None:
-    """Renders the main menu as a Rich panel listing all categories and the exit option."""
-    menu_lines: list[str] = []
-    for category in enums.Category:
-        units = enums.UnitConverter.get_keys_by_category(category)
-        names = [enums.UnitConverter.get_unit_info(k).name.split()[-1] for k in units]
-        units_str = ' :left_right_arrow: '.join(names)
-        menu_lines.append(f'{category.value}. {category.display_name} ({units_str})')
-
-    exit_option = len(enums.Category) + 1
-    menu_lines.append(f'{exit_option}. Exit')
-
-    menu_content = '\n'.join(menu_lines)
-    print()
-    console.print(Panel(menu_content, title='[bold blue]Main Menu[/bold blue]', expand=False))
-
-
-def get_menu_option() -> int:
-    """Prompts the user to select a category from the main menu.
-
-    Loops continuously until a valid integer is received.
-    Handles noninteger inputs and values outside the allowed range internally.
-
-    Returns:
-        int: The selected menu option.
-    """
-    valid_options = get_menu_options()
-    selected_option = 0
-    while True:
-        try:
-            selected_option: int = int(
-                console.input('[bold blue]Enter the number for the selected option: [/bold blue]'),
-            )
-            if selected_option not in valid_options:
-                raise exceptions.NotAllowedValueError
-        except exceptions.NotAllowedValueError:  # noqa: PERF203
-            logger.debug('menu_selection_invalid | value={value}', value=selected_option)
-            console.print('[bold red][ERROR] PLEASE ENTER A VALID NUMBER [/bold red]')
-        except ValueError:
-            logger.debug('menu_selection_error | error=not_a_number')
-            console.print('[bold red][ERROR] PLEASE ENTER A NUMBER[/bold red]')
-        else:
-            break
-    return selected_option
-
-
-def process_menu_selection() -> None:
-    """Processes the user's menu selection and routes to the appropriate handler.
-
-    Exits the application if the exit option is chosen; otherwise delegates
-    to the conversion workflow for the selected category.
-    """
-    valid_option: int = get_menu_option()
-    exit_option = len(enums.Category) + 1
-    if valid_option == exit_option:
-        logger.info('app_exit | reason=user_selected_exit')
-        console.print('[yellow]Exiting the program...[/yellow]')
-        sys.exit(0)
-
-    selected_category = enums.Category(valid_option)
-    logger.info('category_selected | category={cat}', cat=selected_category.name)
-    units_keys = enums.UnitConverter.get_keys_by_category(selected_category)
-    handle_conversion(selected_category, units_keys)
-
-
-def display_units(category: enums.Category, keys: list[str]) -> None:
-    """Displays the available units for the selected category.
-
-    Prints a header identifying the category and lists the units with their
-    corresponding selection numbers based on the provided registry keys.
-
-    Args:
-        category (enums.Category): The selected physical category.
-        keys (list[str]): A list of strings representing the keys in the UnitConverter
-            registry (e.g., ['METER', 'KM', 'MILE']).
-    """
-    console.print()
-    console.print(f'[green]--- {category.display_name} Converter selected ---[/green]')
-    console.print('Available units below')
-    for i, key in enumerate(keys, start=1):
-        console.print(f'{i}. {enums.UnitConverter.get_unit_info(key).name.split()[-1]}')
-
-
-def print_conversion(converted_value: float, unit_key: str) -> None:
-    """Formats and prints the final conversion result using Rich.
-
-    Retrieves the plural name of the target unit from the registry to ensure
-    grammatically correct output.
-
-    Args:
-        converted_value (float): The numeric result of the conversion.
-        unit_key (str): The registry key of the target unit (to fetch its display name).
-    """
-    unit_plural = enums.UnitConverter.get_unit_info(unit_key).plural
-    unit_singular = enums.UnitConverter.get_unit_info(unit_key).name
-    console.print(
-        f'[bold green]Result:[/bold green] [yellow]{converted_value:.2f}[/yellow]'
-        f' {unit_singular if converted_value in {0, 1} else unit_plural}',
-    )
-
-
-def handle_conversion(category: enums.Category, units_keys: list[str]) -> None:
-    """Orchestrates the end-to-end conversion workflow for a given category.
-
-    Guides the user through unit selection, value input, conversion execution,
-    physical limit validation, and result display.
-
-    Args:
-        category (enums.Category): The category enum member (e.g., Category.LENGTH),
-            used to determine specific validation rules (like absolute zero).
-        units_keys (list[str]): A list of string keys representing the available units
-            in the registry for this category (e.g., ['METER', 'KM']).
-    """
-    display_units(category, units_keys)
-
-    max_units = len(units_keys)
-    entry_index, target_index = request_units_number(max_units)
-
-    try:
-        input_value: float = float(
-            console.input('[bold blue]Enter the number to be converted: [/bold blue]'),
-        )
-    except ValueError:
-        logger.warning('conversion_input_error | error=invalid_number_format')
-        console.print('[bold red][ERROR] PLEASE ENTER A VALID NUMBER[/bold red]')
-        return
-
-    source_key = units_keys[entry_index - 1]
-    target_key = units_keys[target_index - 1]
-
-    logger.info(
-        'conversion_started | category={cat} source={src} target={tgt} value={val}',
-        cat=category.name,
-        src=source_key,
-        tgt=target_key,
-        val=input_value,
-    )
-
-    result = enums.UnitConverter.convert(input_value, source_key, target_key)
-
-    logger.info(
-        'conversion_completed | result={res} source={src} target={tgt}',
-        res=result,
-        src=source_key,
-        tgt=target_key,
-    )
-
-    validate_physical_limits(category, source_key, input_value)
-    print_conversion(result, target_key)
-
-
-def validate_physical_limits(category: enums.Category, unit_key: str, value: float) -> None:
-    """Checks for physical/logical limits and warns if exceeded.
-
-    Verifies against Absolute Zero for temperature and non-negativity
-    for scalar measures (Length, Weight, Pressure). Guards against
-    computational overflow (infinity).
-
-    Args:
-        category (enums.Category): The category enum member (e.g., Category.TEMPERATURE).
-        unit_key (str): The registry key of the source unit (e.g., 'CELSIUS',
-            'FAHRENHEIT'). Used to look up specific physical limits.
-        value (float): The input value to validate.
-    """
-    # Guard against computational overflow
-    if math.isinf(value):
-        logger.warning('physical_limit_infinity | value={val}', val=value)
-        console.print(
-            '[yellow][WARNING] Input is too large for standard calculation (Infinite).[/yellow]',
-        )
-        return
-
-    # Compare in base units for consistent validation across all unit types
-    min_base = category.min_value_base
-    if min_base is not None:
-        unit_info = enums.UnitConverter.get_unit_info(unit_key)
-        value_in_base = unit_info.to_base(value)
-
-        if value_in_base < min_base:
-            min_in_unit = unit_info.from_base(min_base)
-            # Round for display
-            min_in_unit = round(min_in_unit, 2)
-            logger.warning(
-                'physical_limit_violation | value={val} min_allowed_base={min_b} unit={u}',
-                val=value,
-                min_b=min_base,
-                u=unit_key,
-            )
-            console.print(
-                f'[yellow][WARNING] Physical limitation: Value is below '
-                f'minimum possible ({min_in_unit} {unit_info.plural}).[/yellow]',
-            )
-
-
-def request_units_number(max_units: int) -> tuple[int, int]:
-    """Requests the source and target unit numbers from the user.
-
-    Loops until valid inputs are received for both the entry unit and the
-    target unit.
-
-    Args:
-        max_units (int): The maximum allowed unit number.
-
-    Returns:
-        tuple[int, int]: A tuple containing the valid entry unit number and
-            converted unit number.
-    """
-    while True:
-        is_valid_number, valid_entry_number = get_valid_number(
-            is_an_entry_number=True,
-            max_value=max_units,
-        )
-        if is_valid_number:
-            break
-    while True:
-        is_valid_number, valid_converted_number = get_valid_number(
-            is_an_entry_number=False,
-            max_value=max_units,
-        )
-        if is_valid_number:
-            break
-    return valid_entry_number, valid_converted_number
-
-
-def get_valid_number(*, is_an_entry_number: bool, max_value: int) -> tuple[bool, int]:
-    """Gets and validates a single unit selection from user input.
-
-    Ensures the user enters a number corresponding to an available unit.
-
-    Args:
-        is_an_entry_number (bool): If True, prompts for the 'origin' unit.
-            If False, prompts for the 'target' unit.
-        max_value (int): The maximum allowed unit number.
-
-    Returns:
-        tuple[bool, int]: A tuple containing:
-            - bool: True if the input was valid, False otherwise.
-            - int: The parsed unit number (or 0 if invalid).
-    """
-    number: int = 0
-    try:
-        prompt = (
-            '[bold blue]Enter the origin unit number: [/bold blue]'
-            if is_an_entry_number
-            else '[bold blue]Enter the converted unit number: [/bold blue]'
-        )
-        number = int(console.input(prompt))
-        if not 1 <= number <= max_value:
-            raise exceptions.NotAllowedValueError
-    except ValueError:
-        logger.debug('unit_selection_error | error=not_a_number')
-        console.print('[red][ERROR] PLEASE ENTER A NUMBER[/red]')
-        is_valid_number = False
-    except exceptions.NotAllowedValueError:
-        logger.debug(
-            'unit_selection_invalid | value={val} max_allowed={mx}', val=number, mx=max_value
-        )
-        console.print('[red][ERROR] PLEASE ENTER A VALID NUMBER[/red]')
-        is_valid_number = False
-    else:
-        is_valid_number = True
-    return is_valid_number, number
 
 
 def main() -> None:
@@ -312,10 +35,11 @@ def main() -> None:
     """
     logger.info('app_startup | version={ver}', ver=__version__)
     console.print('[green]Welcome to the CLI Unit Converter[/green]')
-    while True:
-        display_main_menu()
-        process_menu_selection()
+    selected_category = menu.main_menu()
+    units = menu.process_menu_selection(selected_category)
+    handle_conversion(selected_category, units)
 
 
 if __name__ == '__main__':
+    install(show_locals=True)
     main()
