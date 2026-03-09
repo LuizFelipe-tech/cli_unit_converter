@@ -59,8 +59,6 @@ push = true
 
 # --- Ruff configuration for linting and formatting. ---
 [tool.ruff]
-fix = false
-unsafe-fixes = false
 line-length = 100
 indent-width = 4
 preview = true
@@ -71,28 +69,36 @@ indent-style = "space"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
-
 [tool.ruff.lint]
 select = [
     "ALL"
 ]
 ignore = [
-    "D203", # Conflict with Google docstring (prefer D211).
-    "D213", # Conflict with Google docstring (prefer D212 - summary on the first line).
+    # 1. Delegação de Responsabilidade (Deixe para o Mypy)
+    "ANN",      # O Ruff não deve checar tipos, o Mypy no modo strict já faz isso com contexto global.
+
+    # 2. Conflitos Nativos (Linter vs Formatador do próprio Ruff)
+    "COM812",   # Obrigatório ignorar se for usar o `ruff format`
+    "ISC001",   # Obrigatório ignorar se for usar o `ruff format`
+
+    # 3. Conflitos de Docstring (Padrão Google)
+    "D203",     # Conflito lógico (preferir D211).
+    "D213",     # Conflito lógico (preferir D212 - summary na primeira linha).
     "D406",
     "D407",
-    "ANN204",
-    "TRY003",
-    "TRY301",
-    "EM101",
-    "EM102",
-    "T201",
-    "TD003",
-    "TD002",
-    "FIX002",
-    "CPY",
-    "DOC501",
-    "Q000",
+
+    # 4. Regras Ruidosas / Anti-Pragmáticas
+    "TRY003",   # Exige criar classes de erro específicas para tudo (burocrático para scripts).
+    "TRY301",   # Raise dentro de try blocks.
+    "EM101",    # Exception com string pura.
+    "EM102",    # Exception com f-string.
+    "T201",     # Proíbe 'print()'. (MANTENHA IGNORADO, já que o seu projeto é uma CLI).
+    "TD002",    # Exige autor nos TODOs.
+    "TD003",    # Exige link de issue do GitHub nos TODOs.
+    "FIX002",   # Proíbe comentários TODO (irracional para desenvolvimento ativo).
+    "CPY",      # Exige banner de copyright no topo de todo arquivo.
+    "DOC501",   # Pedantismo extremo com docstrings.
+    "Q000",     # Conflito de aspas (o formatador já resolve isso sozinho).
 ]
 
 [tool.ruff.lint.mccabe]
@@ -104,6 +110,7 @@ max-branches = 12
 max-returns = 6
 
 [tool.ruff.lint.per-file-ignores]
+# Em testes, asserts e magic numbers são esperados e não representam falha de segurança
 "tests/*" = ["S101", "S105", "PLR2004"]
 
 [tool.ruff.lint.isort]
@@ -116,9 +123,8 @@ required-imports = ["from __future__ import annotations"]
 convention = "google"
 
 [tool.ruff.lint.flake8-tidy-imports]
-ban-relative-imports = "all"  # Do not use relative names in imports.
+ban-relative-imports = "all"  # Obriga imports absolutos (ex: from src.utils import X)
 
-# Naming configuration.
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = ["classmethod", "pydantic.validator"]
 # --- Mypy configuration for static type checking. ---
