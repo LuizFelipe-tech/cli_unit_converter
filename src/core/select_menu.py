@@ -6,8 +6,8 @@ physical category and a source/target unit pair.
 
 from __future__ import annotations
 
-import questionary
 from loguru import logger
+import questionary
 
 from config import enums
 

@@ -7,7 +7,7 @@ temperature, pressure, and volume).
 
 from __future__ import annotations
 
-from typing import Annotated, Final
+from typing import Final
 
 from loguru import logger
 import questionary

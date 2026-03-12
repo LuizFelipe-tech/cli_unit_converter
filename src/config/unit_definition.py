@@ -1,4 +1,6 @@
-from enums import UnitDefinition, Category, UnitConverter
+from __future__ import annotations
+
+from config.enums import Category, UnitConverter, UnitDefinition
 
 # --- Unit Registration ---
 
