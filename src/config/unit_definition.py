@@ -13,6 +13,7 @@ UnitConverter.register(
         Category.LENGTH,
         lambda x: x,  # Already base unit.
         lambda x: x,
+        ('meter', 'meters', 'm', 'metre', 'metres', 'mtr'),
     ),
 )
 UnitConverter.register(
@@ -23,6 +24,7 @@ UnitConverter.register(
         Category.LENGTH,
         lambda x: x * 1000.0,  # kilometer -> meter
         lambda x: x / 1000.0,  # meter -> kilometer
+        ('kilometer', 'kilometers', 'km', 'kilometre', 'kilometres', 'klick', 'klicks'),
     ),
 )
 UnitConverter.register(
@@ -33,6 +35,7 @@ UnitConverter.register(
         Category.LENGTH,
         lambda x: x * 1609.34,  # mile -> meter
         lambda x: x / 1609.34,  # meter -> mile
+        ('mile', 'miles', 'mi', 'mle'),
     ),
 )
 UnitConverter.register(
@@ -43,6 +46,7 @@ UnitConverter.register(
         Category.LENGTH,
         lambda x: x * 0.3048,  # foot -> meter
         lambda x: x / 0.3048,  # meter -> foot
+        ('foot', 'feet', 'ft', 'foots'),
     ),
 )
 UnitConverter.register(
@@ -53,6 +57,7 @@ UnitConverter.register(
         Category.LENGTH,
         lambda x: x * 0.0254,  # inch -> meter
         lambda x: x / 0.0254,  # meter -> inch
+        ('inch', 'inches', 'in', '"', "''"),
     ),
 )
 
@@ -65,6 +70,7 @@ UnitConverter.register(
         Category.WEIGHT,
         lambda x: x,  # Already base unit.
         lambda x: x,
+        ('kilogram', 'kilograms', 'kg', 'kgs', 'kilo', 'kilos'),
     ),
 )
 UnitConverter.register(
@@ -75,6 +81,7 @@ UnitConverter.register(
         Category.WEIGHT,
         lambda x: x * 0.453592,  # pound -> kilogram
         lambda x: x / 0.453592,  # kilogram -> pound
+        ('pound', 'pounds', 'lb', 'lbs', '#'),
     ),
 )
 UnitConverter.register(
@@ -85,6 +92,7 @@ UnitConverter.register(
         Category.WEIGHT,
         lambda x: x * 0.0283495,  # ounce -> kilogram
         lambda x: x / 0.0283495,  # kilogram -> ounce
+        ('ounce', 'ounces', 'oz', 'ozs'),
     ),
 )
 
@@ -97,6 +105,7 @@ UnitConverter.register(
         Category.TEMPERATURE,
         lambda x: x,  # Already base unit.
         lambda x: x,
+        ('celsius', 'degrees celsius', 'deg c', 'c', 'centigrade'),
     ),
 )
 UnitConverter.register(
@@ -107,6 +116,7 @@ UnitConverter.register(
         Category.TEMPERATURE,
         lambda x: (x - 32) * 5 / 9,  # Fahrenheit -> Celsius
         lambda x: (x * 9 / 5) + 32,  # Celsius -> Fahrenheit
+        ('fahrenheit', 'degrees fahrenheit', 'deg f', 'f', 'farenheit'),
     ),
 )
 UnitConverter.register(
@@ -117,6 +127,7 @@ UnitConverter.register(
         Category.TEMPERATURE,
         lambda x: x - 273.15,  # Kelvin -> Celsius
         lambda x: x + 273.15,  # Celsius -> Kelvin
+        ('kelvin', 'kelvins', 'k', 'degrees kelvin', 'deg k'),
     ),
 )
 
@@ -129,6 +140,7 @@ UnitConverter.register(
         Category.PRESSURE,
         lambda x: x,  # Already base unit.
         lambda x: x,
+        ('pascal', 'pascals', 'pa'),
     ),
 )
 UnitConverter.register(
@@ -139,6 +151,7 @@ UnitConverter.register(
         Category.PRESSURE,
         lambda x: x * 100000.0,  # bar -> Pascal
         lambda x: x / 100000.0,  # Pascal -> bar
+        ('bar', 'bars'),
     ),
 )
 UnitConverter.register(
@@ -149,6 +162,7 @@ UnitConverter.register(
         Category.PRESSURE,
         lambda x: x * 101325.0,  # atmosphere -> Pascal
         lambda x: x / 101325.0,  # Pascal -> atmosphere
+        ('atmosphere', 'atmospheres', 'atm', 'atms'),
     ),
 )
 
@@ -161,6 +175,7 @@ UnitConverter.register(
         Category.VOLUME,
         lambda x: x,  # Already base unit.
         lambda x: x,
+        ('liter', 'liters', 'l', 'litre', 'litres', 'ltr'),
     ),
 )
 UnitConverter.register(
@@ -171,6 +186,7 @@ UnitConverter.register(
         Category.VOLUME,
         lambda x: x / 1000.0,  # milliliter -> liter
         lambda x: x * 1000.0,  # liter -> milliliter
+        ('milliliter', 'milliliters', 'ml', 'millilitre', 'millilitres', 'cc'),
     ),
 )
 UnitConverter.register(
@@ -181,6 +197,7 @@ UnitConverter.register(
         Category.VOLUME,
         lambda x: x * 3.78541,  # gallon -> liter
         lambda x: x / 3.78541,  # liter -> gallon
+        ('gallon', 'gallons', 'gal', 'us gal', 'us gallon'),
     ),
 )
 # --- NOVA CATEGORIA: DATA_STORAGE (Base: Byte) ---
@@ -193,6 +210,7 @@ UnitConverter.register(
         Category.DATA_STORAGE,
         lambda x: x,  # Already base unit.
         lambda x: x,
+        ('byte', 'bytes', 'b'),
     ),
 )
 UnitConverter.register(
@@ -203,6 +221,7 @@ UnitConverter.register(
         Category.DATA_STORAGE,
         lambda x: x * 1024.0,  # KiB -> Byte
         lambda x: x / 1024.0,  # Byte -> KiB
+        ('kibibyte', 'kibibytes', 'kib', 'kb', 'kilobyte', 'kilobytes'),
     ),
 )
 UnitConverter.register(
@@ -213,6 +232,7 @@ UnitConverter.register(
         Category.DATA_STORAGE,
         lambda x: x * 1048576.0,  # MiB -> Byte (1024^2)
         lambda x: x / 1048576.0,  # Byte -> MiB
+        ('mebibyte', 'mebibytes', 'mib', 'mb', 'megabyte', 'megabytes'),
     ),
 )
 UnitConverter.register(
@@ -223,5 +243,6 @@ UnitConverter.register(
         Category.DATA_STORAGE,
         lambda x: x * 1073741824.0,  # GiB -> Byte (1024^3)
         lambda x: x / 1073741824.0,  # Byte -> GiB
+        ('gibibyte', 'gibibytes', 'gib', 'gb', 'gigabyte', 'gigabytes'),
     ),
 )
