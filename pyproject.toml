@@ -54,7 +54,7 @@ push = true
     "__version__: Final\\[str\\] = '{version}'"
 ]
 "README.md" = [
-    'https://img.shields.io/badge/version-{version}-blue\?style=for-the-badge',
+    'https://img.shields.io/badge/version-{version}-blue?style=for-the-badge',
 ]
 
 [tool.pytest.ini_options]
