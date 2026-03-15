@@ -31,7 +31,9 @@ def print_conversion(converted_value: float, unit_key: str) -> None:
     )
 
 
-def handle_conversion(category: enums.Category, units_keys: list[str]) -> None:
+def handle_conversion(
+    category: enums.Category, units_keys: list[str], input_value=(0, False)
+) -> None:
     """Orchestrates the full conversion workflow.
 
     Prompts for a numeric value, converts between the selected units,
@@ -48,13 +50,16 @@ def handle_conversion(category: enums.Category, units_keys: list[str]) -> None:
         tgt=target_unit,
     )
 
-    try:
-        raw = questionary.text('Enter the value to convert:').ask()
-        input_value: float = float(raw)
-    except (ValueError, TypeError):
-        logger.warning('invalid_input | raw={raw}', raw=raw)
-        questionary.print('Invalid input. Please enter a numeric value.', style='bold fg:red')
-        return
+    if input_value[1] is False:
+        try:
+            raw = questionary.text('Enter the value to convert:').ask()
+            input_value = float(raw)
+        except (ValueError, TypeError):
+            logger.warning('invalid_input | raw={raw}', raw=raw)
+            questionary.print('Invalid input. Please enter a numeric value.', style='bold fg:red')
+            return
+    else:
+        input_value = float(input_value[0])
 
     result = enums.UnitConverter.convert(input_value, source_unit, target_unit)
     logger.info(
