@@ -20,7 +20,7 @@ from core.convert import handle_conversion
 from utils import nlp_module, validate_unit
 from config import unit_definition
 
-__version__: Final[str] = '1.2.1'
+__version__: Final[str] = '2.0.0'
 __author__: Final[str] = 'Luiz Felipe'
 
 app = typer.Typer()
