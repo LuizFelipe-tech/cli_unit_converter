@@ -12,7 +12,9 @@ import structlog
 logger = structlog.get_logger()
 
 # Pattern: <number> <source_unit> [optional_connector] <target_unit>
-NLP_REGEX = regex.compile(r'(?P<num>\d+)\s*(?P<unit>\p{L}+)\s([a-zA-Z]+\s)?(?P<conv_unit>\p{L}+)')
+NLP_REGEX = regex.compile(
+    r"(?P<num>\d+)\s*(?P<unit>\p{L}+)\s+([a-zA-Z]+\s+)?(?P<conv_unit>\p{L}+)"
+)
 
 
 def get_value(text: str) -> tuple[int, str, str]:
@@ -28,7 +30,7 @@ def get_value(text: str) -> tuple[int, str, str]:
         tuple[int, str, str]: A tuple of (numeric_value, source_unit, target_unit).
     """
     match_regex = regex.search(NLP_REGEX, text)
-    num = match_regex.group('num')
-    conversion_unit = match_regex.group('unit')
-    conv_unit = match_regex.group('conv_unit')
+    num = match_regex.group("num")
+    conversion_unit = match_regex.group("unit")
+    conv_unit = match_regex.group("conv_unit")
     return int(num), conversion_unit, conv_unit
