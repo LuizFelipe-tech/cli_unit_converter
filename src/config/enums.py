@@ -59,6 +59,7 @@ class UnitDefinition(NamedTuple):
     category: Category
     to_base: Callable[[float], float]
     from_base: Callable[[float], float]
+    name_variations: tuple
 
 
 class UnitConverter:
@@ -163,4 +164,33 @@ class UnitConverter:
         Returns:
             A list of unit keys belonging to the category.
         """
-        return [key for key, defn in cls.registry.items() if defn.category == category]
+        return [key for key, defn in cls._registry.items() if defn.category == category]
+
+    @classmethod
+    def get_keys_by_unit_variation(cls, unit_conversion, unit_to_convert):
+        """Finds the registry keys for given unit variations.
+
+        Searches the unit registry to find the corresponding keys for the source
+        and target unit variations provided. It optimizes the search by short-circuiting
+        once both keys have been found.
+
+        Args:
+            unit_conversion: The variation name of the source unit to convert from.
+            unit_to_convert: The variation name of the target unit to convert to.
+
+        Returns:
+            tuple: A tuple containing the registry key for the source unit and the
+                registry key for tdhe target unit. If a unit variation is not found,
+                its corresponding key in the tuple will be None.
+        """
+        key_unit_conversion = None
+        key_unit_to_convert = None
+        for chave, valor in cls._registry.items():
+            if unit_conversion in valor.name_variations:
+                key_unit_conversion = chave
+            elif unit_to_convert in valor.name_variations:
+                key_unit_to_convert = chave
+            if key_unit_conversion is not None and key_unit_to_convert is not None:
+                break
+
+        return key_unit_conversion, key_unit_to_convert
