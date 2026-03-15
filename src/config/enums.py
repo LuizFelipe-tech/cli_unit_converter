@@ -75,7 +75,7 @@ class UnitConverter:
         - Volume: Liter
     """
 
-    registry: typing.ClassVar[dict[str, UnitDefinition]] = {}
+    _registry: typing.ClassVar[dict[str, UnitDefinition]] = {}
 
     @classmethod
     def register(cls, key: str, definition: UnitDefinition) -> None:
@@ -85,7 +85,7 @@ class UnitConverter:
             key: Case-insensitive string identifier for the unit.
             definition: ``UnitDefinition`` with metadata and conversion lambdas.
         """
-        cls.registry[key.upper()] = definition
+        cls._registry[key.upper()] = definition
         logger.debug(
             'unit_registered | key={k} category={c}',
             k=key.upper(),
@@ -108,8 +108,8 @@ class UnitConverter:
             ValueError: If either unit key is unknown.
             TypeError: If the units belong to different categories.
         """
-        source = cls.registry.get(from_unit.upper())
-        target = cls.registry.get(to_unit.upper())
+        source = cls._registry.get(from_unit.upper())
+        target = cls._registry.get(to_unit.upper())
 
         if not source or not target:
             logger.error('conversion_failed_unknown_unit | from={f} to={t}', f=from_unit, t=to_unit)
@@ -145,7 +145,7 @@ class UnitConverter:
         Raises:
             ValueError: If the key is not found in the registry.
         """
-        unit = cls.registry.get(unit_key.upper())
+        unit = cls._registry.get(unit_key.upper())
 
         if unit is None:
             logger.error('unit_lookup_failed | unit_key={key}', key=unit_key)
