@@ -35,29 +35,32 @@ def main(argumentos: list[str] = typer.Argument(None, help='Type your conversion
     Displays a welcome banner, presents the category selection menu,
     collects the unit pair, and delegates to the conversion handler.
     """
-    unuseful_variable = unit_definition
-    if argumentos:
-        full_arguments = ' '.join(argumentos)
-        print(full_arguments)
-        unit_val, conversion_unit, conv_unit = nlp_module.get_value(full_arguments)
-        keys = UnitConverter.get_keys_by_unit_variation(conversion_unit, conv_unit)
-        print(conversion_unit, conv_unit)
-        print(keys)
-        units_category = validate_unit.validate_unit_categories(keys)
-        handle_conversion(units_category, keys, (unit_val, True))  # pyright: ignore[reportArgumentType]
+    try:
+        unuseful_variable = unit_definition
+        if argumentos:
+            full_arguments = ' '.join(argumentos)
+            unit_val, conversion_unit, conv_unit = nlp_module.get_value(full_arguments)
+            keys = UnitConverter.get_keys_by_unit_variation(conversion_unit, conv_unit)
+            units_category = validate_unit.validate_unit_categories(keys)
+            handle_conversion(units_category, keys, (unit_val, True))  # pyright: ignore[reportArgumentType]
 
-    else:
-        logger.info('app_startup | version={ver}', ver=__version__)
-        questionary.print('Welcome to the CLI Unit Converter!', style='bold fg:green')
+        else:
+            logger.info('app_startup | version={ver}', ver=__version__)
+            questionary.print('Welcome to the CLI Unit Converter!', style='bold fg:green')
 
-        selected_category = menu.main_menu()
-        logger.debug('category_selected | category={cat}', cat=selected_category.name)
+            while True:
+                selected_category = menu.main_menu()
+                logger.debug('category_selected | category={cat}', cat=selected_category.name)
 
-        units = menu.process_menu_selection(selected_category)
-        logger.debug('units_selected | source={src} target={tgt}', src=units[0], tgt=units[1])
+                units = menu.process_menu_selection(selected_category)
+                logger.debug(
+                    'units_selected | source={src} target={tgt}', src=units[0], tgt=units[1]
+                    )
 
-        handle_conversion(selected_category, units)
-        logger.info('app_shutdown | graceful=True')
+                handle_conversion(selected_category, units)
+                logger.info('app_shutdown | graceful=True')
+    except:
+        logger.exception("Ocorreu um erro inesperado.")
 
 
 if __name__ == '__main__':

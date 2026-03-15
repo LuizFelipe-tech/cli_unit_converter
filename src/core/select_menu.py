@@ -21,7 +21,7 @@ def main_menu() -> enums.Category:
     category_display: dict[enums.Category, str] = {cat: cat.display_name for cat in enums.Category}
 
     option = questionary.select(
-        'Which category do you want to convert?',
+        '\nWhich category do you want to convert?',
         choices=list(category_display.values()),
     ).ask()
 
