@@ -201,7 +201,8 @@ UnitConverter.register(
     ),
 )
 # --- NOVA CATEGORIA: DATA_STORAGE (Base: Byte) ---
-# Usando o padrão binário (IEC) que é o mais realista para alocação de memória e arquitetura de sistemas.
+# Usando o padrão binário (IEC) que é o mais realista para alocação de memória e arquitetura de 
+# sistemas.
 UnitConverter.register(
     'BYTE',
     UnitDefinition(

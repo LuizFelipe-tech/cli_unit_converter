@@ -57,6 +57,12 @@ push = true
     'https://img.shields.io/badge/version-{version}-blue',
 ]
 
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+pythonpath = ["src"]
+testpaths = ["tests"]
+xfail_strict = true
+
 # --- Ruff configuration for linting and formatting. ---
 [tool.ruff]
 line-length = 100
@@ -95,10 +101,11 @@ ignore = [
     "T201",     # Proíbe 'print()'. (MANTENHA IGNORADO, já que o seu projeto é uma CLI).
     "TD002",    # Exige autor nos TODOs.
     "TD003",    # Exige link de issue do GitHub nos TODOs.
-    "FIX002",   # Proíbe comentários TODO (irracional para desenvolvimento ativo).
-    "CPY",      # Exige banner de copyright no topo de todo arquivo.
+    "FIX002",   # Proíbe comentários TO-DO (irracional para desenvolvimento ativo).
+    "CPY",      # Exige banner de copyright no topo do arquivo.
     "DOC501",   # Pedantismo extremo com docstrings.
     "Q000",     # Conflito de aspas (o formatador já resolve isso sozinho).
+    "INP001",
 ]
 
 [tool.ruff.lint.mccabe]
@@ -110,8 +117,31 @@ max-branches = 12
 max-returns = 6
 
 [tool.ruff.lint.per-file-ignores]
-# Em testes, asserts e magic numbers são esperados e não representam falha de segurança
-"tests/*" = ["S101", "S105", "PLR2004"]
+# Em testes, algumas regras de produção só geram atrito e pouco valor.
+"tests/*.py" = [
+    "ARG001",  # Fixtures e hooks frequentemente recebem argumentos não usados.
+    "D",       # Docstrings em testes raramente agregam valor proporcional ao custo.
+    "PT011",   # Em testes, às vezes basta validar o tipo da exceção.
+    "PLR2004", # Magic numbers são normais em casos de teste.
+    "S101",    # Assert é a forma idiomática de escrever testes.
+    "S105",    # Strings de teste podem parecer secrets sem realmente serem.
+    "SLF001",  # Testes ocasionalmente precisam inspecionar membros protegidos.
+]
+"tests/**/*.py" = [
+    "ARG001",
+    "D",
+    "PT011",
+    "PLR2004",
+    "S101",
+    "S105",
+    "SLF001",
+]
+"tests/conftest.py" = [
+    "D",
+    "PTH100", # Bootstrapping de path em testes pode exigir compatibilidade com sys.path.
+    "PTH118",
+    "PTH120",
+]
 
 [tool.ruff.lint.isort]
 force-single-line = false
@@ -173,3 +203,7 @@ namespace_packages = true
 # [[tool.mypy.overrides]]
 # module = ["library_sem_tipo.*"]
 # ignore_missing_imports = true
+
+[tool.pyright]
+extraPaths = ["src"]
+reportPrivateUsage = "none"
