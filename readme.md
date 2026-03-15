@@ -1,89 +1,123 @@
 # 🔄 CLI Unit Converter
 
-![Version](https://img.shields.io/badge/version-1.2.1-blue?style=for-the-badge)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Rich](https://img.shields.io/badge/UI-Rich-purple?style=for-the-badge)](https://github.com/Textualize/rich)
-[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.2.1-blue?style=for-the-badge)](https://github.com/seu-usuario/seu-repo) [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/) [![CLI](https://img.shields.io/badge/CLI-Typer-009485?style=for-the-badge&logo=fastapi&logoColor=white)](https://typer.tiangolo.com/) [![UI](https://img.shields.io/badge/UI-Questionary-8E44AD?style=for-the-badge&logo=semantic-release&logoColor=white)](https://github.com/tmbo/questionary) [![Logging](https://img.shields.io/badge/Logging-Loguru-00AD00?style=for-the-badge&logo=python&logoColor=white)](https://github.com/Delgan/loguru) [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-A robust, interactive Command-Line Interface (CLI) tool aimed at converting various units of
-measurement. Built with modern Python, emphasizing clean code, type safety, and user experience.
+An **enterprise-grade**, highly modular Command-Line Interface (CLI) application for physical and digital unit conversions. Built with modern Python, it features both an intuitive interactive terminal UI and a robust **Natural Language Processing (NLP)** engine for zero-friction free-text conversions.
+
+---
 
 ## 📖 Overview
 
-This project provides a fast and reliable way to convert units across five major categories: *
-*Length, Weight, Temperature, and more**. It features a bidirectional conversion logic and an
-intuitive text-based interface enhanced with the rich library for better readability.
+Designed to handle extensive measurement systems, this project seamlessly bridges human readability and strict computational accuracy. Whether you prefer navigating through rich interactive menus using arrow keys or instantly parsing natural language arguments (e.g., *"100 GiB to bytes"*), the **CLI Unit Converter** adapts to your workflow.
+
+---
 
 ## ✨ Key Features
 
-* **Multi-Category Support:**
-    * 📏 **Length:** Meters ↔ Kilometers ↔ Miles
-    * ⚖️ **Weight:** Kilograms ↔ Pounds ↔ Ounces
-    * 🌡️ **Temperature:** Celsius ↔ Fahrenheit ↔ Kelvin
-    * 🎈 **Pressure:** Pascal ↔ Atmosphere ↔ Bar
-    * 🥛 **Volume:** Liters ↔ Milliliters ↔ US Gallons
-* **Scientific Validation:** Enforces physical limits
-  (e.g., prevents temperatures below Absolute Zero).
-* **Modern UI:** Uses Rich Panels and colored feedback for a superior User Experience.
-* **Type Safe:** Fully annotated with type hints for better maintainability and static analysis.
+### 🧠 Natural Language Parsing (NLP)
+
+Type conversions as you think them. The custom regex-based NLP module instantly extracts numeric values, sources, and target units from free-text inputs.
+
+### 🎮 Dual-Mode Interface
+
+* **Interactive Mode:** Arrow-key navigation and elegant prompts powered by `Questionary`.
+* **Headless Mode:** Single-command execution via `Typer` for pipeline/scripting integrations.
+
+### 🌐 Expansive Multi-Domain Support
+
+* 💾 **Data Storage (New):** IEC Binary standards (Bytes ↔ Kibibytes ↔ Mebibytes ↔ Gibibytes)
+* 📏 **Length:** Meters ↔ Kilometers ↔ Miles ↔ Feet ↔ Inches
+* ⚖️ **Weight:** Kilograms ↔ Pounds ↔ Ounces
+* 🌡️ **Temperature:** Celsius ↔ Fahrenheit ↔ Kelvin
+* 🎈 **Pressure:** Pascal ↔ Atmosphere ↔ Bar
+* 🥛 **Volume:** Liters ↔ Milliliters ↔ US Gallons
+
+### 🛡️ Scientific Boundary Enforcement
+
+Strictly validates physical limits, averting logic errors such as calculating temperatures below **Absolute Zero** or overflowing computational limits.
+
+---
 
 ## 🛠️ Technical Highlights
 
-*Designed with scalability and readability in mind.*
+Architected for maintainability, scalability, and a robust Developer Experience (DX).
 
-* **Observability:** Implements **Structured Logging** (via `structlog`) for silent, file-based
-  debugging without polluting the CLI output.
-* **Registry Pattern:** Uses a centralized `UnitConverter` class to manage unit definitions
-  dynamically.
-* **Enterprise Tooling:** Configured with `Ruff`, `Mypy` (Strict), and `Pyright` to ensure Pythonic
-  best practices and type safety.
-* **Normalization Strategy:** Converts all values to a "Base Unit" before converting to the target,
-  reducing algorithmic complexity.
+* **Decoupled Architecture:** Strict separation of concerns divided into `core`, `config`, and `utils` modules, making the system highly testable and extensible.
+* **Design Patterns:** Implements the **Registry Pattern** (`UnitConverter`) for dynamic unit discovery and $O(1)$ lookups, coupled with a **Base Unit Normalization** strategy that drastically reduces the permutations of conversion algorithms.
+* **Advanced Telemetry:** Integrates `Loguru` for asynchronous, thread-safe, and structured logging. Debug traces are routed to isolated log files to preserve terminal cleanliness.
+* **Strict Type Safety:** Fully annotated and verified using strict `Mypy` and `Pyright` configurations.
+* **Robust Input Sanitization:** Utilizes unit name variations (e.g., mapping "mtr", "m", "meter" to a single registry key) to ensure high fault tolerance.
+
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-* **Python 3.10** or higher.
+* Python 3.10 or higher.
 
 ### Installation
 
 1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/YOUR_USERNAME/cli-unit-converter.git](https://github.com/LuizFelipe-tech/cli_unit_converter)
-   cd cli-unit-converter
-   ```
 
-2. **Install dependencies:**
     ```bash
-    pip install -e .
-    # OR manually install the requirement
-    pip install rich
-    pip install structlog
+    git clone [https://github.com/LuizFelipe-tech/cli_unit_converter.git](https://github.com/LuizFelipe-tech/cli_unit_converter.git)
+    cd cli-unit-converter
     ```
 
+2. **Install dependencies:**
 
-3. **Run the application:**
-   ```bash
-   python main.py
-   ```
+    ```bash
+    pip install -e .
+    # OR manually install the requirements
+    pip install typer questionary loguru regex
+    ```
+
+### Usage
+
+**Option 1: Free-Text NLP Mode (Fastest)**
+Pass your conversion request directly as an argument:
+
+```bash
+python main.py "1024 kibibytes to bytes"
+python main.py "100 km to miles"
+
+```
+
+**Option 2: Interactive CLI Mode**
+Run the tool without arguments to enter the interactive menus:
+
+```bash
+python main.py
+
+```
+
+---
 
 ## 📂 Project Structure
 
 ```text
 cli-unit-converter/
-├── .github/
-│   └── workflows/    # CI/CD Automation
-├── logs/             # Git-ignored debug logs
-├── src/
-│   ├── main.py            # Entry point and core logic
-│   ├── enums.py           # Domain Logic: Unit Registry & Conversion Engine
-│   ├── exceptions.py      # Custom exception classes
-│   └── logging_config.py  # Structured logging configuration
-├── pyproject.toml    # Project metadata & Tooling config
-└── README.md         # Project documentation
+├── logs/                 # Telemetry and debug logs (git-ignored)
+├── config/               # System Definitions
+│   ├── enums.py          # Category enums and Registry Pattern implementation
+│   ├── logging_config.py # Loguru sink & formatting configurations
+│   └── unit_definition.py# Unit data structures
+├── core/                 # Business Logic
+│   ├── convert.py        # Conversion orchestration and validation rules
+│   └── select_menu.py    # Questionary interactive UI logic
+├── utils/                # Helper Modules
+│   ├── nlp_module.py     # Regex-based natural language parser
+│   └── validate_unit.py  # Cross-category validation
+├── exceptions.py         # Domain-specific custom exceptions
+├── main.py               # Typer application entry point
+├── pyproject.toml        # Build system, Ruff, and Type-checking configs
+└── README.md             # Project documentation
+
 ```
+
+---
 
 ## 📜 Changelog
 
-Please see [changelog.md](changelog.md) for more information on what has changed recently.
+Please see `changelog.md` for a comprehensive history of feature additions, architectural shifts, and fixes.
