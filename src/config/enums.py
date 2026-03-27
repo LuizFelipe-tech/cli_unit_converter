@@ -180,16 +180,16 @@ class UnitConverter:
 
         Returns:
             tuple: A tuple containing the registry key for the source unit and the
-                registry key for tdhe target unit. If a unit variation is not found,
+                registry key for the target unit. If a unit variation is not found,
                 its corresponding key in the tuple will be None.
         """
         key_unit_conversion = None
         key_unit_to_convert = None
-        for chave, valor in cls._registry.items():
-            if unit_conversion in valor.name_variations:
-                key_unit_conversion = chave
-            elif unit_to_convert in valor.name_variations:
-                key_unit_to_convert = chave
+        for key, value in cls._registry.items():
+            if unit_conversion in value.name_variations:
+                key_unit_conversion = key
+            elif unit_to_convert in value.name_variations:
+                key_unit_to_convert = key
             if key_unit_conversion is not None and key_unit_to_convert is not None:
                 break
 

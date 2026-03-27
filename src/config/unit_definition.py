@@ -1,10 +1,16 @@
+"""Unit definitions and registration.
+
+Registers all supported units with their respective metadata, conversion
+formulas (to/from base units), and common variations/aliases.
+"""
+
 from __future__ import annotations
 
 from config.enums import Category, UnitConverter, UnitDefinition
 
 # --- Unit Registration ---
 
-# LENGTH (Base: Meters)
+# --- LENGTH (Base: Meters)
 UnitConverter.register(
     'METER',
     UnitDefinition(

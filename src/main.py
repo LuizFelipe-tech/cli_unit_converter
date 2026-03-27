@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """CLI Unit Converter.
 
 Provides an interactive command-line interface for converting units of
@@ -29,7 +30,7 @@ configure_logging()
 
 
 @app.command()
-def main(argumentos: list[str] = typer.Argument(None, help='Type your conversion request')) -> None:
+def main(args: list[str] = typer.Argument(None, help='Type your conversion request')) -> None:
     """Starts the interactive conversion workflow.
 
     Displays a welcome banner, presents the category selection menu,
@@ -55,12 +56,12 @@ def main(argumentos: list[str] = typer.Argument(None, help='Type your conversion
                 units = menu.process_menu_selection(selected_category)
                 logger.debug(
                     'units_selected | source={src} target={tgt}', src=units[0], tgt=units[1]
-                    )
+                )
 
                 handle_conversion(selected_category, units)
                 logger.info('app_shutdown | graceful=True')
-    except:
-        logger.exception("Ocorreu um erro inesperado.")
+    except Exception:
+        logger.exception('An unexpected error occurred.')
 
 
 if __name__ == '__main__':

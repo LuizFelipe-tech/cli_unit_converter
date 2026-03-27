@@ -1,20 +1,23 @@
+"""Validation utilities for unit categories.
+
+Ensures that unit pairs belong to the same physical category before
+proceeding with conversions.
+"""
+
 from __future__ import annotations
 
 from config.enums import UnitConverter
 
 
-def validate_unit_categories(keys):
-    """Validates if the provided unit keys belong to distinct categories.
-
-    Checks the category for each unit key in the provided list. If any two keys
-    belong to the same category, the validation fails.
+def validate_unit_categories(keys: list[str]):
+    """Validates that all provided unit keys belong to the same category.
 
     Args:
-        keys: An iterable of registered unit keys to validate.
+        keys: A list of registered unit keys to validate.
 
     Returns:
-        A list of categories corresponding to each unit key if all categories are
-        unique. Returns None if there are duplicate categories.
+        The ``Category`` shared by all units, or ``None`` if they belong
+        to different categories.
     """
     categories = [UnitConverter.get_unit_info(key).category for key in keys]
     first_category = categories[0]
