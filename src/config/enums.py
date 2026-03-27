@@ -29,6 +29,9 @@ class Category(Enum):
     PRESSURE = auto()
     VOLUME = auto()
     DATA_STORAGE = auto()
+    TIME = auto()
+    DATA_TRANSFER_RATE = auto()
+    ENERGY = auto()
 
     @property
     def display_name(self) -> str:
