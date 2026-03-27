@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-03-26
+
+### 🚀 Added
+
+* **New Measurement Categories:** Expanded the `Category` enum and unit registry to support **Time**, **Data Transfer Rate**, and **Energy**.
+* **Expanded Unit Registry:** * *Time:* Ranging from nanoseconds to days (base: seconds).
+  * *Data Transfer Rate:* SI decimal bits (Mbps, Gbps) and bytes (MB/s).
+  * *Energy:* Joules, Kilowatt-hours, and Kilocalories.
+  * *Data Storage:* Introduced higher-capacity units (Tebibyte, Pebibyte) and the fundamental Bit.
+  * *Existing Categories:* Added centimeters, metric tonnes, PSI, and cubic meters to Length, Weight, Pressure, and Volume.
+* **Parsing Robustness:** Introduced multiple string aliases (e.g., `"mmhg"` for Torr, `"klick"` for Kilometers) to improve input flexibility and NLP accuracy.
+* **Documentation:** Added comprehensive module-level docstrings to `unit_definition.py` and `validate_unit.py` to clarify responsibilities.
+
+### 🔄 Changed
+
+* **Codebase Internationalization:** Standardized internal variable names (`chave` -> `key`, etc.), log messages, and comments from Portuguese to English for global maintainability.
+* **Code Quality & Type Safety:** Added explicit type hints to configuration functions (e.g., `validate_unit_categories`) and corrected inaccurate docstrings across the project.
+* **Error Handling:** Improved resilience in the main entry point (`main.py`) by replacing a bare `except:` block with a targeted `except Exception:` catch.
+* **Execution:** Added the `#!/usr/bin/env python3` shebang to `main.py` to support direct script execution.
+
 ## [2.0.0] - 2026-03-15
 
 ### 🚀 Added

@@ -19,6 +19,9 @@ def validate_unit_categories(keys: list[str]):
         The ``Category`` shared by all units, or ``None`` if they belong
         to different categories.
     """
+    if not keys or any(k is None for k in keys):
+        return None
+
     categories = [UnitConverter.get_unit_info(key).category for key in keys]
     first_category = categories[0]
     if any(x != first_category for x in categories):

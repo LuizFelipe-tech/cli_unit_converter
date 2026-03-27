@@ -189,10 +189,11 @@ class UnitConverter:
         key_unit_conversion = None
         key_unit_to_convert = None
         for key, value in cls._registry.items():
-            if unit_conversion in value.name_variations:
+            if key_unit_conversion is None and unit_conversion in value.name_variations:
                 key_unit_conversion = key
-            elif unit_to_convert in value.name_variations:
+            if key_unit_to_convert is None and unit_to_convert in value.name_variations:
                 key_unit_to_convert = key
+
             if key_unit_conversion is not None and key_unit_to_convert is not None:
                 break
 

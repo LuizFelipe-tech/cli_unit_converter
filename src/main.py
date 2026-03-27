@@ -10,7 +10,6 @@ from __future__ import annotations  # noqa: I001
 
 from typing import Final
 
-import questionary
 import typer
 from loguru import logger
 
@@ -19,7 +18,7 @@ from config.enums import UnitConverter
 from config.logging_config import configure_logging
 from core.convert import handle_conversion
 from utils import nlp_module, validate_unit
-from config import unit_definition
+from config import unit_definition  # noqa: F401 (Registers units)
 
 __version__: Final[str] = '2.0.0'
 __author__: Final[str] = 'Luiz Felipe'
@@ -37,17 +36,26 @@ def main(args: list[str] = typer.Argument(None, help='Type your conversion reque
     collects the unit pair, and delegates to the conversion handler.
     """
     try:
-        unuseful_variable = unit_definition
-        if argumentos:
-            full_arguments = ' '.join(argumentos)
+        logger.debug(f'Registry size at start: {len(UnitConverter._registry)}')
+        if args:
+            full_arguments = ' '.join(args)
             unit_val, conversion_unit, conv_unit = nlp_module.get_value(full_arguments)
             keys = UnitConverter.get_keys_by_unit_variation(conversion_unit, conv_unit)
+            if None in keys:
+                logger.warning('unit_not_found | keys={keys}', keys=keys)
+                typer.secho(
+                    'One or more units were not recognized. Please check your spelling.',
+                    fg=typer.colors.RED,
+                    bold=True,
+                )
+                return
+
             units_category = validate_unit.validate_unit_categories(keys)
             handle_conversion(units_category, keys, (unit_val, True))  # pyright: ignore[reportArgumentType]
 
         else:
             logger.info('app_startup | version={ver}', ver=__version__)
-            questionary.print('Welcome to the CLI Unit Converter!', style='bold fg:green')
+            typer.secho('Welcome to the CLI Unit Converter!', fg=typer.colors.GREEN, bold=True)
 
             while True:
                 selected_category = menu.main_menu()
