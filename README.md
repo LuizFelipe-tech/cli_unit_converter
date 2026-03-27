@@ -25,12 +25,42 @@ Type conversions as you think them. The custom regex-based NLP module instantly 
 
 ### 🌐 Expansive Multi-Domain Support
 
-* 💾 **Data Storage (New):** IEC Binary standards (Bytes ↔ Kibibytes ↔ Mebibytes ↔ Gibibytes)
-* 📏 **Length:** Meters ↔ Kilometers ↔ Miles ↔ Feet ↔ Inches
-* ⚖️ **Weight:** Kilograms ↔ Pounds ↔ Ounces
-* 🌡️ **Temperature:** Celsius ↔ Fahrenheit ↔ Kelvin
-* 🎈 **Pressure:** Pascal ↔ Atmosphere ↔ Bar
-* 🥛 **Volume:** Liters ↔ Milliliters ↔ US Gallons
+💾 Data Storage (IEC & SI Standards)
+* **Base:** Byte
+* **Units:** Bit ↔ Byte ↔ Kibibyte (KiB) ↔ Mebibyte (MiB) ↔ Gibibyte (GiB) ↔ Tebibyte (TiB) ↔ Pebibyte (PiB)
+
+📏 Length (Meters & Imperial)
+* **Base:** Meter
+* **Units:** Nanometer ↔ Millimeter ↔ Centimeter ↔ Meter ↔ Kilometer ↔ Inch ↔ Foot ↔ Yard ↔ Mile
+
+⚖️ Weight & Mass
+* **Base:** Kilogram
+* **Units:** Milligram ↔ Gram ↔ Kilogram ↔ Metric Tonne ↔ Ounce ↔ Pound
+
+🌡️ Temperature
+* **Base:** Celsius
+* **Units:** Celsius ↔ Fahrenheit ↔ Kelvin
+
+🎈 Pressure
+* **Base:** Pascal
+* **Units:** Pascal ↔ Bar ↔ Atmosphere (atm) ↔ PSI ↔ Torr (mmHg)
+
+🥛 Volume
+* **Base:** Liter
+* **Units:** Milliliter ↔ Liter ↔ Cubic Meter ($m^3$) ↔ US Fluid Ounce ↔ US Gallon
+
+⏳ Time (New)
+* **Base:** Second
+* **Units:** Nanosecond ↔ Microsecond ↔ Millisecond ↔ Second ↔ Minute ↔ Hour ↔ Day
+
+⚡ Data Transfer Rate (New)
+* **Base:** Bits per second (bps)
+* **Units:** bps ↔ Megabit/s (Mbps) ↔ Gigabit/s (Gbps) ↔ Megabyte/s (MB/s)
+* *Nota: Implementada a distinção crucial de $1\text{ MB/s} = 8.000.000\text{ bps}$ para padrões de rede.*
+
+🔋 Energy (New)
+* **Base:** Joule
+* **Units:** Joule ↔ Kilowatt-hour (kWh) ↔ Kilocalorie (kcal)
 
 ### 🛡️ Scientific Boundary Enforcement
 
