@@ -25,7 +25,7 @@ Type conversions as you think them. The custom regex-based NLP module instantly 
 
 ### 🌐 Expansive Multi-Domain Support
 
-💾 Data Storage (IEC & SI Standards)
+💾 Data Storage
 * **Base:** Byte
 * **Units:** Bit ↔ Byte ↔ Kibibyte (KiB) ↔ Mebibyte (MiB) ↔ Gibibyte (GiB) ↔ Tebibyte (TiB) ↔ Pebibyte (PiB)
 
@@ -49,16 +49,15 @@ Type conversions as you think them. The custom regex-based NLP module instantly 
 * **Base:** Liter
 * **Units:** Milliliter ↔ Liter ↔ Cubic Meter ($m^3$) ↔ US Fluid Ounce ↔ US Gallon
 
-⏳ Time (New)
+⏳ Time
 * **Base:** Second
 * **Units:** Nanosecond ↔ Microsecond ↔ Millisecond ↔ Second ↔ Minute ↔ Hour ↔ Day
 
-⚡ Data Transfer Rate (New)
+⚡ Data Transfer Rate
 * **Base:** Bits per second (bps)
 * **Units:** bps ↔ Megabit/s (Mbps) ↔ Gigabit/s (Gbps) ↔ Megabyte/s (MB/s)
-* *Nota: Implementada a distinção crucial de $1\text{ MB/s} = 8.000.000\text{ bps}$ para padrões de rede.*
 
-🔋 Energy (New)
+🔋 Energy
 * **Base:** Joule
 * **Units:** Joule ↔ Kilowatt-hour (kWh) ↔ Kilocalorie (kcal)
 
